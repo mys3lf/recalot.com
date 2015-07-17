@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-Description: Flexjson is a lightweight library for serializing 
+ Java objects into JSON. What's different about Flexjson is it's contr
+ ol over what gets serialized allowing both deep and shallow copies of
+  objects.
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: flexjson
+Archiver-Version: Plexus Archiver
+Built-By: charlie
+Bundle-ManifestVersion: 2
+Bundle-DocURL: http://recalot.com/doc
+Export-Package: flexjson;version="2",flexjson.factories;version="2",fl
+ exjson.locators;version="2",flexjson.transformer;version="2"
+Bundle-Name: Flexjson
+Bundle-Version: 2.1
+Created-By: Apache Maven
+Build-Jdk: 1.6.0_22
+

@@ -1,0 +1,12 @@
+Manifest-Version: 1
+Bundle-Description: Lorem Ipsum
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.example.cars.more
+Bundle-Name: Dummy Tracking
+Bundle-Version: 1.0.0.495
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.example.cars.more.Activator
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,com.example.cars.interfaces
+

@@ -1,0 +1,243 @@
+/**********************
+ * COMMON
+ *************************/
+
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700|Luckiest+Guy);
+
+*, input {
+	font-family: 'Lato', sans-serif;
+	color: #FFF;
+}
+
+h1, h2, h3, h4, h5, h6, h7, h8{
+	font-family: 'Luckiest Guy', cursive;
+	font-weight: normal;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+body {
+	background-image: url('../imgs/background.png');
+}
+
+/************************
+ * Content
+ ************************/
+ 
+#content {
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 0 20px;
+}
+
+.survey {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 400px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.survey h2 {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.wallpaper  {
+	overflow: hidden;
+}
+
+.wallpaper img {
+	max-width: 100%;
+}
+
+.ratings {
+  clear: both;
+  overflow: hidden;
+}
+
+#paginator {
+	margin-top: 20px;
+	text-align: center;
+}
+
+#paginator.simple-pagination li {
+	float: none;
+	display: inline-block;
+}
+/************
+* STARS
+****************/
+
+div.stars {
+	float: left;
+}
+
+input.star { display: none; }
+
+label.star {
+  float: right;
+  padding: 10px;
+  font-size: 40px;
+  color: #BEBEBE;
+  transition: all .2s;
+}
+
+input.star:checked ~ label.star:before {
+  content: '\f005';
+  color: #FD4;
+  transition: all .25s;
+}
+
+input.star-5:checked ~ label.star:before {
+  color: #FE7;
+  text-shadow: 0 0 20px #952;
+}
+
+input.star-1:checked ~ label.star:before { color: #F62; }
+
+label.star:hover { transform: rotate(-15deg) scale(1.3); }
+
+label.star:before {
+  content: '\f006';
+  font-family: FontAwesome;
+}
+
+  
+/*****************
+* POWEREDBY
+****************/
+
+#poweredBy {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: -1;
+}
+
+#poweredBy  a{
+	text-decoration: none;
+	display: block;
+  margin: 0 30px;
+}
+
+
+.poweredBy  a .by,
+#poweredBy  a .by{
+  font-size: 10px;
+}
+
+.poweredBy  a h3,
+#poweredBy  a h3{
+  color: #7E7E7E;
+  margin: 0 0 10px 0;
+}
+
+/*****************
+* Download Button
+****************/
+
+.download {
+  background-color: #AD1767;
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  clear: both;
+  padding: 3px 5px;
+  border: 1px solid #4A0C2D;
+  color: #DDD;
+}
+
+.download:active  {
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.download:hover  {
+	background-color: #BE0B6B;
+}
+/*****************
+* Categories / Tags
+****************/
+
+.tags {
+	display: block;
+	margin: 0;
+	padding: 0;
+	min-height: 60px;
+	padding: 3px 0;
+}
+
+.tags li{
+	display: inline-block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background-color: #747474;
+	border-radius: 4px;
+    border: 1px solid #747474;
+	padding: 1px 10px;
+	margin: 3px 3px;
+}
+
+
+/***********************
+ * WALLPAPER small
+ ***********************/
+ 
+ .wallpaper-center{
+	text-align: center;
+ }
+ 
+ .wallpaper-small {
+	display: inline-block;
+	width: 200px;
+	padding: 10px 20px;
+	margin: 10px;
+	background-color: rgba(255, 255, 255, 0.2);
+	transition: all .2s ease-in-out;
+  }
+  
+ .wallpaper-small:hover {
+	transform: scale(1.1);
+	z-index: 999;
+  }
+  
+	.wallpaper-small h4 {
+		margin: 10px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	
+   .wallpaper-small .star{
+	font-size: 20px;
+   }
+   
+  .wallpaper-small img {
+	max-width: 100%;
+  }
+  
+  .wallpaper img{
+	width: 100%;
+  }
+  
+.wallpaper.hidden {
+	display: none;
+}
+
+.info {
+	text-align: right;
+}
