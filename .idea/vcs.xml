@@ -9,6 +9,5 @@
     <mapping directory="$PROJECT_DIR$/com.recalot.views.experiments" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/de.oforge.manifest.version.builder" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/de.oforge.osgi.repobuilder" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/de.oforge.playground" vcs="svn" />
   </component>
 </project>

@@ -138,7 +138,7 @@ var structure = [
                           name: "update",
                           glyphicon: "glyphicon glyphicon-plus",
                           form: {action: "/train", method: "PUT"}
-                        }
+                        }x
                     ]
                 }
             }
@@ -156,7 +156,20 @@ var structure = [
         },
         {
         name:"Running experiments",
-        id:"running"
+        id:"running",
+                content: {
+                     type: "list",
+                     action:"/experiments/splitters",
+                     method: "get",
+                     autoupdate: 10,
+                     buttons: [],
+                     detail: {
+                         action: "/experiments/splitters/{0}",
+                         type: "json",
+                         buttons: []
+                         }
+                     }
+                },
         },
         {
         name:"Available DataSplitters",

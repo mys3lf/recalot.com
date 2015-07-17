@@ -27,7 +27,6 @@
       <module fileurl="file://$PROJECT_DIR$/com.recalot.views.recommend.train/com.recalot.views.recommend.train.iml" filepath="$PROJECT_DIR$/com.recalot.views.recommend.train/com.recalot.views.recommend.train.iml" />
       <module fileurl="file://$PROJECT_DIR$/de.oforge.manifest.version.builder/de.oforge.manifest.version.builder.iml" filepath="$PROJECT_DIR$/de.oforge.manifest.version.builder/de.oforge.manifest.version.builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/de.oforge.osgi.repobuilder/de.oforge.osgi.repobuilder.iml" filepath="$PROJECT_DIR$/de.oforge.osgi.repobuilder/de.oforge.osgi.repobuilder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/de.oforge.playground/de.oforge.playground.iml" filepath="$PROJECT_DIR$/de.oforge.playground/de.oforge.playground.iml" />
     </modules>
   </component>
 </project>

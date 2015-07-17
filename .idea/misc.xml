@@ -13,6 +13,13 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$/com.recalot.demos.wallpaper">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="svn://api.recalot.com/recalot.com/com.recalot.demos.wallpaper" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/com.recalot.model.experiments.metrics">
           <value>
             <SvnBranchConfiguration>
