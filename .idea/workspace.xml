@@ -6,11 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="ec0f79fa-1792-4150-939d-45ae6c28b1ed" name="Default" comment="Test commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/com.recalot.portal/resources/web/js/structure.js" afterPath="$PROJECT_DIR$/com.recalot.portal/resources/web/js/structure.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="recalot.com.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -107,7 +103,7 @@
       <file leaf-file-name="structure.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/com.recalot.portal/resources/web/js/structure.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.104" vertical-offset="2315" max-vertical-offset="3655">
+            <state vertical-scroll-proportion="0.06391347" vertical-offset="2315" max-vertical-offset="3655">
               <caret line="140" column="26" selection-start-line="140" selection-start-column="26" selection-end-line="140" selection-end-column="26" />
               <folding />
             </state>
@@ -1094,7 +1090,13 @@
       <option name="project" value="LOCAL" />
       <updated>1437123104192</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Test commit">
+      <created>1437124726213</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1437124726213</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1124,7 +1126,7 @@
       <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.3295583" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" x="369" y="359" width="1169" height="440" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32020727" sideWeight="0.49573562" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.37511963" sideWeight="0.49633253" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37511963" sideWeight="0.49633253" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3486631" sideWeight="0.5036675" order="9" side_tool="true" content_ui="tabs" />
@@ -1675,7 +1677,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/com.recalot.portal/resources/web/js/structure.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.104" vertical-offset="2315" max-vertical-offset="3655">
+        <state vertical-scroll-proportion="0.06391347" vertical-offset="2315" max-vertical-offset="3655">
           <caret line="140" column="26" selection-start-line="140" selection-start-column="26" selection-end-line="140" selection-end-column="26" />
           <folding />
         </state>
