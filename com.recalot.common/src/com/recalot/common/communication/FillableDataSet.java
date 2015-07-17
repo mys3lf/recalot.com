@@ -1,23 +1,68 @@
 package com.recalot.common.communication;
 
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.data.DataSource;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 /**
+ * Fillable data set. This data set can be filled manually.
+ *
  * @author Matthaeus.schmedding
  */
 public class FillableDataSet implements DataSet {
+
+    /**
+     * Interactions list
+     */
     private final ArrayList<Interaction> interactions;
+
+    /**
+     * Users list
+     */
     private final ArrayList<User> users;
+
+    /**
+     * Items list
+     */
     private final ArrayList<Item> items;
 
+    /**
+     * Default constructor
+     *
+     * Initializes the lists
+     */
     public FillableDataSet() {
-        this.items = new ArrayList<Item>();
-        this.users = new ArrayList<User>();
-        this.interactions = new ArrayList<Interaction>();
+        this.items = new ArrayList<>();
+        this.users = new ArrayList<>();
+        this.interactions = new ArrayList<>();
+    }
+
+    /**
+     * Add interaction to the data set
+     * @param interaction interaction that should be added
+     * @throws BaseException
+     */
+    public void addInteraction(Interaction interaction) throws BaseException {
+        interactions.add(interaction);
+    }
+
+    /**
+     * Add item to the data set
+     * @param item item that should be added
+     * @throws BaseException
+     */
+    public void addItem(Item item) throws BaseException {
+        items.add(item);
+    }
+
+    /**
+     * Add user to the data set
+     * @param user user that should be added
+     * @throws BaseException
+     */
+    public void addUser(User user) throws BaseException {
+        users.add(user);
     }
 
     @Override
@@ -27,7 +72,7 @@ public class FillableDataSet implements DataSet {
 
     @Override
     public Interaction[] getInteractions(String userId) throws BaseException {
-        return interactions.stream().filter( i -> i.getUserId().equals(userId)).toArray(size -> new Interaction[size]);
+        return interactions.stream().filter( i -> i.getUserId().equals(userId)).toArray(Interaction[]::new);
     }
 
     @Override
@@ -54,27 +99,17 @@ public class FillableDataSet implements DataSet {
         return user.isPresent() ? user.get() : null;
     }
 
-    public void addInteraction(Interaction interaction) throws BaseException {
-        interactions.add(interaction);
-    }
-
-    public void addItem(Item item) throws BaseException {
-        items.add(item);
-    }
-
-    public void addUser(User user) throws BaseException {
-        users.add(user);
-    }
-
-
+    @Override
     public int getItemsCount() {
         return items.size();
     }
 
+    @Override
     public int getUsersCount() {
         return users.size();
     }
 
+    @Override
     public int getInteractionsCount() {
         return interactions.size();
     }

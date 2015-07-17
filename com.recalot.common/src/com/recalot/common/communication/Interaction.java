@@ -1,7 +1,6 @@
 package com.recalot.common.communication;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,31 +30,25 @@ public class Interaction {
         return id;
     }
 
-
     public String getUserId() {
         return userId;
     }
-
 
     public String getItemId() {
         return itemId;
     }
 
-
     public Date getTimeStamp() {
         return timeStamp;
     }
-
 
     public String getType() {
         return type;
     }
 
-
     public Map<String, String> getContent() {
         return content;
     }
-
 
     public String getValue(String key) {
         return content.get(key);
