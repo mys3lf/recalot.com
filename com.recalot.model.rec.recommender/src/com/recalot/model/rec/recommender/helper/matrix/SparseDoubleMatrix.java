@@ -183,34 +183,6 @@ public class SparseDoubleMatrix implements Serializable, SparseMatrix<Double>{
 		
 	}
 
-	/**
-	 * Some test code
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		SparseDoubleMatrix m = new SparseDoubleMatrix();
-		m.set(3, 3, 1.0);
-		m.set(4, 4, 5.0);
-		System.out.println(m.get(2, 2));
-		System.out.println(m.get(3, 3));
-		System.out.println(m.get(4, 4));
-		System.out.println("COPY");
-		SparseDoubleMatrix n = m.copy();
-		n.set(2, 2, 2.0);
-		n.set(3, 3, 0.0);
-		System.out.println("old");
-		System.out.println(m.get(2, 2));
-		System.out.println(m.get(3, 3));
-		System.out.println(m.get(4, 4));
-		System.out.println("new");
-		System.out.println(n.get(2, 2));
-		System.out.println(n.get(3, 3));
-		System.out.println(n.get(4, 4));
-		
-		//System.out.println(m.get(0, 3));
-		System.out.println("DONE");
-	}
-	
 	@Override
 	public int getM() {
 		return M;

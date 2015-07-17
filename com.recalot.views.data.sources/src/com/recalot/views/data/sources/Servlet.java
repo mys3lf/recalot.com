@@ -72,7 +72,7 @@ public class Servlet extends HttpServlet {
                 params.put(URLDecoder.decode((String) key, "UTF-8"), URLDecoder.decode(req.getParameter((String) key), "UTF-8"));
             }
         }
-        System.out.println(method);
+    //    System.out.println(method);
 
         //default template is json
         String templateKey = "json";

@@ -127,7 +127,7 @@ public class DataManagement  {
                 boolMatrix.setBool(user, item, true);
             } catch (Exception e){
                 e.printStackTrace();
-                System.out.println(e.getMessage());
+             //   System.out.println(e.getMessage());
             }
 
 			
@@ -150,8 +150,8 @@ public class DataManagement  {
 	private void initLatentmatrix(double[][] matrix) {
 		for (int k = 0; k < matrix.length; k++) {
 			for (int l = 0; l < matrix[k].length; l++) {
-				matrix[k][l] = this.nextNormal(initMean, initStDev);;
-			}
+				matrix[k][l] = this.nextNormal(initMean, initStDev);
+            }
 		}
 	}
 
@@ -189,7 +189,7 @@ public class DataManagement  {
 
 		double result = 0.0;
 		for (int c = 0; c < latentUserVector[user].length; c++)
-			result += (Double) latentUserVector[user][c]
+			result += latentUserVector[user][c]
 					* ((Double) latentItemVector[item1][c] - (Double) latentItemVector[item2][c]);
 		return result;
 	}

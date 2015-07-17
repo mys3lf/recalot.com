@@ -62,7 +62,7 @@ public abstract class Configurable {
                 String methodName = item.getKey();
 
                 methodName = adjustMethodName(methodName);
-                System.out.println(methodName + ":" + item.getValue());
+             //   System.out.println(methodName + ":" + item.getValue());
                 switch (item.getType()) {
                     case Integer: {
 

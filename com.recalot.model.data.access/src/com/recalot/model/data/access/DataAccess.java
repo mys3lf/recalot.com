@@ -176,7 +176,8 @@ public class DataAccess implements com.recalot.common.interfaces.model.data.Data
         // Lock list and add data source object.
         synchronized (dataSources) {
             dataSources.put(id, dataSource);
-            System.out.println("Add data source with id " + id);
+
+          //  System.out.println("Add data source with id " + id);
         }
     }
 

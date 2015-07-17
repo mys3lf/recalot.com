@@ -85,7 +85,7 @@ public class FunkSVDRecommender extends Recommender {
 
         Integer user = this.userMap.get(u);
         if (user == null) {
-            System.err.println("Cannot find internal ID for " + u);
+         //   System.err.println("Cannot find internal ID for " + u);
             System.exit(1);
             return null;
         } else {

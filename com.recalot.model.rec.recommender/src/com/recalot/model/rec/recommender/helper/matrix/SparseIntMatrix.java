@@ -172,39 +172,6 @@ public class SparseIntMatrix implements Serializable, SparseMatrix<Integer>{
 		}
 	}
 
-	/**
-	 * Some test code
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		SparseIntMatrix m = new SparseIntMatrix();
-		m.set(3, 3, 1);
-		m.set(4, 4, 5);
-		System.out.println(m.get(2, 2));
-		System.out.println(m.get(3, 3));
-		System.out.println(m.get(4, 4));
-		System.out.println("COPY");
-		SparseIntMatrix n = m.copy();
-		n.set(2, 2, 2);
-		n.set(3, 3, 0);
-		System.out.println("old");
-		System.out.println(m.get(2, 2));
-		System.out.println(m.get(3, 3));
-		System.out.println(m.get(4, 4));
-		System.out.println("new");
-		System.out.println(n.get(2, 2));
-		System.out.println(n.get(3, 3));
-		System.out.println(n.get(4, 4));
-		
-		m.set(5, 5, 99);
-		m.set(5, 5, 0);
-		m.set(6, 6, 0);
-		System.out.println("M: "+m.getNumberOfEntries());
-		System.out.println("N: "+n.getNumberOfEntries());
-		//System.out.println(m.get(0, 3));
-		System.out.println("DONE");
-	}
-
 	@Override
 	public int getM() {
 		return M;

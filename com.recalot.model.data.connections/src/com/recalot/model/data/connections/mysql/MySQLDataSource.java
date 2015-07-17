@@ -84,7 +84,7 @@ public class MySQLDataSource extends DataSource {
 
     public Connection getNewConnection() {
 
-        System.out.println("getNewConnection");
+       // System.out.println("getNewConnection");
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             return DriverManager.getConnection(String.format(connectionPlaceHolder, sqlServer, sqlDatabase, sqlUsername, sqlPassword));
@@ -211,7 +211,7 @@ public class MySQLDataSource extends DataSource {
             while (result.next()) {
                 existingTables.add(result.getString(3).toLowerCase());
 
-                System.out.println(result.getString(3).toLowerCase());
+               // System.out.println(result.getString(3).toLowerCase());
             }
 
             ArrayList<String> necessaryTables = new ArrayList<>();
