@@ -1,1 +1,4 @@
 de.oforge.manifest.version.builder
+trash
+de.oforge.osgi.repobuilder
+.idea
