@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="com.springsource.com.mysql.jdbc-5.1.6">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/com.springsource.com.mysql.jdbc-5.1.6.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

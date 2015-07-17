@@ -1,9 +1,0 @@
-package com.recalot.common.interfaces.communication;
-
-/**
- * @author Matthaeus.schmedding
- */
-public interface RecommendedItem {
-    public double getConfidence();
-    public String getItemId();
-}
