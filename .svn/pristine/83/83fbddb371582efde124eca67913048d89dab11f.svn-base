@@ -1,0 +1,81 @@
+package com.recalot.common.interfaces.model.rec;
+
+import com.recalot.common.communication.DataSet;
+import com.recalot.common.communication.RecommendationResult;
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.communication.Service;
+
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public abstract class Recommender extends Configurable implements RecommenderInformation, Service {
+
+    public Recommender(String id, Map<String, String> config) throws BaseException {
+        super(id, config);
+
+        setId(id);
+        this.setState(RecommenderState.AVAILABLE);
+        this.setDataSourceId(config.containsKey(com.recalot.common.Helper.Keys.SourceId) ? config.get(com.recalot.common.Helper.Keys.SourceId) : "none");
+    }
+
+    protected String dataSourceId;
+    protected String recommenderId;
+    protected RecommenderState state;
+    protected String key;
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    protected void setKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public RecommenderState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(RecommenderState state) {
+        this.state = state;
+    }
+
+    @Override
+    public String getId() {
+        return recommenderId;
+    }
+
+    protected void setId(String recommenderId) {
+        this.recommenderId = recommenderId;
+    }
+
+    @Override
+    public String getDataSourceId() {
+        return dataSourceId;
+    }
+
+    protected void setDataSourceId(String dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+    public abstract Recommender createInstance(String id, Map<String, String> param) throws BaseException;
+
+    public abstract void train(DataSet dataSet, Map<String, String> config) throws BaseException;
+
+    public abstract RecommendationResult recommend();
+
+    public abstract RecommendationResult recommend(Object context);
+
+    public abstract RecommendationResult recommend(Map<String, String> configOrContext);
+
+    public abstract RecommendationResult recommend(String user);
+
+    public abstract RecommendationResult recommend(String user, Object context);
+
+    public abstract RecommendationResult recommend(String user, Map<String, String> configOrContext);
+}

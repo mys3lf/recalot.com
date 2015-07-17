@@ -1,0 +1,34 @@
+package de.oforge.website.basic.common;
+
+
+import org.osgi.framework.BundleContext;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class GenericControllerHandler<T> implements Closeable {
+
+    private final Map<Long, T> dataAccessController;
+    private final GenericControllerListener listener;
+
+    private BundleContext context;
+
+    public GenericControllerHandler(BundleContext context, String className) {
+        this.context = context;
+        this.dataAccessController = new LinkedHashMap<>();
+        this.listener = new GenericControllerListener(context, className);
+        context.addServiceListener(this.listener);
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (listener != null) {
+            context.removeServiceListener(this.listener);
+        }
+    }
+}

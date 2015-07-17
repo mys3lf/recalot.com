@@ -1,0 +1,33 @@
+package com.recalot.common.impl.template;
+
+import com.recalot.common.interfaces.communication.Message;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class DefaultMessage implements Message {
+    private final String body;
+    private Status status;
+    private final String title;
+
+    public DefaultMessage(String title, String body, Status status){
+        this.title  = title;
+        this.body = body;
+        this.status = status;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public String getBody() {
+        return body;
+    }
+
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+}

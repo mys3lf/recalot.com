@@ -1,0 +1,73 @@
+package com.recalot.model.experiments.metrics.list;
+
+import com.recalot.common.Helper;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.experiment.ListMetric;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by matthaeus.schmedding on 10.04.2015.
+ * Precision = (|relevant items| in |retrieved items|) divided by |relevant items|
+ */
+public class FScore extends ListMetric {
+    private double beta;
+    private Recall recall;
+    private Precision precision;
+
+    public FScore() throws BaseException {
+        super("fscore", null,  null);
+    }
+
+    private FScore(String id, Map<String, String> config) throws BaseException {
+        super("fscore", id,  config);
+
+        this.recall = new Recall(id, config);
+        this.precision = new Precision(id, config);
+
+        setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+        checkConfiguration(config);
+
+        this.beta = Double.parseDouble(getConfiguration("beta").getValue());
+
+        reset();
+    }
+
+    @Override
+    public FScore create(String id, Map<String, String> config) throws BaseException {
+        return new FScore(id, config);
+    }
+
+
+    @Override
+    public double getResult() {
+        double resultRecall = recall.getResult();
+        double resultPrecision = precision.getResult();
+
+        if (resultRecall == 0 && resultPrecision == 0) return 0;
+
+        return (1 + beta * beta) * (resultPrecision * resultRecall) / ( beta * beta * resultPrecision + resultRecall);
+    }
+
+    @Override
+    public void reset() {
+        recall.reset();
+        precision.reset();
+    }
+
+    @Override
+    public void addList(List<String> relevant, List<String> retrieved) {
+        recall.addList(relevant, retrieved);
+        precision.addList(relevant, retrieved);
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+}

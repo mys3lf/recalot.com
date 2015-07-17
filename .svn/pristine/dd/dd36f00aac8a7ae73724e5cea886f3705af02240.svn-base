@@ -1,0 +1,24 @@
+package com.recalot.templates.experiments;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.Experiment;
+import com.recalot.common.interfaces.template.ExperimentTemplate;
+import com.recalot.common.interfaces.template.TemplateResult;
+import com.recalot.templates.base.PlainTextBaseTemplate;
+
+import java.util.List;
+
+/**
+ * Created by matthaeus.schmedding on 01.04.2015.
+ */
+public class PlainTextExperimentTemplate extends PlainTextBaseTemplate implements ExperimentTemplate {
+    @Override
+    public TemplateResult transform(Experiment experiment) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transform(List<Experiment> experiment) throws BaseException {
+        return null;
+    }
+}

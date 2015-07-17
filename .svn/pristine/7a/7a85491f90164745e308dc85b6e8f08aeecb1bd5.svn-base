@@ -1,0 +1,27 @@
+package com.recalot.common.configuration;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.MissingArgumentException;
+
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by matthaeus.schmedding on 02.04.2015.
+ */
+public class ConfigurationHandler {
+
+    public static void CheckAndFillConfiguration(List<ConfigurationItem> conf, HashMap<String, String> map) throws BaseException {
+    CheckAndFillConfiguration("", conf, map);
+    }
+
+    public static void CheckAndFillConfiguration(String prefix, List<ConfigurationItem> conf, HashMap<String, String> map) throws BaseException {
+        for (ConfigurationItem item : conf) {
+            if (item.getRequirement() == ConfigurationItem.ConfigurationItemRequirementType.Required && !map.containsKey(prefix + item.getKey())){
+                throw new MissingArgumentException("The argument %s is missing.", prefix + item.getKey());
+            } else if(map.containsKey(prefix + item.getKey())){
+                item.setValue(map.get(prefix + item.getKey()));
+            }
+        }
+    }
+}

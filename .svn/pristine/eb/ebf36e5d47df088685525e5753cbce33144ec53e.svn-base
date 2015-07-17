@@ -1,0 +1,28 @@
+package com.recalot.templates.experiments;
+
+import com.recalot.common.communication.TemplateResult;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.experiment.Experiment;
+import com.recalot.common.interfaces.template.ExperimentTemplate;
+import com.recalot.templates.base.JsonBaseTemplate;
+
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
+/**
+ * Created by matthaeus.schmedding on 01.04.2015.
+ */
+public class JsonExperimentTemplate extends JsonBaseTemplate implements ExperimentTemplate {
+    @Override
+    public TemplateResult transform(Experiment experiment) throws BaseException {
+        String result = serializer.include("items").exclude("*.class", "class").serialize(experiment);
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
+
+    }
+
+    @Override
+    public TemplateResult transform(List<Experiment> experiments) throws BaseException {
+        String result = serializer.include("items").exclude("*.class", "class").serialize(experiments);
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
+    }
+}

@@ -1,0 +1,21 @@
+package com.recalot.common.builder;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.experiment.Metric;
+import com.recalot.common.interfaces.model.experiment.MetricInformation;
+import com.recalot.common.interfaces.model.rec.RecommenderInformation;
+
+/**
+ * Created by matthaeus.schmedding on 29.04.2015.
+ */
+public class MetricBuilder extends InstanceBuilder<Metric> implements MetricInformation {
+
+    public MetricBuilder(String className, String key, String description) throws BaseException {
+        super(className, key, description);
+    }
+
+    @Override
+    public String getId() {
+        return getKey();
+    }
+}

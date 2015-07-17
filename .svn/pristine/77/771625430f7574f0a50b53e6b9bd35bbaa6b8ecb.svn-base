@@ -1,0 +1,136 @@
+package com.recalot.common.builder;
+
+import com.recalot.common.communication.Service;
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Created by matthaeus.schmedding on 29.04.2015.
+ */
+public class InstanceBuilder<T> extends Configurable implements Service {
+
+    private Initiator initiator;
+    private String className;
+    private String key;
+    private String description;
+
+    public InstanceBuilder(Initiator initiator, String className, String key, String description) throws BaseException {
+        this.initiator = initiator;
+        this.className = className;
+        this.key = key;
+        this.description = description;
+    }
+
+    public T createInstance(String id, Map<String, String> params) throws BaseException {
+        return createInstance(id, "", params);
+    }
+
+    public T createInstance(String id, String configPrefix, Map<String, String> params) throws BaseException {
+        checkConfiguration(configPrefix, params);
+        try {
+            Object instance = initiator.createInstance(className);
+            Class c = instance.getClass();
+
+            ConfigurationItem[] config = getConfiguration();
+            for (ConfigurationItem item : config) {
+                if (item.getValue() != null) {
+                    String methodName = item.getKey();
+
+                    methodName = adjustMethodName(methodName);
+                    System.out.println(methodName +":" + item.getValue());
+                    switch (item.getType()) {
+                        case Integer: {
+
+                            Method m = getMethod(c, methodName, Integer.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Integer.parseInt(item.getValue()));
+                            }
+
+                            break;
+                        }
+                        case Double: {
+                            Method m = getMethod(c, methodName, Double.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Double.parseDouble(item.getValue()));
+                            }
+                            break;
+                        }
+                        case Boolean: {
+                            Method m = getMethod(c, methodName, Boolean.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Boolean.parseBoolean(item.getValue()));
+                            }
+                            break;
+                        }
+                        case Options:
+                        case String: {
+                            Method m = getMethod(c, methodName, String.class);
+
+                            if (m != null) {
+                                m.invoke(instance, item.getValue());
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return (T)instance;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private Method getMethod(Class c, String methodName, Class cl) {
+        Method m = null;
+        Class tempClass = c;
+        while (tempClass != null && m == null) {
+            try {
+                m = tempClass.getMethod(methodName, cl);
+            } catch (NoSuchMethodException e) {
+                tempClass = tempClass.getSuperclass();
+            }
+        }
+
+        return m;
+    }
+
+    private String adjustMethodName(String methodName) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("set");
+        String[] split = methodName.split("-");
+
+        for (String s : split) {
+            builder.append(s.substring(0, 1).toUpperCase() + s.substring(1));
+        }
+
+        return builder.toString();
+    }
+
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

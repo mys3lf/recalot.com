@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.common/com.recalot.common.iml" filepath="$PROJECT_DIR$/com.recalot.common/com.recalot.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.controller.data/com.recalot.controller.data.iml" filepath="$PROJECT_DIR$/com.recalot.controller.data/com.recalot.controller.data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.controller.experiments/com.recalot.controller.experiments.iml" filepath="$PROJECT_DIR$/com.recalot.controller.experiments/com.recalot.controller.experiments.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.controller.recommendations/com.recalot.controller.recommendations.iml" filepath="$PROJECT_DIR$/com.recalot.controller.recommendations/com.recalot.controller.recommendations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.data.access/com.recalot.model.data.access.iml" filepath="$PROJECT_DIR$/com.recalot.model.data.access/com.recalot.model.data.access.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.data.connections/com.recalot.model.data.connections.iml" filepath="$PROJECT_DIR$/com.recalot.model.data.connections/com.recalot.model.data.connections.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.experiments.common/com.recalot.model.experiments.common.iml" filepath="$PROJECT_DIR$/com.recalot.model.experiments.common/com.recalot.model.experiments.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.experiments.metrics/com.recalot.model.experiments.metrics.iml" filepath="$PROJECT_DIR$/com.recalot.model.experiments.metrics/com.recalot.model.experiments.metrics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.rec.access/com.recalot.model.rec.access.iml" filepath="$PROJECT_DIR$/com.recalot.model.rec.access/com.recalot.model.rec.access.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.model.rec.recommender/com.recalot.model.rec.recommender.iml" filepath="$PROJECT_DIR$/com.recalot.model.rec.recommender/com.recalot.model.rec.recommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.portal/com.recalot.portal.iml" filepath="$PROJECT_DIR$/com.recalot.portal/com.recalot.portal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.repo/com.recalot.repo.iml" filepath="$PROJECT_DIR$/com.recalot.repo/com.recalot.repo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.templates/com.recalot.templates.iml" filepath="$PROJECT_DIR$/com.recalot.templates/com.recalot.templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.tests.data.dummypage/com.recalot.tests.data.dummypage.iml" filepath="$PROJECT_DIR$/com.recalot.tests.data.dummypage/com.recalot.tests.data.dummypage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.unittests/com.recalot.unittests.iml" filepath="$PROJECT_DIR$/com.recalot.unittests/com.recalot.unittests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.common/com.recalot.views.common.iml" filepath="$PROJECT_DIR$/com.recalot.views.common/com.recalot.views.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.data.access/com.recalot.views.data.access.iml" filepath="$PROJECT_DIR$/com.recalot.views.data.access/com.recalot.views.data.access.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.data.sources/com.recalot.views.data.sources.iml" filepath="$PROJECT_DIR$/com.recalot.views.data.sources/com.recalot.views.data.sources.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.data.tracking/com.recalot.views.data.tracking.iml" filepath="$PROJECT_DIR$/com.recalot.views.data.tracking/com.recalot.views.data.tracking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.experiments/com.recalot.views.experiments.iml" filepath="$PROJECT_DIR$/com.recalot.views.experiments/com.recalot.views.experiments.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.recommend/com.recalot.views.recommend.iml" filepath="$PROJECT_DIR$/com.recalot.views.recommend/com.recalot.views.recommend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.recalot.views.recommend.train/com.recalot.views.recommend.train.iml" filepath="$PROJECT_DIR$/com.recalot.views.recommend.train/com.recalot.views.recommend.train.iml" />
+      <module fileurl="file://$PROJECT_DIR$/de.oforge.manifest.version.builder/de.oforge.manifest.version.builder.iml" filepath="$PROJECT_DIR$/de.oforge.manifest.version.builder/de.oforge.manifest.version.builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/de.oforge.osgi.repobuilder/de.oforge.osgi.repobuilder.iml" filepath="$PROJECT_DIR$/de.oforge.osgi.repobuilder/de.oforge.osgi.repobuilder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/de.oforge.playground/de.oforge.playground.iml" filepath="$PROJECT_DIR$/de.oforge.playground/de.oforge.playground.iml" />
+    </modules>
+  </component>
+</project>

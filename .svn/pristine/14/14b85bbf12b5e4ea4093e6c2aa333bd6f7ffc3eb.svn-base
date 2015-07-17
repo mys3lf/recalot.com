@@ -1,0 +1,61 @@
+package com.recalot.templates.rec;
+
+import com.recalot.common.impl.template.DefaultTemplateResult;
+import com.recalot.common.interfaces.communication.RecommendationResult;
+import com.recalot.common.interfaces.communication.RecommendedItem;
+import com.recalot.common.interfaces.model.RecommenderInformation;
+import com.recalot.common.interfaces.template.RecommenderTemplate;
+import com.recalot.common.interfaces.template.TemplateResult;
+import com.recalot.templates.base.PlainTextBaseTemplate;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class PlainTextRecommenderTemplate extends PlainTextBaseTemplate implements RecommenderTemplate   {
+    @Override
+    public TemplateResult transform(RecommenderInformation[] recommenders) {
+        StringBuilder sb = new StringBuilder();
+
+        if (recommenders != null && recommenders.length > 0)
+            for (RecommenderInformation r : recommenders) {
+                sb.append(r.getId() + " : " + r.getDataSourceId() + " : " + r.getState() + "\n");
+            }
+        else {
+            sb.append("No recommenders available.");
+        }
+
+        return new DefaultTemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(RecommenderInformation recommender) {
+        RecommenderInformation[] array = new RecommenderInformation[1];
+        array[0] = recommender;
+        return transform(array);
+    }
+
+    @Override
+    public TemplateResult transform(RecommendationResult recommend) {
+        StringBuilder sb = new StringBuilder();
+
+        if(recommend != null) {
+            List<RecommendedItem> items = recommend.getItems();
+            if (items != null) {
+                for (RecommendedItem item : items) {
+                    sb.append(item.getItemId() + " : " + item.getConfidence() + "\n");
+                }
+            }
+        }
+
+        return new DefaultTemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

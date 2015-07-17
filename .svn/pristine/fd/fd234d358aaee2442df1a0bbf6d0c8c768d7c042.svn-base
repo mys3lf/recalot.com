@@ -1,0 +1,38 @@
+Manifest-Version: 1
+Bundle-Description: Contains the recalot.com exeriments portal
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.portal
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Class-Path: resources/, src/
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   org.osgi.util.tracker,   org.osgi.service.http,   javax.servlet, 
+   javax.servlet.http,   org.apache.felix.http.api,com.recalot.common.
+ interfaces.controller,com.recalot.common.log,com.recalot.common.inter
+ faces.template,com.recalot.common,com.recalot.views.common,com.recalo
+ t.views.recommend.train,com.recalot.views.recommend,com.recalot.views
+ .data.sources,com.recalot.views.data.access,com.recalot.views.data.tr
+ acking
+Bundle-Name: Recalot.com - Experiments Portal
+Bundle-Version: 1.0.0.257
+Bundle-ClassPath: resources/, src/
+Bundle-Activator: com.recalot.portal.Activator
+Import-Service: com.recalot.controller.data.DataAccessController,com.r
+ ecalot.controller.experiments.ExperimentsController,com.recalot.contr
+ oller.recommendations.RecommendationsController,com.recalot.model.dat
+ a.access.DataAccess,com.recalot.model.data.connections.movielens.Movi
+ eLensFileConnection,com.recalot.model.experiments.metrics.list.Covera
+ ge,com.recalot.model.experiments.metrics.list.FScore,com.recalot.mode
+ l.experiments.metrics.list.Gini,com.recalot.model.experiments.metrics
+ .list.Precision,com.recalot.model.experiments.metrics.list.Recall,com
+ .recalot.model.rec.access.RecommenderAccess,com.recalot.model.rec.rec
+ ommender.mostpopular.MostPopularRecommender,com.recalot.templates.dat
+ a.CSVDataTemplate,com.recalot.templates.data.JsonDataTemplate,com.rec
+ alot.templates.data.XmlDataTemplate,com.recalot.templates.data.PlainT
+ extDataTemplate,com.recalot.templates.rec.CSVRecommenderTemplate,com.
+ recalot.templates.rec.JsonRecommenderTemplate,com.recalot.templates.r
+ ec.XmlRecommenderTemplate,com.recalot.templates.experiments.JsonExper
+ imentTemplate,com.recalot.templates.experiments.PlainTextExperimentTe
+ mplate,com.recalot.views.common.WebService
+

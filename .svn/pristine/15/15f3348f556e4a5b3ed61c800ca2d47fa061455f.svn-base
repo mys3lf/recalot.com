@@ -1,0 +1,21 @@
+Manifest-Version: 1
+Bundle-Description: This bundle contains the data templates for the ou
+ tput formats json, xml, csv & plain text
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.templates.data
+Bundle-ManifestVersion: 2
+Embed-Dependency: *;scope=combile|runtime
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   com.recalot.common.exceptions,com.recalot.common.log, com.recalot
+ .common.interfaces.communication,com.recalot.common.interfaces.contro
+ ller,com.recalot.common.interfaces.model.data,com.recalot.common.inte
+ rfaces.model.rec,com.recalot.common.interfaces.model.experiment,com.r
+ ecalot.common.interfaces.template,com.recalot.common.impl.template,co
+ m.recalot.common
+Bundle-Name: Recalot.com Templates - Data
+Bundle-Version: 1.0.0.104
+Bundle-ClassPath: ., flexjson-2.1.jar
+Bundle-Activator: com.recalot.templates.Activator
+

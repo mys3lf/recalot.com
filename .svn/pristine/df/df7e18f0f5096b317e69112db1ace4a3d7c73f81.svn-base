@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+
+    <OCD name="Recalot.com Views - Recommend Train" id="com.recalot.views.recommend.train">
+
+        <AD name="Path"  id="com.recalot.views.recommend.train.path" description="The path of the RESTful API" required="true" type="String" default="/train"/>
+    </OCD>
+
+    <Designate pid="com.recalot.views.recommend.train">
+        <Object ocdref="com.recalot.views.recommend.train"/>
+    </Designate>
+
+</metatype:MetaData>

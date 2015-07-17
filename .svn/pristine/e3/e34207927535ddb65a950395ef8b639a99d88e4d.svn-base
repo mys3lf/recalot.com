@@ -1,0 +1,49 @@
+package com.recalot.common.communication;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.*;
+import com.recalot.common.interfaces.communication.Interaction;
+import com.recalot.common.interfaces.communication.User;
+import com.recalot.common.interfaces.model.data.DataSource;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class DataSet implements com.recalot.common.interfaces.communication.DataSet {
+    private DataSource dataSource;
+
+    public DataSet(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public Interaction[] getInteractions()  throws BaseException {
+        return dataSource.getInteractions();
+    }
+
+    @Override
+    public com.recalot.common.interfaces.communication.Item[] getItems() throws BaseException {
+        return dataSource.getItems();
+    }
+
+    @Override
+    public User[] getUsers() throws BaseException {
+        return dataSource.getUsers();
+    }
+
+
+    @Override
+    public int getItemsCount() {
+        return dataSource.getItemsCount();
+    }
+
+    @Override
+    public int getUsersCount() {
+        return dataSource.getUsersCount();
+    }
+
+    @Override
+    public int getInteractionsCount() {
+        return dataSource.getInteractionsCount();
+    }
+}

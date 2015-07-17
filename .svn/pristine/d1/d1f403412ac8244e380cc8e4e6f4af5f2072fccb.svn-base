@@ -1,0 +1,98 @@
+package com.recalot.unittests;
+
+import com.recalot.common.Helper;
+import com.recalot.common.communication.RecommendationResult;
+import com.recalot.common.interfaces.model.rec.RecommenderInformation;
+import com.recalot.unittests.helper.WebRequest;
+import com.recalot.unittests.helper.WebResponse;
+import flexjson.JSONDeserializer;
+import org.junit.Test;
+
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
+/**
+ * Created by matthaeus.schmedding on 24.04.2015.
+ */
+public class RecommenderTests extends TestsBase {
+    private String Path = "rec/";
+    private String TrainPath = "train/";
+
+    @Test
+    public void trainRecommender() {
+        Map<String, String> params = new Hashtable<>();
+        params.put(Helper.Keys.SourceId, SourceId);
+        params.put(Helper.Keys.RecommenderId, "mp");
+        params.put(Helper.Keys.ID, "mp-test");
+
+        WebResponse response = WebRequest.execute(WebRequest.HTTPMethod.PUT, HOST + TrainPath, params);
+        assertNotNull(response);
+        assertEquals(response.getContentType(), "application/json");
+        assertNotNull(response.getBody());
+        assertEquals(response.getResponseCode(), 200);
+        RecommenderInformation rec = new JSONDeserializer<RecommenderInformation>().deserialize(response.getBody());
+
+        assertNotNull(rec);
+        assertNotEquals(rec.getState(), RecommenderInformation.RecommenderState.AVAILABLE);
+    }
+
+    @Test
+    public void getRecommenderStatus() {
+        WebResponse response = WebRequest.execute(HOST + TrainPath);
+        assertNotNull(response);
+        assertEquals(response.getContentType(), "application/json");
+        assertNotNull(response.getBody());
+        assertEquals(response.getResponseCode(), 200);
+        List<RecommenderInformation> recs = new JSONDeserializer<List<RecommenderInformation>>().deserialize(response.getBody());
+        assertNotNull(recs);
+        assertNotEquals(recs.size(), 0);
+    }
+
+    @Test
+    public void getMostPopularRecommenderStatus() {
+        WebResponse response = WebRequest.execute(HOST + TrainPath + "mp");
+        assertNotNull(response);
+        assertEquals(response.getContentType(), "application/json");
+        assertNotNull(response.getBody());
+        assertEquals(response.getResponseCode(), 200);
+        RecommenderInformation rec = new JSONDeserializer<RecommenderInformation>().deserialize(response.getBody());
+        assertNotNull(rec);
+        assertEquals(rec.getState(), RecommenderInformation.RecommenderState.AVAILABLE);
+    }
+
+
+    @Test
+    public void getMostPopularRecommendation() {
+        Map<String, String> params = new Hashtable<>();
+        params.put(Helper.Keys.SourceId, SourceId);
+        params.put(Helper.Keys.RecommenderId, "mp");
+        params.put(Helper.Keys.ID, "mp-test");
+
+        WebResponse response = WebRequest.execute(WebRequest.HTTPMethod.PUT, HOST + TrainPath, params);
+        assertNotNull(response);
+        assertEquals(response.getContentType(), "application/json");
+        assertNotNull(response.getBody());
+        assertEquals(response.getResponseCode(), 200);
+        RecommenderInformation rec = new JSONDeserializer<RecommenderInformation>().deserialize(response.getBody());
+
+        assertNotNull(rec);
+        assertNotEquals(rec.getState(), RecommenderInformation.RecommenderState.AVAILABLE);
+
+        WebResponse response2 = WebRequest.execute(HOST + Path + "mp-test");
+        assertNotNull(response2);
+        assertEquals(response2.getContentType(), "application/json");
+        assertNotNull(response2.getBody());
+        assertEquals(response2.getResponseCode(), 200);
+
+        RecommendationResult result = new JSONDeserializer<RecommendationResult>().deserialize(response.getBody());
+        assertNotNull(result);
+        assertNotNull(result.getRecommender());
+        assertNotNull(result.getItems());
+        assertNotEquals(result.getItems().size(), 0);
+    }
+
+    //TODO: fill with algorithms
+}

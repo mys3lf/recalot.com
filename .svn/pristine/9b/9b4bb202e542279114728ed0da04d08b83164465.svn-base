@@ -1,0 +1,15 @@
+package com.recalot.common.interfaces.model.data;
+
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.Service;
+
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public abstract class DataConnection extends Configurable implements DataInformation, Service {
+    public abstract DataSource create(String id, Map<String, String> param) throws BaseException;
+    public abstract void connect(DataSource source, Map<String, String> param) throws BaseException;
+}

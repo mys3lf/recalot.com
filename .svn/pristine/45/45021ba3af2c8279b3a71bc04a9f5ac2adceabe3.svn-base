@@ -1,0 +1,16 @@
+Manifest-Version: 1
+Bundle-Description: Contains components for views that access the diff
+ erent controller types
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.views.common
+Export-Package: com.recalot.views.common;version="1.0.0"
+Bundle-Name: Recalot.com Views - Common
+Bundle-Version: 1.0.0.248
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: com.recalot.common,org.osgi.framework, com.recalot.com
+ mon.interfaces.controller,org.osgi.util.tracker,com.recalot.common.ex
+ ceptions,    com.recalot.common.configuration,javax.servlet, org.osgi
+ .service.cm,com.recalot.common.log,org.osgi.service.http
+

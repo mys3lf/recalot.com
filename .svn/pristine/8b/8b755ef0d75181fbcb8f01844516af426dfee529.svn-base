@@ -1,0 +1,26 @@
+Manifest-Version: 1
+Export-Service: com.recalot.templates.data.CSVDataTemplate,com.recalot
+ .templates.data.JsonDataTemplate,com.recalot.templates.data.XmlDataTe
+ mplate,com.recalot.templates.data.PlainTextDataTemplate,com.recalot.t
+ emplates.rec.CSVRecommenderTemplate,com.recalot.templates.rec.JsonRec
+ ommenderTemplate,com.recalot.templates.rec.XmlRecommenderTemplate,com
+ .recalot.templates.experiments.JsonExperimentTemplate,com.recalot.tem
+ plates.experiments.PlainTextExperimentTemplate
+Bundle-Description: This bundle contains the data templates for the ou
+ tput formats json, xml, csv & plain text
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.templates.data
+Bundle-Name: Recalot.com Templates - Data
+Bundle-Version: 1.0.0.247
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.recalot.templates.Activator
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   com.recalot.common.exceptions,com.recalot.common.log, com.recalot
+ .common.interfaces.controller,com.recalot.common.interfaces.model.dat
+ a,com.recalot.common.interfaces.model.rec,com.recalot.common.interfac
+ es.model.experiment,com.recalot.common.interfaces.template,com.recalo
+ t.common.impl.template,com.recalot.common,flexjson,flexjson.transform
+ er,flexjson.locators,flexjson.factories
+

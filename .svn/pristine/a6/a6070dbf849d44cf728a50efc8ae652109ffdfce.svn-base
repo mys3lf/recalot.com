@@ -1,0 +1,20 @@
+Manifest-Version: 1
+Bundle-Activator: com.recalot.views.recommend.train.Activator
+Bundle-Description: Contains a servlet which process tracking information
+Bundle-ManifestVersion: 2
+Bundle-Name: Recalot.com Views - Recommend Train
+Bundle-SymbolicName: com.recalot.views.recommend.train
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.15
+Import-Package: org.osgi.framework,
+    com.recalot.common.communication,
+    org.osgi.util.tracker,
+    org.osgi.service.http,
+    javax.servlet,
+    javax.servlet.http,
+    org.apache.felix.http.api,
+    com.recalot.common.exceptions,
+ com.recalot.common.interfaces.controller,
+ com.recalot.common.interfaces.template,
+ com.recalot.common,
+ com.recalot.views.common

@@ -1,0 +1,103 @@
+package com.recalot.common.builder;
+
+import com.recalot.common.communication.Service;
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+/**
+ * Created by matthaeus.schmedding on 29.04.2015.
+ */
+public class InstanceBuilder<T> extends Configurable implements Service {
+
+    private String className;
+    private String key;
+    private String description;
+
+    public InstanceBuilder(String className, String key, String description) throws BaseException {
+        this.className = className;
+        this.key = key;
+        this.description = description;
+    }
+
+    public T createInstance(String id, Map<String, String> params) throws BaseException {
+        return createInstance(id, "", params);
+    }
+
+    public T createInstance(String id, String configPrefix, Map<String, String> params) throws BaseException {
+        checkConfiguration(configPrefix, params);
+        try {
+            Class c = Class.forName(className);
+            Object instance = c.newInstance();
+
+            ConfigurationItem[] config = getConfiguration();
+            for (ConfigurationItem item : config) {
+                if (item.getValue() != null) {
+                    String methodName = item.getKey();
+                    methodName = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+
+                    switch (item.getType()) {
+                        case Integer: {
+                            Method m = c.getMethod(methodName, Integer.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Integer.parseInt(item.getValue()));
+                            }
+
+                            break;
+                        }
+                        case Double: {
+                            Method m = c.getMethod(methodName, Double.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Double.parseDouble(item.getValue()));
+                            }
+                            break;
+                        }
+                        case Boolean: {
+                            Method m = c.getMethod(methodName, Boolean.class);
+
+                            if (m != null) {
+                                m.invoke(instance, Boolean.parseBoolean(item.getValue()));
+                            }
+                            break;
+                        }
+                        case Options:
+                        case String: {
+                            Method m = c.getMethod(methodName, Integer.class);
+
+                            if (m != null) {
+                                m.invoke(instance, item.getValue());
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

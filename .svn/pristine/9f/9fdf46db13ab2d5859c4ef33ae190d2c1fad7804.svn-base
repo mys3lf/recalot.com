@@ -1,0 +1,19 @@
+package com.recalot.common.interfaces.model.rec;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface RecommenderInformation {
+
+    public RecommenderState getState();
+    public void setState(RecommenderState state);
+
+    public String getId();
+    public String getDataSourceId();
+
+    public enum RecommenderState {
+        AVAILABLE,
+        TRAINING,
+        READY
+    }
+}

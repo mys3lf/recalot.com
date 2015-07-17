@@ -1,0 +1,112 @@
+package com.recalot.views.common;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.ServiceLoader;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class HttpServiceTracker extends org.osgi.util.tracker.ServiceTracker {
+    private Map<String, Map> queue;
+    private HttpService httpService;
+
+    public String Servlet = "servlet".intern();
+    public String Dictionary = "dictionary".intern();
+    public String HttpContext = "httpContext".intern();
+    public String FilePath = "filePath".intern();
+
+    public HttpServiceTracker(BundleContext context) {
+        super(context, HttpService.class.getName(), null);
+        queue = new Hashtable<>();
+    }
+
+
+    @Override
+    public void removedService(ServiceReference reference, Object service) {
+        this.httpService = null;
+    }
+
+    @Override
+    public Object addingService(ServiceReference reference) {
+        // HTTP service is available, register our servlet...
+
+        this.httpService = (HttpService) this.context.getService(reference);
+
+        registerQueue();
+
+        return httpService;
+    }
+
+    private void registerQueue() {
+        if (queue != null && httpService != null) {
+            for (String path : queue.keySet()) {
+                Map info = queue.get(path);
+
+                if (info.containsKey(Servlet)) {
+                    registerServlet(path, (Servlet)info.get(Servlet), (Dictionary)info.get(Dictionary), (HttpContext)info.get(HttpContext));
+                } else if (info.containsKey(FilePath)) {
+                    registerResources(path, (String)info.get(FilePath), (HttpContext)info.get(HttpContext));
+                }
+            }
+
+            queue.clear();
+        }
+    }
+
+
+    public void registerServlet(String path, Servlet servlet, Dictionary dictionary, HttpContext httpContext) {
+        if (httpService != null) {
+            try {
+                httpService.registerServlet(path, servlet, dictionary, httpContext);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            Map info = new Hashtable<>();
+            info.put(Servlet, servlet);
+            if(dictionary != null) info.put(Dictionary, dictionary);
+            if(httpContext != null)  info.put(HttpContext, httpContext);
+
+            queue.put(path, info);
+        }
+    }
+
+    public void registerResources(String path, String filePath, HttpContext httpContext) {
+        if (httpService != null) {
+            try {
+                httpService.registerResources(path, filePath, httpContext);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            Map info = new Hashtable<>();
+            info.put(FilePath, filePath);
+            if(httpContext != null)  info.put(HttpContext, httpContext);
+
+            queue.put(path, info);
+        }
+    }
+
+
+    public void unregister(String path) {
+        if (httpService != null) {
+            try {
+                httpService.unregister(path);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+    }
+}

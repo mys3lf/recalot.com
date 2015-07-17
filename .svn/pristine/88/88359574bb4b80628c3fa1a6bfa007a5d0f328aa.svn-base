@@ -1,0 +1,15 @@
+package com.recalot.views.data.common;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public enum HTTPMethods {
+    GET,
+    POST,
+    PUT,
+    DELETE,
+    HEAD,
+    TRACE,
+    OPTIONS,
+    CONNECT
+}

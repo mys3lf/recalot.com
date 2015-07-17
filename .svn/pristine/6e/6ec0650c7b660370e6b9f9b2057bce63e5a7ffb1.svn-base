@@ -1,0 +1,12 @@
+package com.recalot.common.interfaces.communication;
+
+import java.util.HashMap;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface Item {
+    String getId();
+    HashMap<String, Object> getAll();
+    Object getValue(String key);
+}

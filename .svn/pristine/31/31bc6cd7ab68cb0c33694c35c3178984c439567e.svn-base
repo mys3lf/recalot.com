@@ -1,0 +1,74 @@
+package com.recalot.model.experiments.metrics.list;
+
+import com.recalot.common.Helper;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.experiment.ListMetric;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by matthaeus.schmedding on 10.04.2015.
+ * Precision = (|relevant items| in |retrieved items|) divided by |relevant items|
+ */
+public class Recall extends ListMetric {
+    private int topN;
+    private double testRun;
+    private double sum;
+
+    public Recall() throws BaseException {
+        super("recall", null, null);
+    }
+
+    protected Recall(String id, Map<String, String> config) throws BaseException {
+        super("recall", id, config);
+
+        setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        checkConfiguration(config);
+
+        this.topN = Integer.parseInt(getConfiguration(Helper.Keys.TopN).getValue());
+
+        reset();
+    }
+
+
+
+    @Override
+    public Recall create(String id, Map<String, String> config) throws BaseException {
+        return new Recall(id, config);
+    }
+
+
+    @Override
+    public double getResult() {
+        if (testRun == 0) return 0;
+        return sum / testRun;
+    }
+
+    @Override
+    public void reset() {
+        testRun = 0.0;
+        sum = 0.0;
+    }
+
+    @Override
+    public void addList(List<String> relevant, List<String> retrieved) {
+
+        List<String> topNretrieved = retrieved.subList(0, topN);
+        int count = 0;
+
+        for (String item : topNretrieved) {
+            if (relevant.contains(item)) count++;
+        }
+
+        sum += 1.0 * count / topN;
+
+        testRun++;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+}

@@ -1,0 +1,14 @@
+package com.recalot.common.interfaces.template;
+
+import java.io.InputStream;
+import java.nio.charset.Charset;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface TemplateResult {
+    public int getStatus();
+    public String getContentType();
+    public InputStream getResult();
+    public Charset getCharset();
+}

@@ -1,0 +1,47 @@
+package com.recalot.templates.experiments;
+
+import com.recalot.common.builder.MetricBuilder;
+import com.recalot.common.communication.TemplateResult;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.experiment.DataSplitter;
+import com.recalot.common.interfaces.model.experiment.Experiment;
+import com.recalot.common.interfaces.model.experiment.MetricInformation;
+import com.recalot.common.interfaces.template.ExperimentTemplate;
+import com.recalot.templates.base.PlainTextBaseTemplate;
+
+import java.util.List;
+
+/**
+ * Created by matthaeus.schmedding on 01.04.2015.
+ */
+public class PlainTextExperimentTemplate extends PlainTextBaseTemplate implements ExperimentTemplate {
+    @Override
+    public TemplateResult transform(Experiment experiment) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transform(List<Experiment> experiment) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transformMetrics(List<MetricBuilder> metrics) throws BaseException {return null;
+
+    }
+
+    @Override
+    public TemplateResult transform(MetricBuilder metric) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transformSplitters(List<DataSplitter> splitters) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transform(DataSplitter splitter) throws BaseException {
+        return null;
+    }
+}

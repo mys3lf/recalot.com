@@ -1,0 +1,58 @@
+package com.recalot.model.rec.recommender;
+
+
+import com.recalot.common.impl.experiment.Experiment;
+import com.recalot.common.interfaces.model.rec.Recommender;
+import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class Activator implements BundleActivator {
+
+
+    private List<Recommender> recommenders;
+
+    /**
+     * Implements BundleActivator.start(). Prints
+     * a message and adds itself to the bundle context as a service
+     * listener.
+     *
+     * @param context the framework context for the bundle.
+     */
+    public void start(BundleContext context) {
+        recommenders = new ArrayList<>();
+
+        try {
+            recommenders.add(MostPopularRecommender.createInstance());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (Recommender c : recommenders) {
+            context.registerService(Recommender.class.getName(), c, null);
+        }
+    }
+
+    /**
+     * Implements BundleActivator.stop(). Prints
+     * a message and removes itself from the bundle context as a
+     * service listener.
+     *
+     * @param context the framework context for the bundle.
+     */
+    public void stop(BundleContext context) throws Exception {
+        if (recommenders != null) {
+            for (Recommender c : recommenders) {
+                c.close();
+            }
+            recommenders = null;
+        }
+    }
+}

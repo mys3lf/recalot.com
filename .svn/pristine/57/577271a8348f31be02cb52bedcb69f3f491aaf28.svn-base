@@ -1,0 +1,98 @@
+package de.oforge.manifest.version.builder;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+/**
+ * Created by matthaeus.schmedding on 10.04.2015.
+ */
+public class Main {
+    public static void main(String[] args) {
+        String path = null;
+        if (args.length > 0) {
+            path = args[0];
+        } else {
+            path = "C:\\Privat\\3_Uni\\5_Workspaces\\recalot.com";
+        }
+
+        List<Boolean> change = Arrays.asList(false, false, false, true);
+
+        if (path != null) {
+            List<File> manifests = findAllManifestFiles(path);
+
+            for (File manifest : manifests) {
+                modifyManifestVersion(manifest, change);
+               // manifest.delete();
+            }
+        }
+    }
+
+    private static void modifyManifestVersion(File manifest, List<Boolean> change) {
+        List<String> lines = new ArrayList<>();
+        String line = null;
+        String bV = "Bundle-Version:".intern();
+        try {
+            FileReader fr = new FileReader(manifest);
+            BufferedReader br = new BufferedReader(fr);
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith(bV)) {
+                    String version = line.substring(bV.length() + 1).trim();
+                    if (version.isEmpty()) {
+                        line = bV + " 0.0.0.1";
+                    } else {
+                        String split[] = version.split("\\.");
+                        for (int i = 0; i < split.length; i++) {
+                            if (change.size() > i && change.get(i)) {
+                                try {
+                                    int n = Integer.parseInt(split[i]);
+                                    split[i] = "" + (++n);
+                                } catch (NumberFormatException e) {
+                                    e.printStackTrace();
+                                    split[i] = "1";
+                                }
+                            }
+                        }
+
+                        line = bV + " " + String.join(".", split);
+                    }
+                }
+
+                lines.add(line);
+            }
+
+            fr.close();
+            br.close();
+
+            FileWriter fw = new FileWriter(manifest);
+            BufferedWriter out = new BufferedWriter(fw);
+            for (String s : lines)
+                out.write(s + "\n");
+
+            out.flush();
+            out.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    private static List<File> findAllManifestFiles(String path) {
+        File dir = new File(path);
+        List<File> files = new ArrayList<>();
+        if (dir.isDirectory()) {
+            for (File file : dir.listFiles()) {
+                if (file.isDirectory()) {
+                    files.addAll(findAllManifestFiles(file.getAbsolutePath()));
+                } else if (file.getName().toLowerCase().equals("manifest.mf")) {
+                    files.add(file);
+                }
+            }
+        }
+
+        return files;
+    }
+}

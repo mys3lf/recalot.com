@@ -1,0 +1,15 @@
+package com.recalot.common.interfaces.controller;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.interfaces.template.TemplateResult;
+
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface Controller {
+    public TemplateResult process(RequestAction action, String templateKey, Map<String, String> param) throws BaseException;
+
+}

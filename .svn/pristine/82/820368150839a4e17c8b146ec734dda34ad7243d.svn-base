@@ -1,0 +1,18 @@
+package com.recalot.common.interfaces.communication;
+
+import java.util.Date;
+import java.util.HashMap;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface Interaction {
+    public String getId();
+    public String getUserId();
+    public String getItemId();
+    public Date getTimeStamp();
+    public String getType();
+
+    public HashMap<String, Object> getAll();
+    public Object getValue(String key);
+}

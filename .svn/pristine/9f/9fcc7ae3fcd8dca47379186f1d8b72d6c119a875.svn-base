@@ -1,0 +1,18 @@
+Manifest-Version: 1
+Export-Service: com.recalot.model.data.access.DataAccess
+Bundle-Description:  Establish and manage connections to data sources
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.model.data.access
+Bundle-Name: Recalot.com Model - Data Access
+Bundle-Version: 1.0.0.468
+Bundle-Activator: com.recalot.model.data.access.Activator
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   com.recalot.common.configuration,com.recalot.common.log,com.recal
+ ot.common.interfaces.model.data,com.recalot.common.interfaces.model.r
+ ec,com.recalot.common.interfaces.model.experiment,    com.recalot.com
+ mon.impl.template, com.recalot.common.exceptions,com.recalot.common, 
+ com.recalot.common.builder
+

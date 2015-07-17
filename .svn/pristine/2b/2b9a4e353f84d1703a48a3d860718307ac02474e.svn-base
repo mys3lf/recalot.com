@@ -1,0 +1,16 @@
+Manifest-Version: 1
+Bundle-Description: Contains a servlet which process tracking informat
+ ion
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.views.tracking
+Bundle-Name: Recalot.com Tracking
+Bundle-Version: 1.0.0.6
+Bundle-Activator: com.recalot.views.tracking.Activator
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   org.osgi.util.tracker,   org.osgi.service.http,   javax.servlet, 
+   javax.servlet.http,   org.apache.felix.http.api,com.recalot.common.
+ interfaces.controller
+

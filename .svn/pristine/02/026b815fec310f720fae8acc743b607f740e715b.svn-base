@@ -1,0 +1,71 @@
+package com.recalot.model.data.connections.movielens;
+
+import com.recalot.common.Helper;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.MissingArgumentException;
+import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.interfaces.model.data.DataConnection;
+import com.recalot.common.interfaces.model.data.DataSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class MovieLensFileConnection implements DataConnection {
+
+    public MovieLensFileConnection() throws BaseException {
+     //   super(null, null);
+     //   this.setConfiguration(new ConfigurationItem(Helper.Keys.Dir, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+    }
+
+    @Override
+    public DataSource create(String id, Map<String, String> param) throws BaseException {
+        if(param.get(Helper.Keys.Dir) == null) throw new MissingArgumentException(String.format("Argument %s is missing.", Helper.Keys.Dir));
+        String file = param.get(Helper.Keys.Dir);
+
+        File f = new File(file);
+        if(!f.exists() || !f.isDirectory()) throw new NotFoundException("Directory with path '%s' not found", file);
+        return new MovieLensDataSource(id, param, f);
+    }
+
+    @Override
+    public void connect(DataSource source, Map<String, String> param) throws BaseException {
+        if(source.getClass().getName().equals(MovieLensDataSource.class.getName())){
+            ((MovieLensDataSource)source).initialize();
+        }
+    }
+
+    @Override
+    public String getKey() {
+        return "ml";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+
+    @Override
+    public DataState getState() {
+        return DataState.AVAILABLE;
+    }
+
+    @Override
+    public void setState(DataState state) {
+        //nothing to do
+    }
+
+    @Override
+    public String getId() {
+        return getKey();
+    }
+}

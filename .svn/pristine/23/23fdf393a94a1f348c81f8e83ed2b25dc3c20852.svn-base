@@ -1,0 +1,127 @@
+package com.recalot.controller.recommendations;
+
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.NotReadyException;
+import com.recalot.common.interfaces.controller.RequestAction;
+import com.recalot.common.interfaces.model.*;
+import com.recalot.common.interfaces.template.RecommenderTemplate;
+import com.recalot.common.interfaces.template.TemplateResult;
+import com.recalot.common.GenericServiceListener;
+import org.osgi.framework.BundleContext;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Map;
+
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class RecommendationsController implements com.recalot.common.interfaces.controller.RecommendationsController, Closeable {
+
+    private final BundleContext context;
+    private final GenericServiceListener recommenderAccess;
+    private final GenericServiceListener templates;
+    private final GenericServiceListener dataAccess;
+
+
+    public RecommendationsController(BundleContext context) {
+        this.context = context;
+        this.recommenderAccess = new GenericServiceListener<RecommenderAccess>(context, RecommenderAccess.class.getName());
+        this.dataAccess = new GenericServiceListener<DataAccess>(context, DataAccess.class.getName());
+        this.templates = new GenericServiceListener<RecommenderTemplate>(context, RecommenderTemplate.class.getName());
+
+        this.context.addServiceListener(recommenderAccess);
+        this.context.addServiceListener(dataAccess);
+        this.context.addServiceListener(templates);
+    }
+
+    @Override
+    public TemplateResult process(RequestAction action, String templateKey, Map<String, String> param) throws BaseException {
+
+        RecommenderTemplate template = (RecommenderTemplate) templates.getInstance(templateKey);
+        TemplateResult result = null;
+
+        try {
+            RecommenderAccess access = (RecommenderAccess) recommenderAccess.getFirstInstance();
+            DataAccess dAccess = (DataAccess) dataAccess.getFirstInstance();
+
+            switch ((RecommenderRequestAction) action) {
+                case CreateRecommender: {
+                    result = createRecommender(access, dAccess, template, param);
+                    break;
+                }
+                case Recommend: {
+                    result = recommend(access, template, param);
+                    break;
+                }
+                case GetRecommender: {
+                    result = getRecommender(access, template, param);
+                    break;
+                }
+                case GetRecommenders: {
+                    result = getRecommenders(access, template, param);
+                    break;
+                }
+                case UpdateRecommender: {
+                    result = updateRecommender(access, dAccess, template, param);
+                    break;
+                }
+            }
+        } catch (BaseException ex) {
+            result = template.transform(ex);
+        }
+
+        return result;
+    }
+
+    private TemplateResult getRecommenders(RecommenderAccess access, RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        RecommenderInformation[] recommenders = access.getRecommenders();
+        return template.transform(recommenders);
+    }
+
+    private TemplateResult getRecommender(RecommenderAccess access, RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        RecommenderInformation recommender = access.getRecommender(param.get(RecommenderAccess.RecommenderIdKey));
+        return template.transform(recommender);
+    }
+
+    private TemplateResult recommend(RecommenderAccess access, RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        Recommender recommender = access.getRecommender(param.get(RecommenderAccess.RecommenderIdKey));
+        return template.transform(recommender.recommend(param));
+    }
+
+    private TemplateResult createRecommender(RecommenderAccess access, DataAccess dAccess, RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        DataSource source = getDataSource(dAccess, param.get(SourceIdKey));
+        if(source.getState() != DataInformation.DataState.READY) throw new NotReadyException("The data source %s is not ready so far. The current state is %s.", source.getId(), source.getState().toString());
+        Recommender recommender = access.createRecommender(source.getDataSet(), param);
+        return template.transform(recommender);
+    }
+
+    private TemplateResult updateRecommender(RecommenderAccess access, DataAccess dAccess, RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        DataSource source = getDataSource(dAccess, param.get(SourceIdKey));
+        if(source.getState() != DataInformation.DataState.READY) throw new NotReadyException("The data source %s is not ready so far. The current state is %s.", source.getId(), source.getState().toString());
+        Recommender recommender = access.updateRecommender(param.get(RecommenderAccess.RecommenderIdKey), source.getDataSet(), param);
+        return template.transform(recommender.recommend(param));
+    }
+
+    private DataSource getDataSource(DataAccess access, String sourceId) throws BaseException {
+        return access.getDataSource(sourceId);
+    }
+
+
+    @Override
+    public void close() throws IOException {
+        if (recommenderAccess != null) {
+            this.context.removeServiceListener(recommenderAccess);
+        }
+
+        if (dataAccess != null) {
+            this.context.removeServiceListener(dataAccess);
+        }
+
+        if (templates != null) {
+            this.context.removeServiceListener(templates);
+        }
+    }
+}

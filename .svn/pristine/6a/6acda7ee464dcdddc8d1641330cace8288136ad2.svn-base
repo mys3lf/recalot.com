@@ -1,0 +1,20 @@
+package com.recalot.common.interfaces.model.experiment;
+
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.exceptions.BaseException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public abstract class RatingMetric extends Metric {
+    public RatingMetric(String name, String id, Map<String, String> config) throws BaseException {
+        super(name, id, config);
+    }
+
+    public abstract void addRating(double actual, double retrieved);
+}
+

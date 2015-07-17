@@ -1,0 +1,15 @@
+Manifest-Version: 1
+Bundle-Activator: com.recalot.model.data.access.Activator
+Bundle-Description:  Establish and manage connections to data sources
+Bundle-ManifestVersion: 2
+Bundle-Name: Recalot.com Model - Data Access
+Bundle-SymbolicName: com.recalot.model.data.access
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.SNAPSHOT
+Import-Package: org.osgi.framework,
+    com.recalot.common.communication,
+    com.recalot.common.interfaces.model,
+     com.recalot.common.impl.template,
+    com.recalot.common.interfaces.communication,
+    com.recalot.common.exceptions,
+ com.recalot.common

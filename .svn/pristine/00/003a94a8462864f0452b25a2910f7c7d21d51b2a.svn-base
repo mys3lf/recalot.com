@@ -1,0 +1,235 @@
+package com.recalot.model.data.connections.mysql;
+
+import com.recalot.common.communication.*;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.exceptions.NotSupportedException;
+import com.recalot.common.interfaces.model.data.DataSource;
+
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class MySQLDataSource extends DataSource {
+
+    private File dir;
+    private File moviesFile = null;
+    private File ratingsFile = null;
+    private File usersFile = null;
+
+    private final String Gender = "Gender".intern();
+    private final String Age = "Age".intern();
+    private final String Occupation = "Occupation".intern();
+    private final String ZipCode = "ZipCode".intern();
+    private final String Title = "Title".intern();
+    private final String Year = "Year".intern();
+    private final String Genres = "Genres".intern();
+    private final String Rating = "Rating".intern();
+
+    public HashMap<String, User> users;
+    public HashMap<String, Item> items;
+    public HashMap<String, Interaction> interactions;
+
+    private DataSet dataSet;
+
+    public MySQLDataSource(){
+        this.users = new HashMap<>();
+        this.items = new HashMap<>();
+        this.interactions = new HashMap<>();
+    }
+
+    public void setDir(String dir){
+        this.dir = new File(dir);
+    }
+
+    public void connect() throws BaseException {
+
+    }
+
+    private void readRatings(File file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            String line = null;
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+
+                //UserID::MovieID::Rating::Timestamp
+                String[] split = line.split("::");
+
+                if (split.length == 4) {
+
+                    String ratingId = (split[0] + split[1] + split[2]).intern();
+
+                    String userId = split[0].intern();
+                    String itemId = split[1].intern();
+
+                    Date date = new Date(Long.parseLong(split[3]));
+
+                    HashMap<String, Object> map = new HashMap<>();
+
+                    map.put(Rating, split[2].intern());
+
+                    interactions.put(ratingId, new Interaction(ratingId, userId, itemId, date, "", map));
+                }
+            }
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+    }
+
+    private void readMovies(File file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                //MovieID::Title::Genres
+                String[] split = line.split("::");
+                if (split.length == 3) {
+                    String itemId = split[0].intern();
+
+                    HashMap<String, String> map = new HashMap<>();
+
+                    String title = split[1].intern();
+                    String year = title.substring(title.lastIndexOf("(") + 1, title.lastIndexOf(")")).intern();
+
+                    map.put(Title, title);
+                    map.put(Year, year);
+
+                    map.put(Genres, split[2]);
+
+                    items.put(itemId, new Item(itemId, map));
+                }
+            }
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+    }
+
+    private void readUsers(File file) {
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+
+                //UserID::Gender::Age::Occupation::Zip-code
+                String[] split = line.split("::");
+                if (split.length == 5) {
+                    String userId = split[0].intern();
+
+                    HashMap<String, String> map = new HashMap<>();
+
+                    map.put(Gender, split[1].intern());
+                    map.put(Age, split[2].intern());
+                    map.put(Occupation, split[3].intern());
+                    map.put(ZipCode,split[4].intern());
+
+
+                    users.put(userId, new User(userId, map));
+                }
+            }
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+    }
+
+    @Override
+    public DataSet getDataSet() {
+        return this.dataSet;
+    }
+
+    @Override
+    public Interaction[] getInteractions() throws BaseException {
+        return interactions.values().toArray(new Interaction[interactions.size()]);
+    }
+
+    @Override
+    public int getInteractionsCount() {
+        return interactions.size();
+    }
+
+    @Override
+    public Interaction[] getInteractions(String userId) throws BaseException {
+        return interactions.values().stream().filter(i -> i.getUserId().equals(userId)).toArray(s -> new Interaction[s]);
+    }
+
+    @Override
+    public Interaction[] getInteractions(String itemId, String userId) throws BaseException {
+        return interactions.values().stream().filter(i -> i.getUserId().equals(userId) && i.getItemId().equals(itemId)).toArray(s -> new Interaction[s]);
+    }
+
+    @Override
+    public Message addInteraction(String itemId, String userId, Date timestamp, String type) throws BaseException {
+        throw throwNotSupportedException("addInteraction");
+    }
+
+    @Override
+    public Message addInteraction(String itemId, String userId, Date timestamp, String type, Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("addInteraction");
+    }
+
+
+    @Override
+    public Item[] getItems() throws BaseException {
+        return items.values().toArray(new Item[items.size()]);
+    }
+
+    @Override
+    public int getItemsCount() {
+        return items.size();
+    }
+
+    @Override
+    public Item getItem(String itemId) throws BaseException {
+        if (!items.containsKey(itemId)) throw new NotFoundException("Item with id %s cannot be found.", "" + itemId);
+        return items.get(itemId);
+    }
+
+    @Override
+    public Message updateItem(String itemId, Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("updateItem");
+    }
+
+    @Override
+    public Message createItem(Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("createItem");
+    }
+
+
+    @Override
+    public User[] getUsers() throws BaseException {
+        return users.values().toArray(new User[users.size()]);
+    }
+
+    @Override
+    public int getUsersCount() {
+        return users.size();
+    }
+
+    @Override
+    public User getUser(String userId) throws BaseException {
+        if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
+        return users.get(userId);
+    }
+
+    @Override
+    public Message updateUser(String userId, Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("updateUser");
+    }
+
+    @Override
+    public Message createUser(Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("createUser");
+    }
+
+    private NotSupportedException throwNotSupportedException(String createUser) throws NotSupportedException {
+        return new NotSupportedException("The method %s is not supported in this data connection. This data connection is a read only data connection.", createUser);
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

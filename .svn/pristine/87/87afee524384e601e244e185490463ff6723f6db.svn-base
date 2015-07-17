@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="org.apache.felix.http.bundle-2.0.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/org.apache.felix.http.bundle-2.0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

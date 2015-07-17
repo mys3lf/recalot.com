@@ -1,0 +1,18 @@
+Manifest-Version: 1
+Export-Service: com.recalot.model.rec.access.RecommenderAccess
+Bundle-Description:  Train and manage connections to recommender
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.model.rec.access
+Bundle-Name: Recalot.com Model - Recommender Access
+Bundle-Version: 1.0.0.248
+Bundle-Activator: com.recalot.model.rec.access.Activator
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   com.recalot.common.configuration,com.recalot.common.log,com.recal
+ ot.common.interfaces.model.data,com.recalot.common.interfaces.model.r
+ ec,com.recalot.common.interfaces.model.experiment,    com.recalot.com
+ mon.impl.template,   com.recalot.common.exceptions,com.recalot.common
+ , com.recalot.common.builder
+

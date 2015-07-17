@@ -1,0 +1,49 @@
+package com.recalot.views.data.common;
+
+
+import com.recalot.common.interfaces.controller.DataAccessController;
+import com.recalot.common.interfaces.template.TemplateResult;
+import org.osgi.framework.BundleContext;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class ControllerHandler implements Closeable {
+
+    private final Map<Long, DataAccessController> dataAccessController;
+    private final DataAccessControllerListener listener;
+
+    private BundleContext context;
+
+    public ControllerHandler(BundleContext context) {
+        this.context = context;
+        this.dataAccessController = new LinkedHashMap<>();
+        this.listener = new DataAccessControllerListener(context);
+        context.addServiceListener(this.listener);
+    }
+
+    public TemplateResult process(DataAccessController.RequestAction action, String templateKey) {
+        return process(action, templateKey, null);
+    }
+
+    public TemplateResult process(DataAccessController.RequestAction action, String templateKey, Map<String, String> params) {
+        DataAccessController controller = listener.getFirstDataAccessController();
+        if (controller != null) {
+            return controller.process(action, templateKey, params);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (listener != null) {
+            context.removeServiceListener(this.listener);
+        }
+    }
+}

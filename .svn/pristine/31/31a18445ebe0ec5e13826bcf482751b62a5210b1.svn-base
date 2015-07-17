@@ -1,0 +1,8 @@
+package com.recalot.common.builder;
+
+/**
+ * Created by Matthaeus.schmedding on 07.05.2015.
+ */
+public interface Initiator {
+    public Object createInstance(String className);
+}

@@ -1,0 +1,101 @@
+package com.recalot.model.rec.recommender.mostpopular;
+
+import com.recalot.common.Helper;
+import com.recalot.common.communication.DataSet;
+import com.recalot.common.communication.Interaction;
+import com.recalot.common.communication.RecommendationResult;
+import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.rec.Recommender;
+
+
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class MostPopularRecommender extends Recommender {
+
+    private Map<String, String> config;
+    private DataSet dataSet;
+    private List<RecommendedItem> recommendedItems;
+    private RecommendationResult result;
+
+    protected MostPopularRecommender(String id, Map<String, String> config) throws BaseException {
+        super(id, config);
+        this.setKey("most-popular");
+
+    }
+
+    public static Recommender createInstance() throws BaseException {
+        return new MostPopularRecommender("", new HashMap<>());
+    }
+
+    @Override
+    public MostPopularRecommender createInstance(String id, Map<String, String> param) throws BaseException {
+        return new MostPopularRecommender(id, param);
+    }
+
+    @Override
+    public void train(DataSet dataSet, Map<String, String> config) throws BaseException {
+        this.dataSet = dataSet;
+
+        Map<String, Integer> count = new LinkedHashMap<>();
+
+        for (Interaction interaction : dataSet.getInteractions()) {
+            Helper.incrementMapValue(count, interaction.getItemId());
+        }
+
+        this.recommendedItems = new ArrayList<>();
+
+        count = Helper.sortByValueDescending(count);
+
+        double sum = Helper.sum(count);
+        for (String key : count.keySet()) {
+            recommendedItems.add(new RecommendedItem(key, 1.0 * count.get(key) / sum));
+        }
+
+        this.result = new RecommendationResult(getKey(), recommendedItems);
+    }
+
+    @Override
+    public RecommendationResult recommend() {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(Object context) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(Map<String, String> configOrContext) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user, Object context) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user, Map<String, String> configOrContext) {
+        return result;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+}

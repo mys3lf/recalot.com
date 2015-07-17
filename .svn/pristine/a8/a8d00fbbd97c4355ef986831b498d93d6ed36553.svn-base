@@ -1,0 +1,12 @@
+package com.recalot.common.interfaces.model.experiment;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.Service;
+import com.recalot.common.interfaces.model.data.DataSource;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface DataSplitter extends Service {
+    public DataSource[] split(DataSource source) throws BaseException;
+}

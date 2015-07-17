@@ -1,0 +1,64 @@
+package com.recalot.model.rec.recommender;
+
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class Helper {
+    /**
+     * Sort a Map by value in descending order
+     * *
+     *
+     * @param map
+     * @return a sorted map
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueDescending(
+            Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new LinkedList<>(
+                map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        Map<K, V> result = new LinkedHashMap<K, V>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+
+    /**
+     * A method that increments the counter value in a map. If no value exists,
+     * it adds 1. Otherwise we increment the value
+     *
+     * @param map
+     * @param key
+     */
+    public static <K> void incrementMapValue(Map<K, Integer> map, K key) {
+        Integer existingValue = map.get(key);
+        if (existingValue == null) {
+            map.put(key, 1);
+        } else {
+            map.put(key, existingValue + 1);
+        }
+    }
+
+
+    /**
+     * A method that sum the counter value in a map.
+     *
+     * @param map
+     */
+    public static <K> Integer sum(Map<K, Integer> map) {
+        Integer sum = 0;
+        for(Integer v : map.values()){
+            sum += v;
+        }
+
+        return sum;
+    }
+}

@@ -1,0 +1,174 @@
+var Recalot = {
+	host: "http://localhost:8080",
+	recPath: "/rec",
+	sourcePath: "/sources",
+	sourceId: "wallpaper-src",
+	pathSeparator: "/",
+	dataPath: "/data",
+	itemsPath: "/items",
+	trackPath: "/track",
+	usersPath: "/users",
+	__userId: null, 
+	fetch: function() {
+		this.getUserId();
+		
+		var container = $(".recalot-recs");
+		if(container.length > 0) {
+			for(var i = 0; i < container.length; i++) {
+				var c = container.eq(i);
+				var type = c.attr("data-recalot-type") || "most-popular";
+				var count = c.attr("data-recalot-count") || "10";
+				
+				if(type != null){
+					if(type == "recalot-rated"){
+						var page = this.__getQueryVariable("page") || 1;
+						console.log(page);
+					}else {
+						this.__fetchRecommendations(type, count, this.getUserId(), 1, c);
+					}
+				}
+			}
+		}
+	},
+	__getQueryVariable : function (variable)
+	{
+		   var query = window.location.search.substring(1);
+		   var vars = query.split("&");
+		   for (var i=0;i<vars.length;i++) {
+				   var pair = vars[i].split("=");
+				   if(pair[0] == variable){return pair[1];}
+		   }
+		   return(false);
+	},
+	getUserId: function() {
+	var chrome = chrome || {};
+		if(this.__userId === null) {
+			if(chrome != null && chrome.storage != null && chrome.storage.sync != null) {
+				var self = this;
+				chrome.storage.sync.get('userid', function(items) {
+					var userid = items.userid;
+					if (userid) {
+						self.__userId = userid;
+					} else {
+						userid = getRandomToken();
+						chrome.storage.sync.set({userid: userid}, function() {
+							self.__userId = userid;
+							self.__createUser(userid);
+						});
+					}
+				});
+			} else {
+				var userId = localStorage.getItem("recalot-userid")
+				if(userId === null) {
+					userId = this.__getRandomToken(16);
+					localStorage.setItem("recalot-userid", userId);
+					this.__createUser(userId);
+				}
+				
+				this.__userId = userId;
+			}
+		}
+		
+		return this.__userId;
+	},
+	__createUser: function(userId){
+		$.ajax({
+		  method: "POST",
+		  url: this.host + this.dataPath + this.sourcePath + this.pathSeparator + this.sourceId + this.usersPath,
+		  data: { "user-id": userId },
+		  cache: false,
+		  context: {self: this, container: container},
+		  success: function(data, status, jqXHR) {
+			if(data != null && data.items != null && data.items.length != null) {
+				for(var i = 0; i < data.items.length; i++) {
+					this.self.__fetchItem(data.items[i].itemId, data.recommender, this.container); 
+				}
+			}
+		  }
+		}).fail(function( jqXHR, textStatus ) {
+			console.error( "Request failed: " + textStatus );
+		});
+	},
+	__fetchRecommendations: function(type, count, userId, page, container){
+		$.ajax({
+		  method: "GET",
+		  url: this.host + this.recPath + this.pathSeparator + type,
+		  data: { "user-id": userId, "count": count, "page": page },
+		  cache: false,
+		  context: {self: this, container: container},
+		  success: function(data, status, jqXHR) {
+			if(data != null && data.items != null && data.items.length != null) {
+				for(var i = 0; i < data.items.length; i++) {
+					this.self.__fetchItem(data.items[i].itemId, data.recommender, this.container); 
+				}
+			}
+		  }
+		}).fail(function( jqXHR, textStatus ) {
+			console.error( "Request failed: " + textStatus );
+		});
+	},	
+	__fetchItem: function(itemId, type, container){
+		$.ajax({
+		  method: "GET",
+		  url: this.host + this.dataPath + this.sourcePath + this.pathSeparator + this.sourceId + this.itemsPath + this.pathSeparator + itemId,
+		  context: {self: this, container: container},
+		  success: function(data, status, jqXHR) {
+			if(data != null && this.self.renderItem != null && typeof this.self.renderItem == "function") {
+				this.container.append(this.self.renderItem(data, this.container));
+				this.self.__fetchRating(data.id);
+			}
+		  }
+		}).fail(function( jqXHR, textStatus ) {
+			console.error( "Request failed: " + textStatus );
+		});
+	},	
+	__fetchRating: function(itemId){
+		$.ajax({
+		  method: "GET",
+		  url: this.host + this.dataPath + this.sourcePath + this.pathSeparator + this.sourceId + this.usersPath + this.pathSeparator + this.getUserId() + this.itemsPath + this.pathSeparator + itemId,
+		  context: {self: this},
+		  success: function(data, status, jqXHR) {
+			if(data != null && this.self.renderItemRating != null && typeof this.self.renderItemRating == "function") {
+				this.self.renderItemRating(data);
+			}
+		  }
+		}).fail(function( jqXHR, textStatus ) {
+			console.error( "Request failed: " + textStatus );
+		});
+	},	
+	renderItemRating: null,
+	renderItem: null,
+	__createUser: function(userId) {
+		$.ajax({
+		  method: "PUT",
+		  url: this.host + this.dataPath + this.sourcePath + this.pathSeparator + this.sourceId + this.usersPath,
+		  data: { "user-id": userId },
+		  cache: false,
+		}).fail(function( jqXHR, textStatus ) {
+		  console.error( "Request failed: " + textStatus );
+		});
+	},
+	rateItem: function(itemId, type, value) {
+		$.ajax({
+		  method: "POST",
+		  url: this.host + this.trackPath + this.sourcePath + this.pathSeparator + this.sourceId + this.usersPath + this.pathSeparator + this.getUserId() + this.itemsPath + this.pathSeparator + itemId ,
+		  data: { "type": type , "value": value },
+		  cache: false,
+		}).fail(function( jqXHR, textStatus ) {
+		  console.error( "Request failed: " + textStatus );
+		});
+	},
+	__getRandomToken: function(count) {
+		// E.g. 8 * 32 = 256 bits token
+		var randomPool = new Uint8Array(count);
+		crypto.getRandomValues(randomPool);
+		var hex = '';
+		for (var i = 0; i < randomPool.length; ++i) {
+			hex += randomPool[i].toString(16);
+		}
+		return hex;
+	}
+	
+	
+};
+

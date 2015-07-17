@@ -1,0 +1,37 @@
+package com.recalot.common.configuration;
+
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
+
+import java.util.Dictionary;
+
+/**
+ * Created by matthaeus.schmedding on 14.04.2015.
+ */
+public class ConfigurationService implements ManagedService {
+
+    private final Dictionary defaults;
+    private Dictionary config;
+
+    public ConfigurationService(Dictionary defaults, String pid) {
+        this.defaults = defaults;
+        this.config = defaults;
+        config.put(Constants.SERVICE_PID, pid);
+    }
+
+    public Dictionary getConfig() {
+        return config;
+    }
+
+    public void setConfig(Dictionary config) {
+        if (config != null) this.config = config;
+        else config = defaults;
+
+    }
+
+    @Override
+    public void updated(Dictionary<String, ?> dictionary) throws ConfigurationException {
+        setConfig(dictionary);
+    }
+}

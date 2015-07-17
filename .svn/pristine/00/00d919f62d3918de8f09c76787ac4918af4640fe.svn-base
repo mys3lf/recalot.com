@@ -1,0 +1,15 @@
+Manifest-Version: 1
+Bundle-Activator: com.recalot.controller.recommendations.Activator
+Bundle-Description: Controller which delegates the computation of recommendations
+Bundle-ManifestVersion: 2
+Bundle-Name: Recalot.com Controller - Recommendations
+Bundle-SymbolicName: com.recalot.controller.recommendations
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.0
+Import-Package: org.osgi.framework,
+    com.recalot.common.communication,
+    com.recalot.common.exceptions,
+    com.recalot.common.interfaces.model,
+ com.recalot.common.interfaces.controller,
+ com.recalot.common.interfaces.template,
+ com.recalot.common

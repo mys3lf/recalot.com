@@ -1,0 +1,183 @@
+package com.recalot.model.data.access;
+
+
+import com.recalot.common.GenericServiceListener;
+import com.recalot.common.Helper;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.AlreadyExistsException;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.MissingArgumentException;
+import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.impl.template.DefaultMessage;
+import com.recalot.common.interfaces.communication.*;
+import com.recalot.common.interfaces.model.data.DataConnection;
+import com.recalot.common.interfaces.model.data.DataInformation;
+import com.recalot.common.interfaces.model.data.DataSource;
+import org.osgi.framework.BundleContext;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class DataAccess implements com.recalot.common.interfaces.model.data.DataAccess, Closeable {
+
+    private final BundleContext context;
+    private final GenericServiceListener<DataConnection> dataConnectionListener;
+    private final HashMap<String, DataSource> dataSources;
+
+
+    public DataAccess(BundleContext context) {
+        this.context = context;
+        this.dataConnectionListener = new GenericServiceListener<>(context, DataConnection.class.getName());
+        this.dataSources = new HashMap<>();
+        this.context.addServiceListener(dataConnectionListener);
+    }
+
+
+    @Override
+    public void close() throws IOException {
+        if (dataConnectionListener != null) {
+            this.context.removeServiceListener(dataConnectionListener);
+        }
+
+        if (dataSources != null) {
+            for (DataSource s : dataSources.values()) {
+                s.close();
+            }
+        }
+    }
+
+    @Override
+    public DataSource getDataSource(String id) throws BaseException {
+        // Lock list and return data source object.
+        synchronized (dataSources) {
+            if (dataSources.containsKey(id)) {
+                return dataSources.get(id);
+            }
+        }
+
+        throw new NotFoundException(String.format("Data source with id %s not found.", id));
+    }
+
+    public DataSource tryGetDataSource(String id) throws BaseException {
+        // Lock list and return data source object.
+        synchronized (dataSources) {
+            if (dataSources.containsKey(id)) {
+                return dataSources.get(id);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Message updateDataSource(String id, Map<String, String> content) throws BaseException {
+        // Lock list and modify data source object.
+        synchronized (dataSources) {
+            if (dataSources.containsKey(id)) {
+                dataSources.put(id, connectDataSource(content));
+                return new DefaultMessage("Update successful", String.format("Data source with id %s successful updated.", id), Message.Status.INFO);
+            }
+        }
+
+        throw new NotFoundException(String.format("Data source with id %s not found.", id));
+    }
+
+    @Override
+    public Message deleteDataSource(String id) throws BaseException {
+        // Lock list and add data source object.
+        synchronized (dataSources) {
+            if (dataSources.containsKey(id)) {
+                dataSources.remove(id);
+                return new DefaultMessage("Delete successful", String.format("Data source with id %s successful deleted.", id), Message.Status.INFO);
+            }
+        }
+
+        throw new NotFoundException(String.format("Data source with id %s not found.", id));
+    }
+
+    @Override
+    public DataSource createDataSource(Map<String, String> content) throws BaseException {
+        String typeKey = content.get(Helper.Keys.ConnectionId);
+        String dataSourceId = content.get(Helper.Keys.SourceId);
+
+        if (typeKey == null)
+            throw new MissingArgumentException(String.format("Argument %s is missing.", Helper.Keys.ConnectionId));
+        if (dataSourceId == null)
+            throw new MissingArgumentException(String.format("Argument %s is missing.", Helper.Keys.SourceId));
+        if (tryGetDataSource(dataSourceId) != null)
+            throw new AlreadyExistsException(String.format("Data source with id %s already exists.", dataSourceId));
+
+        DataSource dataSource = connectDataSource(content);
+
+        addDataSource(dataSourceId, dataSource);
+        return dataSource;
+    }
+
+    private DataSource connectDataSource(Map<String, String> content) throws BaseException {
+        String typeKey = content.get(Helper.Keys.ConnectionId);
+        String dataSourceId = content.get(Helper.Keys.SourceId);
+
+        if (typeKey == null)
+            throw new MissingArgumentException(String.format("Argument %s is missing.", Helper.Keys.ConnectionId));
+        if (dataSourceId == null)
+            throw new MissingArgumentException(String.format("Argument %s is missing.", Helper.Keys.SourceId));
+
+
+        DataConnection connection = dataConnectionListener.getInstance(typeKey);
+
+        DataSource source = connection.create(dataSourceId, content);
+        source.setState(DataInformation.DataState.CONNECTING);
+
+        new Thread() {
+            public void run() {
+                try {
+                    connection.connect(source, content);
+                    source.setState(DataInformation.DataState.READY);
+                } catch (BaseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        return source;
+    }
+
+    private void addDataSource(String id, DataSource dataSource) {
+        // Lock list and add data source object.
+        synchronized (dataSources) {
+            dataSources.put(id, dataSource);
+            System.out.println("Add data source with id " + id);
+        }
+    }
+
+    @Override
+    public List<DataInformation> getDataInformations() throws BaseException {
+        List<DataInformation> list = new ArrayList<>();
+        list.addAll(dataSources.values());
+        list.addAll(dataConnectionListener.getAll());
+
+        return list;
+    }
+
+    @Override
+    public DataConnection getDataConnection(String id) throws BaseException {
+
+        DataConnection connection = dataConnectionListener.getInstance(id);
+
+        connection.setConfiguration(new ConfigurationItem(Helper.Keys.SourceId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+        connection.setConfiguration(new ConfigurationItem(Helper.Keys.ConnectionId, ConfigurationItem.ConfigurationItemType.String, connection.getKey(), ConfigurationItem.ConfigurationItemRequirementType.Hidden));
+
+
+
+        return connection;
+    }
+
+    @Override
+    public String getKey() {
+        return "data-access";
+    }
+}

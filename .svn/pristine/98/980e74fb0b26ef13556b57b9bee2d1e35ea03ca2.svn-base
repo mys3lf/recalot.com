@@ -1,0 +1,20 @@
+Manifest-Version: 1
+Export-Service: com.recalot.views.common.WebService
+Bundle-Description: Contains a servlet which process experiments
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.views.experiments
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,   com.recalot.common.configuration,   org.osgi.util.tracker,   org.
+ osgi.service.http,   javax.servlet,   javax.servlet.http,   org.osgi.
+ service.cm,   org.apache.felix.http.api,   com.recalot.common.excepti
+ ons,com.recalot.common.interfaces.controller,com.recalot.common.inter
+ faces.template,com.recalot.common,com.recalot.common.log,com.recalot.
+ views.common
+Export-Package: com.recalot.views.recommend.train;version="1.0.0"
+Bundle-Name: Recalot.com Views - Experiments
+Bundle-Version: 1.0.0.395
+Bundle-Activator: com.recalot.views.experiments.Activator
+

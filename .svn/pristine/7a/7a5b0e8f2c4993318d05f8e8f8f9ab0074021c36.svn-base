@@ -1,0 +1,115 @@
+package com.recalot.common;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class Helper {
+    public static void Copy(PrintWriter out, InputStream stream) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream);
+
+        char[] buffer = new char[1024];
+
+        int len =  reader.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = reader.read(buffer);
+        }
+
+        reader.close();
+    }
+
+    /**
+     * Sort a Map by value in descending order
+     * *
+     *
+     * @param map
+     * @return a sorted map
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueDescending(
+            Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new LinkedList<>(
+                map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        Map<K, V> result = new LinkedHashMap<K, V>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+
+    /**
+     * A method that increments the counter value in a map. If no value exists,
+     * it adds 1. Otherwise we increment the value
+     *
+     * @param map
+     * @param key
+     */
+    public static <K> void incrementMapValue(Map<K, Integer> map, K key) {
+        Integer existingValue = map.get(key);
+        if (existingValue == null) {
+            map.put(key, 1);
+        } else {
+            map.put(key, existingValue + 1);
+        }
+    }
+
+
+    /**
+     * A method that sum the counter value in a map.
+     *
+     * @param map
+     */
+    public static <K> Integer sum(Map<K, Integer> map) {
+        Integer sum = 0;
+        for(Integer v : map.values()){
+            sum += v;
+        }
+
+        return sum;
+    }
+
+
+    public static Map<String, String> readConfigForId(Map<String, String> config, String id) {
+        Map<String, String> map = new Hashtable<>();
+
+        for (String key : config.keySet()) {
+            if (key.startsWith(id)) {
+                map.put(key.replace(id, ""), config.get(key));
+            }
+        }
+        return map;
+    }
+
+
+    public static class Keys {
+        public static final String ExperimentId = "experiment-id".intern();
+        public static final String OutputParam = "output".intern();
+        public static final String ItemId = "item-id".intern();
+        public static final String UserId = "user-id".intern();
+        public static final String SourceId = "source-id".intern();
+        public static final String DataBuilderId = "data-builder-id".intern();
+        public static final String RecommenderId = "rec-id".intern();
+        public static final String Type = "type".intern();
+        public static final String DataSplitterId = "splitter-id".intern();
+        public static final String State = "state".intern();
+        public static final String Dir = "dir".intern();
+        public static final String ID = "id".intern();
+        public static final String TopN = "top-n".intern();
+        public static final String MetricIDs = "metric-ids".intern();
+        public static final String Value = "value".intern();
+        public static final String RecommenderBuilderId = "rec-builder-id".intern();
+        public static final String RecommenderBuilderIdPrefix = "rec-builder-".intern();
+    }
+}

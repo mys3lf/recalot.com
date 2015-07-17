@@ -1,0 +1,20 @@
+Manifest-Version: 1
+Export-Service: com.recalot.model.data.connections.movielens.MovieLens
+ FileConnection
+Bundle-Description:  Contains data connectors. e.g. MovieLensFileConne
+ ction, DefaultMySQLConnection
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.model.data.connections
+Bundle-Name: Recalot.com Model - Data Connections
+Bundle-Version: 1.0.0.467
+Bundle-Activator: com.recalot.model.data.connections.Activator
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Import-Package: org.osgi.framework,   com.recalot.common.communication
+ ,com.recalot.common.log,com.recalot.common.interfaces.model.data,com.
+ recalot.common.interfaces.model.rec,com.recalot.common.interfaces.mod
+ el.experiment,     com.recalot.common.configuration,   com.recalot.co
+ mmon.exceptions,com.recalot.common, com.recalot.common.builder,com.my
+ sql.jdbc,flexjson
+

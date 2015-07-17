@@ -1,0 +1,25 @@
+package com.recalot.common.builder;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.data.DataInformation;
+import com.recalot.common.interfaces.model.data.DataSource;
+
+/**
+ * Created by matthaeus.schmedding on 29.04.2015.
+ */
+public class DataSourceBuilder extends InstanceBuilder<DataSource> implements DataInformation {
+
+    public DataSourceBuilder(String className, String key, String description) throws BaseException {
+        super(className, key, description);
+    }
+
+    @Override
+    public DataState getState() {
+        return DataState.AVAILABLE;
+    }
+
+    @Override
+    public String getId() {
+        return "data-builder-" + getKey();
+    }
+}

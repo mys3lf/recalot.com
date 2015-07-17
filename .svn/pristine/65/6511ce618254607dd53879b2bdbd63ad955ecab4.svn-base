@@ -1,0 +1,16 @@
+Manifest-Version: 1
+Bundle-Description: Contains the recalot.com exeriments portal
+Bundle-License: http://recalot.com/license.txt
+Bundle-SymbolicName: com.recalot.portal
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Recalot.com
+Bundle-DocURL: http://recalot.com/doc
+Class-Path: resources/, src/
+Import-Package: org.osgi.framework,   org.osgi.util.tracker,   org.osg
+ i.service.http,   javax.servlet,   javax.servlet.http,   org.apache.f
+ elix.http.api
+Bundle-Name: Recalot.com - Experiments Portal
+Bundle-Version: 1.0.0.126
+Bundle-ClassPath: resources/, src/
+Bundle-Activator: de.oforge.website.basic.Activator
+

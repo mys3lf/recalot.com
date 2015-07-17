@@ -1,0 +1,64 @@
+package com.recalot.common.configuration;
+
+/**
+ * Created by matthaeus.schmedding on 02.04.2015.
+ */
+public class ConfigurationItem {
+    private String key;
+    private ConfigurationItemType type;
+    private String value;
+    private ConfigurationItemRequirementType requirement;
+
+    public ConfigurationItem()
+    {
+        key = "";
+        type = ConfigurationItemType.String;
+        value = "";
+        requirement = ConfigurationItemRequirementType.Required;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public ConfigurationItemType getType() {
+        return type;
+    }
+
+    public void setType(ConfigurationItemType type) {
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public ConfigurationItemRequirementType getRequirement() {
+        return requirement;
+    }
+
+    public void setRequirement(ConfigurationItemRequirementType requirement) {
+        this.requirement = requirement;
+    }
+
+
+    public enum ConfigurationItemType{
+        String,
+        Boolean,
+        Integer,
+        Double
+    }
+
+    public enum ConfigurationItemRequirementType{
+        Required,
+        Optional
+    }
+}

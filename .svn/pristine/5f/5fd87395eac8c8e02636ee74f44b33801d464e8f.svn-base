@@ -1,0 +1,18 @@
+Manifest-Version: 1
+Bundle-Activator: com.recalot.controller.experiments.Activator
+Bundle-Description: Controller which delegates the execution of experiments
+Bundle-ManifestVersion: 2
+Bundle-Name: Recalot.com Controller - Experiments
+Bundle-SymbolicName: com.recalot.controller.experiments
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.7
+Import-Package: org.osgi.framework,
+    com.recalot.common.communication,
+    com.recalot.common.exceptions,
+ com.recalot.common.interfaces.model.data,
+ com.recalot.common.interfaces.model.rec,
+ com.recalot.common.interfaces.model.experiment,
+ com.recalot.common.interfaces.controller,
+ com.recalot.common.interfaces.template,
+ com.recalot.common
+

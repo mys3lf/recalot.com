@@ -1,0 +1,37 @@
+package com.recalot.templates.base;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.Message;
+import com.recalot.common.interfaces.communication.RecommendationResult;
+import com.recalot.common.interfaces.model.RecommenderInformation;
+import com.recalot.common.interfaces.template.BaseTemplate;
+import com.recalot.common.interfaces.template.RecommenderTemplate;
+import com.recalot.common.interfaces.template.TemplateResult;
+
+import java.io.IOException;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class XmlBaseTemplate implements BaseTemplate {
+
+    @Override
+    public String getKey() {
+        return "xml";
+    }
+
+    @Override
+    public TemplateResult transform(BaseException ex) {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transform(Message message) {
+        return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

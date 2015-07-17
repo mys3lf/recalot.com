@@ -1,0 +1,87 @@
+package com.recalot.views.data.common;
+
+import com.recalot.common.interfaces.controller.DataAccessController;
+import org.osgi.framework.*;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class DataAccessControllerListener implements ServiceListener {
+    private final BundleContext context;
+    private final Map<Long, DataAccessController> dataAccessController;
+
+    public DataAccessControllerListener(BundleContext context) {
+        this.context = context;
+        this.dataAccessController = new LinkedHashMap<>();
+        initialize();
+    }
+
+    private void initialize() {
+        try {
+            ServiceReference[] references = this.context.getServiceReferences(DataAccessController.class.getName(), null);
+            if(references != null){
+                for (ServiceReference ref : references){
+                    addDataAccessController((Long) ref.getProperty(Constants.SERVICE_ID), (DataAccessController) context.getService(ref));
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void serviceChanged(ServiceEvent event) {
+        String[] objectClass = (String[]) event.getServiceReference().getProperty(Constants.OBJECTCLASS);
+
+        if (objectClass[0].equals(DataAccessController.class.getName())) {
+            Long serviceId = (Long) event.getServiceReference().getProperty(Constants.SERVICE_ID);
+            DataAccessController instance = (DataAccessController) context.getService(event.getServiceReference());
+
+            if (event.getType() == ServiceEvent.REGISTERED) {
+                addDataAccessController(serviceId, instance);
+            } else if (event.getType() == ServiceEvent.UNREGISTERING) {
+                removeDataAccessController(serviceId);
+            } else if (event.getType() == ServiceEvent.MODIFIED) {
+                updateDataAccessController(serviceId, instance);
+            }
+        }
+    }
+
+    public DataAccessController getFirstDataAccessController() {
+        // Lock list and add service object.
+        synchronized (dataAccessController) {
+            if (dataAccessController.values().size() > 0)
+                return (DataAccessController) dataAccessController.values().toArray()[0];
+        }
+
+        return null;
+    }
+
+    private void updateDataAccessController(Long id, DataAccessController instance) {
+        // Lock list and add service object.
+        synchronized (dataAccessController) {
+            dataAccessController.put(id, instance);
+            System.out.println("Update data access controller with id" + id);
+        }
+    }
+
+    private void removeDataAccessController(Long id) {
+        // Lock list and remove service object.
+        synchronized (dataAccessController) {
+            if (!dataAccessController.containsKey(id)) dataAccessController.remove(id);
+            System.out.println("Remove data access controller with id" + id);
+        }
+    }
+
+    private void addDataAccessController(Long id, DataAccessController instance) {
+        // Lock list and replace service object.
+        synchronized (dataAccessController) {
+            if (!dataAccessController.containsKey(id)) dataAccessController.put(id, instance);
+            System.out.println("Add data access controller with id" + id);
+        }
+    }
+
+}

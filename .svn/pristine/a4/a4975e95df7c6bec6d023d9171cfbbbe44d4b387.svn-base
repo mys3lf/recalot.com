@@ -1,0 +1,52 @@
+package com.recalot.common.impl.experiment;
+
+import com.recalot.common.Helper;
+import com.recalot.common.interfaces.model.experiment.Metric;
+import com.recalot.common.interfaces.model.rec.Recommender;
+import org.osgi.service.log.LogService;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+/**
+ * Created by matthaeus.schmedding on 16.04.2015.
+ */
+public class Experiment extends com.recalot.common.interfaces.model.experiment.Experiment {
+
+    public Experiment(String id, String dataSourceId, Recommender[] recommenders, Metric[] metrics, Map<String, String> config) {
+        this.id = id;
+        this.recommenders = recommenders;
+        this.metrics = metrics;
+        this.config = config;
+
+        recommenderIds = new String[this.recommenders.length];
+        for (int i = 0; i < recommenders.length; i++) {
+            recommenderIds[i] = recommenders[i].getId();
+        }
+
+        this.dataSourceId = dataSourceId;
+        this.metrics = metrics;
+        this.result = new ArrayList<>();
+    }
+
+
+    @Override
+    public void train() {
+        for (Recommender r : recommenders) {
+            try {
+                r.train(this.testSet, Helper.readConfigForId(this.config, r.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (this.logger != null) {
+                    this.logger.log(LogService.LOG_ERROR, String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void test() {
+
+    }
+
+}

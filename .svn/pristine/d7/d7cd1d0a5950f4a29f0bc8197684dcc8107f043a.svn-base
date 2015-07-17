@@ -1,0 +1,11 @@
+package com.recalot.common.interfaces.communication;
+
+import java.util.List;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface RecommendationResult {
+    public String getRecommender();
+    public List<RecommendedItem> getItems();
+}

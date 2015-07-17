@@ -1,0 +1,145 @@
+package com.recalot.views.data.sources;
+
+import com.recalot.common.Helper;
+import com.recalot.common.communication.TemplateResult;
+import com.recalot.common.interfaces.controller.DataAccessController;
+import com.recalot.views.common.GenericControllerHandler;
+import com.recalot.views.common.HTTPMethods;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class Servlet extends HttpServlet {
+    private GenericControllerHandler handler;
+    private Pattern pattern;
+
+    public Servlet(GenericControllerHandler handler) {
+        this.handler = handler;
+        this.pattern = Pattern.compile("(\\/)([\\w\\-\\+]*)+");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        processRequest(req, res, HTTPMethods.GET);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        processRequest(req, res, HTTPMethods.POST);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        processRequest(req, res, HTTPMethods.DELETE);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        processRequest(req, res, HTTPMethods.PUT);
+    }
+
+
+    protected void processRequest(HttpServletRequest req, HttpServletResponse res, HTTPMethods method) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+
+        //Collect all parameter
+        Map<String, String> params = new HashMap<>();
+
+        Map names = req.getParameterMap();
+        if (names != null) {
+            for (Object key : names.keySet()) {
+                params.put((String) key, req.getParameter((String) key));
+            }
+        }
+
+
+        //default template is json
+        String templateKey = "json";
+
+        if (params.containsKey(Helper.Keys.OutputParam)) {
+            String tempKey = params.get(Helper.Keys.OutputParam);
+            if (tempKey != null && !tempKey.equals("")) {
+                templateKey = tempKey;
+            }
+        }
+
+
+        TemplateResult result = null;
+        try {
+            if (pathInfo != null && !pathInfo.equals("")) {
+                Matcher matcher = pattern.matcher(pathInfo);
+
+                while (matcher.find()) {
+                    if (matcher.groupCount() > 1) {
+                        String sourceId = matcher.group(0).substring(1);
+                        if (sourceId != null && !sourceId.equals("")) {
+                            boolean isConnection = false;
+
+                            if(sourceId.startsWith("connection-")){
+                                params.put(Helper.Keys.SourceId, sourceId.replace("connection-", ""));
+                                isConnection = true;
+                            } else {
+                                params.put(Helper.Keys.SourceId, sourceId);
+                            }
+
+                            switch (method) {
+                                case PUT: {
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.UpdateSource, templateKey, params);
+                                    break;
+                                }
+
+                                case GET: {
+                                    if(isConnection){
+                                        result = handler.process(DataAccessController.DataAccessRequestAction.GetConnection, templateKey, params);
+                                    } else {
+                                        result = handler.process(DataAccessController.DataAccessRequestAction.GetSource, templateKey, params);
+                                    }
+                                    break;
+                                }
+                                case DELETE: {
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.DeleteSource, templateKey, params);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (pathInfo == null || pathInfo.equals("")) {
+                switch (method) {
+                    case GET: {
+                        result = handler.process(DataAccessController.DataAccessRequestAction.GetSources, templateKey, params);
+                        break;
+                    }
+                    case PUT: {
+                        result = handler.process(DataAccessController.DataAccessRequestAction.CreateSource, templateKey, params);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        if (result == null) {
+            //   out.println("TODO print error");
+        } else {
+            res.setContentType(result.getContentType());
+            res.setCharacterEncoding(result.getCharset().name());
+            res.setStatus(result.getStatus());
+            PrintWriter out = res.getWriter();
+            Helper.Copy(out, result.getResult());
+        }
+    }
+}

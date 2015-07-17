@@ -1,0 +1,99 @@
+package com.recalot.model.rec.recommender.mostpopular;
+
+import com.recalot.common.Helper;
+import com.recalot.common.communication.RecommendationResult;
+import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.DataSet;
+import com.recalot.common.interfaces.communication.Interaction;
+import com.recalot.common.interfaces.model.rec.Recommender;
+
+
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class MostPopularRecommender extends Recommender {
+
+    private Map<String, String> config;
+    private DataSet dataSet;
+    private List<com.recalot.common.interfaces.communication.RecommendedItem> recommendedItems;
+    private RecommendationResult result;
+
+    protected MostPopularRecommender(Map<String, String> config) {
+        this.setConfiguration(new ArrayList<>());
+        this.setState(RecommenderState.AVAILABLE);
+        this.setKey("most-popular");
+        this.setId(config.containsKey(com.recalot.common.Helper.Keys.WishedId) ? config.get(com.recalot.common.Helper.Keys.WishedId) : getKey());
+        this.setDataSourceId(config.containsKey(com.recalot.common.Helper.Keys.SourceId) ? config.get(com.recalot.common.Helper.Keys.SourceId) : "none");
+        this.config = config;
+    }
+
+    public static Recommender createInstance() {
+        return new MostPopularRecommender(new HashMap<>());
+    }
+
+    @Override
+    public MostPopularRecommender createInstance(Map<String, String> param) {
+        return new MostPopularRecommender(param);
+    }
+
+    @Override
+    public void train(DataSet dataSet, Map<String, String> config) throws BaseException {
+        this.dataSet = dataSet;
+
+        Map<String, Integer> count = new LinkedHashMap<>();
+
+        for (Interaction interaction : dataSet.getInteractions()) {
+            Helper.incrementMapValue(count, interaction.getItemId());
+        }
+
+        this.recommendedItems = new ArrayList<>();
+
+        count = Helper.sortByValueDescending(count);
+
+        double sum = Helper.sum(count);
+        for (String key : count.keySet()) {
+            recommendedItems.add(new RecommendedItem(key, 1.0 * count.get(key) / sum));
+        }
+
+        this.result = new RecommendationResult(getKey(), recommendedItems);
+    }
+
+    @Override
+    public RecommendationResult recommend() {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(Object context) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(Map<String, String> configOrContext) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user, Object context) {
+        return result;
+    }
+
+    @Override
+    public RecommendationResult recommend(String user, Map<String, String> configOrContext) {
+        return result;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

@@ -1,0 +1,111 @@
+package com.recalot.common;
+
+import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.communication.Service;
+import com.recalot.common.log.LogTracker;
+import org.osgi.framework.*;
+import org.osgi.service.log.LogService;
+
+import java.util.*;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class GenericServiceListener<T extends Service> implements ServiceListener {
+    private BundleContext context;
+    private final Map<String, T> instances;
+    private String className;
+
+    private LogTracker logger;
+
+    public GenericServiceListener(BundleContext context, String className) {
+        this.context = context;
+        this.instances = new LinkedHashMap<>();
+
+        logger = new LogTracker(context);
+        this.className = className;
+        initialize();
+    }
+
+    private void initialize() {
+        try {
+            ServiceReference[] references = this.context.getServiceReferences(className, null);
+            if (references != null) {
+                for (ServiceReference ref : references) {
+                    T instance = (T) context.getService(ref);
+                    addInstance(instance.getKey(), instance);
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+            logger.log(LogService.LOG_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public void serviceChanged(ServiceEvent event) {
+        String[] objectClass = (String[]) event.getServiceReference().getProperty(Constants.OBJECTCLASS);
+
+        if (className.equals(objectClass[0])) {
+            T instance = (T) context.getService(event.getServiceReference());
+
+            if (event.getType() == ServiceEvent.REGISTERED) {
+                addInstance(instance.getKey(), instance);
+            } else if (event.getType() == ServiceEvent.UNREGISTERING) {
+                removeInstance(instance.getKey());
+            } else if (event.getType() == ServiceEvent.MODIFIED) {
+                updateInstance(instance.getKey(), instance);
+            }
+        }
+    }
+
+
+    public T getFirstInstance() {
+        // Lock list and add service object.
+        synchronized (instances) {
+            if (instances.values().size() > 0)
+                return (T) instances.values().toArray()[0];
+        }
+
+
+        return null;
+    }
+
+    public T getInstance(String key) throws NotFoundException {
+        // Lock list and add service object.
+        synchronized (instances) {
+            if (instances.containsKey(key))
+                return instances.get(key);
+        }
+
+        throw new NotFoundException("Service instance for key %s and class %s cannot be found.", key, className);
+    }
+
+    private void updateInstance(String id, T instance) {
+        // Lock list and add service object.
+        synchronized (instances) {
+            instances.put(id, instance);
+            logger.log(LogService.LOG_INFO, "Update " + className + " with id " + id);
+        }
+    }
+
+    private void removeInstance(String id) {
+        // Lock list and remove service object.
+        synchronized (instances) {
+            if (!instances.containsKey(id)) instances.remove(id);
+            logger.log(LogService.LOG_INFO, "Remove " + className + " with id " + id);
+        }
+    }
+
+    private void addInstance(String id, T instance) {
+        // Lock list and replace service object.
+        synchronized (instances) {
+            if (!instances.containsKey(id)) instances.put(id, instance);
+            logger.log(LogService.LOG_INFO, "Add " + className + " with id " + id);
+        }
+    }
+
+    public ArrayList<T> getAll() {
+        return new ArrayList<>(instances.values());
+    }
+}

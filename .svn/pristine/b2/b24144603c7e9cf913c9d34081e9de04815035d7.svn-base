@@ -1,0 +1,14 @@
+package com.recalot.common.interfaces.model.data;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.communication.Service;
+
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface DataConnection extends DataInformation, Service {
+    public DataSource create(String id, Map<String, String> param) throws BaseException;
+    public void connect(DataSource source, Map<String, String> param) throws BaseException;
+}

@@ -1,0 +1,10 @@
+package com.recalot.common.configuration;
+
+import java.util.List;
+
+/**
+ * Created by matthaeus.schmedding on 02.04.2015.
+ */
+public interface Configurable {
+    public List<ConfigurationItem> getConfiguration();
+}

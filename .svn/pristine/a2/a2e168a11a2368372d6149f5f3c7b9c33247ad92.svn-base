@@ -1,0 +1,20 @@
+package com.recalot.common.interfaces.model;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.Message;
+import com.recalot.common.interfaces.communication.Service;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface ExperimentAccess extends Service {
+
+
+    public Experiment getExperiment(String id) throws BaseException;
+    public Message deleteExperiment(String id)  throws BaseException;
+    public List<Experiment> getExperiments()  throws BaseException;
+    public  Experiment  createExperiment(Recommender recommender, DataSource dataSource, Map<String, String> param) throws BaseException;
+}

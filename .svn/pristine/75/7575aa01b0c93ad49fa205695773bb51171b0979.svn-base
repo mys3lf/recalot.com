@@ -1,0 +1,27 @@
+package com.recalot.common.interfaces.model;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.DataSet;
+import com.recalot.common.interfaces.communication.RecommendationResult;
+import com.recalot.common.interfaces.communication.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface Recommender extends RecommenderInformation, Service {
+
+
+    public  Recommender createInstance(Map<String, String> param);
+
+    public void train(DataSet dataSet, Map<String, String> config) throws BaseException;
+
+    public RecommendationResult recommend();
+    public RecommendationResult recommend(Object context);
+    public RecommendationResult recommend(Map<String, String> configOrContext);
+    public RecommendationResult recommend(String user);
+    public RecommendationResult recommend(String user, Object context);
+    public RecommendationResult recommend(String user, Map<String, String> configOrContext);
+}

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="flexjson">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/flexjson.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

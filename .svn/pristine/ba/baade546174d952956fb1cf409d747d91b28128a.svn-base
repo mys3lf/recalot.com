@@ -1,0 +1,13 @@
+Manifest-Version: 1
+Bundle-Activator: com.example.cars.consume.Activator
+Bundle-Description: Lorem Ipsum
+Bundle-ManifestVersion: 2
+Bundle-Name: Dummy Tracking   Consume
+Bundle-SymbolicName: consume
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.SNAPSHOT
+Import-Package: org.osgi.framework,
+ com.example.cars.interfaces
+
+
+

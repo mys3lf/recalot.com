@@ -1,0 +1,170 @@
+package com.recalot.templates.data;
+
+import com.recalot.common.communication.*;
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.data.DataInformation;
+import com.recalot.common.interfaces.model.data.DataSource;
+import com.recalot.common.interfaces.template.DataTemplate;
+import com.recalot.templates.base.PlainTextBaseTemplate;
+
+import java.io.*;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public class PlainTextDataTemplate extends PlainTextBaseTemplate implements DataTemplate {
+
+    @Override
+    public TemplateResult transform(DataSet dataSet) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("items count: " + dataSet.getItems().length + "\n");
+        sb.append("users count: " + dataSet.getUsers().length + "\n");
+        sb.append("interactions count: " + dataSet.getInteractions().length + "\n");
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(Interaction[] interactions) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        for (Interaction i : interactions) {
+            sb.append("interaction id: " + i.getId() + "\n");
+            sb.append("user id: " + i.getItemId() + "\n");
+            sb.append("item id: " + i.getUserId() + "\n");
+            sb.append("type: " + i.getType() + "\n");
+            sb.append("timestamp: " + i.getTimeStamp() + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(Interaction interaction) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("interaction id: " + interaction.getId() + "\n");
+        sb.append("user id: " + interaction.getItemId() + "\n");
+        sb.append("item id: " + interaction.getUserId() + "\n");
+        sb.append("type: " + interaction.getType() + "\n");
+        sb.append("timestamp: " + interaction.getTimeStamp() + "\n");
+
+        Map<String, String> info = interaction.getContent();
+        for (String key : info.keySet()) {
+            sb.append(key + ":" + getString(info.get(key)) + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(Item[] items) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        for (Item i : items) {
+            sb.append(i.getId() + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(Item item) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("item id: " + item.getId() + "\n");
+
+        Map<String, String> info = item.getContent();
+        for (String key : info.keySet()) {
+            sb.append(key + ":" + getString(info.get(key)) + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(User[] users) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        for (User u : users) {
+            sb.append(u.getId() + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(User user) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("user id: " + user.getId() + "\n");
+        Map<String, String> info = user.getContent();
+        for (String key : info.keySet()) {
+            sb.append(key + ":" + getString(info.get(key)) + "\n");
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    private String getString(Object o) {
+        if (o instanceof String) {
+            return (String) o;
+        } else if (o instanceof List) {
+            StringBuilder sb = new StringBuilder();
+            for (Object i : ((List) o)) {
+                sb.append(i + "|");
+            }
+
+            return sb.toString();
+        }
+        return o.toString();
+    }
+
+    @Override
+    public TemplateResult transform(List<DataInformation> sources) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("sources count: " + sources.size() + "\n");
+
+        for (DataInformation source : sources) {
+            sb.append(source.getId() + ":" + source.getState());
+        }
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(DataSource source) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("data source: " + source.getId() + "\n");
+        sb.append("items count: " + source.getItems().length + "\n");
+        sb.append("users count: " + source.getUsers().length + "\n");
+        sb.append("interactions count: " + source.getInteractions().length + "\n");
+
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(DataInformation connection) throws BaseException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("id: " + connection.getId() + "\n");
+        sb.append("class: " + connection.getClass().getName() + "\n");
+        sb.append("configuration\n");
+
+        /*
+        for(ConfigurationItem item : connection.getConfiguration()){
+            sb.append(item.getKey() + " : " + item.getValue() +  " : " + item.getRequirement() +  " : " + item.getType() +"\n");
+        }
+*/
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(sb.toString().getBytes(charset)), charset);
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
+}

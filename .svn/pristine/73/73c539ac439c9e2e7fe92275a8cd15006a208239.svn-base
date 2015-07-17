@@ -1,0 +1,18 @@
+Manifest-Version: 1
+Bundle-Description: Controller which delegates the data handling
+Bundle-ManifestVersion: 2
+Bundle-Name: Recalot.com Controller - Data Common
+Bundle-SymbolicName: com.recalot.controller.common
+Bundle-Vendor: Recalot.com
+Bundle-Version: 1.0.0.8
+Import-Package: org.osgi.framework,
+    com.recalot.common.communication,
+    com.recalot.common.exceptions,
+ com.recalot.common.impl.template,
+ com.recalot.common.interfaces.controller,
+ com.recalot.common.interfaces.model,
+ com.recalot.common.interfaces.communication,
+ com.recalot.common.interfaces.template,
+ com.recalot.common
+Export-Package: com.recalot.controller.common
+

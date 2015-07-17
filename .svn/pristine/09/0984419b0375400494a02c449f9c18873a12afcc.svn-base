@@ -1,0 +1,19 @@
+package com.recalot.common.interfaces.model;
+
+import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.communication.*;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface ItemDataAccess {
+    public Item[] getItems() throws BaseException;
+    public Item getItem(String itemId) throws BaseException;
+    public Message updateItem(String itemId, Map<String, String> content) throws BaseException;
+    public Message createItem(Map<String, String> content) throws BaseException;
+}

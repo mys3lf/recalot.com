@@ -1,0 +1,29 @@
+package com.recalot.common.communication;
+
+import java.util.HashMap;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public class User {
+
+    private String id;
+    private HashMap<String, String> map;
+
+    public User(String id, HashMap<String, String> map){
+        this.id = id;
+        this.map = map;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public HashMap<String, String> getAll() {
+        return map;
+    }
+
+    public String getValue(String key) {
+        return map.get(key);
+    }
+}

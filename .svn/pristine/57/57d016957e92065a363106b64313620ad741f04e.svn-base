@@ -1,0 +1,15 @@
+package com.recalot.common.interfaces.model.experiment;
+
+import com.recalot.common.configuration.Configurable;
+import com.recalot.common.exceptions.BaseException;
+
+import java.util.HashMap;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public abstract class Metric extends Configurable {
+    public abstract Metric create(HashMap<String, String> config) throws BaseException;
+    public abstract double getResult();
+    public abstract void reset();
+}

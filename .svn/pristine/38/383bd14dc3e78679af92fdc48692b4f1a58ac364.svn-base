@@ -1,0 +1,18 @@
+package com.recalot.common.interfaces.template;
+
+import com.recalot.common.interfaces.communication.RecommendationResult;
+import com.recalot.common.interfaces.model.rec.Recommender;
+import com.recalot.common.interfaces.model.rec.RecommenderInformation;
+
+import java.util.List;
+
+/**
+ * @author Matthaeus.schmedding
+ */
+public interface RecommenderTemplate extends BaseTemplate {
+
+    public String getKey();
+    public TemplateResult transform(RecommenderInformation[] recommenders);
+    public TemplateResult transform(Recommender recommender);
+    public TemplateResult transform(RecommendationResult recommend);
+}

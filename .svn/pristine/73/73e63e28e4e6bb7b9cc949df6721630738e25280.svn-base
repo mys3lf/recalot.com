@@ -1,0 +1,12 @@
+package com.recalot.common.communication;
+
+import java.io.Closeable;
+
+/**
+ * @author matthaeus.schmedding
+ */
+public interface Service extends Closeable {
+    public String getKey();
+    public String getDescription();
+}
+
