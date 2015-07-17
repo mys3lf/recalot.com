@@ -213,6 +213,9 @@
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode />
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -1102,7 +1105,13 @@
       <option name="project" value="LOCAL" />
       <updated>1437124742892</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Test commit">
+      <created>1437124766330</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1437124766330</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
