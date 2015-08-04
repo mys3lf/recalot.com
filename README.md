@@ -14,10 +14,10 @@ between data, recommendations and evaluation affiliation.
 The API consists of the following OSGi bundles:
 
 | Bundle   | Description |      MVC-Affiliation      |  Type |
-|-|-|-|-|
+| -|-|-|-|
 | **com.recalot.common**  | Contains all interface definitions, helpers and common used classes | Global | Global |  
 | **com.recalot.controller.data** | Contains the controller that is responsible for data requests. | Controller | Data | 
-| **com.recalot.controller.experiments** | Contains the controller that is responsible for evaluation requests.  | Controller | Evaluation|  
+| **com.recalot.controller.experiments** | Contains the controller that is responsible for evaluation requests.  | Controller | Evaluation |
 | **com.recalot.controller.recommendations** | Contains the controller that is responsible for recommendations requests. | Controller | Recommendations |  
 | **com.recalot.model.data.access** | Does the actual "data" work. Listens to new service of data builders. Delegate data source connection processes. Stores data source instances.  | Model | Data |  
 | **com.recalot.model.data.connections** | Contains a few data source builders. | Model | Data|  
@@ -42,6 +42,14 @@ Furthermore the following OSGi bundles are also part of the project, but represe
 | **com.recalot.demos.wallpaper** | A wallpaper recommendations website. |
 | **com.recalot.repo** | The Recalot.com OSGi Repository |
 | **com.recalot.unittests** | Some unittests |
+
+
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 
 # Getting Started
 
@@ -173,10 +181,4 @@ limitations under the License.
     [Website](http://ls13-www.cs.tu-dortmund.de/homepage/recommender101/index.shtml)
     [License](http://us.codeforge.com/read/239649/license.txt__html)
 
-
-
-    | First Header  | Second Header |
-    | ------------- | ------------- |
-    | Content Cell  | Content Cell  |
-    | Content Cell  | Content Cell  |
 
