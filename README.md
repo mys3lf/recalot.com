@@ -6,7 +6,33 @@ The idea behind recalot.com is to build a RESTFul recommender system that can be
 If you have any comments or suggestions for improvement, feel free to contact us <info@recalot.com>
 
 # Architecture Overview
-coming soon
+
+Containing OSGi Bundles:
+-   **com.recalot.common**
+    contains all interface defintions, helpers and common used classes.
+-   **com.recalot.controller.data**
+    
+-   **com.recalot.controller.experiments**
+-   **com.recalot.controller.recommendations**
+-   **com.recalot.demos.wallpaper**
+-   **com.recalot.model.data.access**
+-   **com.recalot.model.data.connections**
+-   **com.recalot.model.experiments.common**
+-   **com.recalot.model.experiments.metrics**
+-   **com.recalot.model.rec.access**
+-   **com.recalot.model.rec.recommender**
+-   **com.recalot.portal**
+-   **com.recalot.repo**
+-   **com.recalot.templates**
+-   **com.recalot.unittests**
+-   **com.recalot.views.common**
+-   **com.recalot.views.data.access**
+-   **com.recalot.views.data.sources**
+-   **com.recalot.views.data.tracking**
+-   **com.recalot.views.experiments**
+-   **com.recalot.views.recommend**
+-   **com.recalot.views.recommend.train**
+
 # Getting Started
 
 ## Quick Install
@@ -60,8 +86,8 @@ Before the training of a recommender it is necessary to connect a data source. Y
 - MySQL Source Builder
 - MovieLens File Source Builder
 
-More builders are coming soon. Each builder has this own configurations. Before you connect a data source you can access the configuration of the builder by sending a GET request to ``/sources/{data-source-id}``.  The result will contain an configuration object with an array of configuration items. e.g. MySQL Data Builder:
-```
+More builders are coming soon. Each builder has this own configurations. Before you connect a data source you can access the configuration of the builder by sending a GET request to ``/sources/{data-source-id}``.  The result contains an configuration object with an array of configuration items. e.g. MySQL Data Builder:
+```js
 configuration: [
 {key: "sql-database", requirement: "Required", type: "String", value: ""},
 {key: "sql-password", requirement: "Required", type: "String", value: ""},
@@ -72,6 +98,22 @@ configuration: [
 ]
 ```
 For a detailed description of the data schema take a look at the swagger documention. Link coming soon. 
+
+This configuration object shows which configuration items the data source needs. The field "requirement" provides information about the requirement of the configuration item. Items with the value "Hidden" and "Required" are required and must be send within the request body. For the connection of a data source, send a PUT request with the necessary configuration items to ```/sources``` e.g. MySQL:
+
+```
+Request URL:http://localhost:8080/sources
+Request Method:PUT
+Form Data
+    sql-database:default
+    sql-password:password
+    sql-username:admin
+    data-builder-id:mysql
+    source-id:chosenid
+    sql-server:mysql://localhost:3306
+```
+
+The MySQL Data Source will automaticly create all necessary tables. Take a look at the "Experiments Portal" (```\portal\```), a lot of request can be done there with help of an user interface. 
 
 ## Train Recommender
 coming soon

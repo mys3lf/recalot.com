@@ -4,7 +4,7 @@ Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.demo.wallpaper
 Export-Package: com.recalot.views.data.access;version="0.0.0"
 Bundle-Name: Recalot.com Demos - Wallpaper
-Bundle-Version: 0.0.0.22
+Bundle-Version: 0.0.0.36
 Bundle-ManifestVersion: 2
 Bundle-Activator: com.recalot.demos.wallpaper.Activator
 Bundle-Vendor: Recalot.com
