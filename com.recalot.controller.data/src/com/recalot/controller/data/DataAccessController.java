@@ -5,6 +5,7 @@ import com.recalot.common.GenericServiceListener;
 import com.recalot.common.Helper;
 import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotReadyException;
 import com.recalot.common.interfaces.controller.RequestAction;
@@ -139,6 +140,10 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
     private TemplateResult getDataSourceBuilder(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         String id = param.get(Helper.Keys.SourceId);
         DataSourceBuilder builder = access.getDataSourceBuilder(id);
+
+        if(builder.getConfiguration(Helper.Keys.DataBuilderId) == null) {
+            builder.setConfiguration(new ConfigurationItem(Helper.Keys.DataBuilderId, ConfigurationItem.ConfigurationItemType.String, builder.getKey(), ConfigurationItem.ConfigurationItemRequirementType.Hidden));
+        }
 
         return template.transform(builder);
     }

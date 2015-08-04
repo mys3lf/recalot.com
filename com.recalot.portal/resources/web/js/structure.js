@@ -111,7 +111,14 @@ var structure = [
                 ],
                 detail: {
                     action: "/train/{0}",
-                    type: "json"
+                    type: "json",
+                    buttons: [
+                        {
+                          name: "get",
+                          glyphicon: "glyphicon glyphicon-plus",
+                          form: {action: "/rec", method: "GET"}
+                        }
+                    ]
                 }
             }
          },
@@ -138,7 +145,7 @@ var structure = [
                           name: "update",
                           glyphicon: "glyphicon glyphicon-plus",
                           form: {action: "/train", method: "PUT"}
-                        }x
+                        }
                     ]
                 }
             }
@@ -157,19 +164,18 @@ var structure = [
         {
         name:"Running experiments",
         id:"running",
-                content: {
-                     type: "list",
-                     action:"/experiments/splitters",
-                     method: "get",
-                     autoupdate: 10,
-                     buttons: [],
-                     detail: {
-                         action: "/experiments/splitters/{0}",
-                         type: "json",
-                         buttons: []
-                         }
-                     }
-                },
+        content: {
+             type: "list",
+             action:"/experiments/splitters",
+             method: "get",
+             autoupdate: 10,
+             buttons: [],
+             detail: {
+                 action: "/experiments/splitters/{0}",
+                 type: "json",
+                 buttons: []
+                 }
+             }
         },
         {
         name:"Available DataSplitters",

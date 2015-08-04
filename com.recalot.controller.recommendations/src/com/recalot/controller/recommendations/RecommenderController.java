@@ -126,6 +126,14 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
         if(recommender == null) throw new NotFoundException("Recommender with the id %s not found.", param.get(Helper.Keys.RecommenderId));
 
+        if(recommender.getConfiguration(Helper.Keys.UserId) == null) {
+            recommender.setConfiguration(new ConfigurationItem(Helper.Keys.UserId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+        }
+
+        if(recommender.getConfiguration(Helper.Keys.ItemId) == null) {
+           recommender.setConfiguration(new ConfigurationItem(Helper.Keys.ItemId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        }
+
         return template.transform(recommender);
     }
 

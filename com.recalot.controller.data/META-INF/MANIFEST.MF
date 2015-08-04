@@ -4,7 +4,7 @@ Bundle-Description: Controller which delegates the data handling
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.data
 Bundle-Name: Recalot.com Controller - Data
-Bundle-Version: 1.0.0.477
+Bundle-Version: 1.0.0.489
 Bundle-Activator: com.recalot.controller.data.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
@@ -14,5 +14,5 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  common.interfaces.controller,com.recalot.common.interfaces.model.data
  ,com.recalot.common.interfaces.model.rec,com.recalot.common.interface
  s.model.experiment,com.recalot.common.interfaces.template,com.recalot
- .common
+ .common, com.recalot.common.configuration, com.recalot.common.builder
 

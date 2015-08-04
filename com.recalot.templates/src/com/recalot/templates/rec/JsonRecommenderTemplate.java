@@ -24,7 +24,7 @@ public class JsonRecommenderTemplate extends JsonBaseTemplate implements Recomme
 
     @Override
     public TemplateResult transform(Recommender recommender) {
-        String result = getSerializer().exclude("class").include("dataSet", "key", "state", "id").exclude("*").serialize(recommender);
+        String result = getSerializer().exclude("class").include("dataSet", "key", "state", "id", "configuration", "configuration.*").exclude("*").serialize(recommender);
 
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }

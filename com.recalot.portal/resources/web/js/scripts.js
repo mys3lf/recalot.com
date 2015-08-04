@@ -204,7 +204,7 @@ function renderDetail(data, item){
     detail.css("background-image", "url('/portal/imgs/loading.gif')");
 
     $.ajax({
-        url: data.content.detail.action.replace("{0}", item.id),
+        url: data.content.detail.action.replace("{0}", item.id != null ? item.id : item.key),
         method: data.content.detail.method != null ? data.content.detail.method : "GET",
         context: {data: data, item: item, nextFunction: _renderDetailWindow}
     }).success(function(data, status, jqXHR){

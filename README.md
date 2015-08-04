@@ -6,7 +6,7 @@ The idea behind recalot.com is to build a RESTFul recommender system that can be
 If you have any comments or suggestions for improvement, feel free to contact us <info@recalot.com>
 
 # Architecture Overview
-
+coming soon
 # Getting Started
 
 ## Quick Install

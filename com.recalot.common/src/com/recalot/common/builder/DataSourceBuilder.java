@@ -28,7 +28,6 @@ public class DataSourceBuilder extends InstanceBuilder<DataSource> implements Da
         super(initiator, className, key, description);
 
         setConfiguration(new ConfigurationItem(Helper.Keys.SourceId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-        setConfiguration(new ConfigurationItem(Helper.Keys.DataBuilderId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
     }
 
     /**

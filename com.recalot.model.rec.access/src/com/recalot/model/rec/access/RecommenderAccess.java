@@ -68,7 +68,6 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
         allAvailableRecommender.addAll(recommender.values());
         allAvailableRecommender.addAll(recommenderListener.getAll());
 
-
         return allAvailableRecommender.toArray(new RecommenderInformation[allAvailableRecommender.size()]);
     }
 
