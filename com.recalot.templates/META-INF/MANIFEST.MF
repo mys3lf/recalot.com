@@ -11,7 +11,7 @@ Bundle-Description: This bundle contains the data templates for the ou
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.templates.data
 Bundle-Name: Recalot.com Templates - Data
-Bundle-Version: 1.0.0.506
+Bundle-Version: 1.0.0.508
 Bundle-ManifestVersion: 2
 Bundle-Activator: com.recalot.templates.Activator
 Bundle-Vendor: Recalot.com

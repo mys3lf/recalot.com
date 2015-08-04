@@ -50,14 +50,28 @@ The quick install quide will show how to install the "Experiments Portal" bundle
         ```
 
 The webservice uses a jetty as a webserver and under the default configuration the jetty listens to port 8080 on your local machine. Try to call http://localhost:8080/sources to list all data sources, that are available, connected or are currently connecting. The default output format is json. 
+## Tools
+
+Take a look at ```/portal/```. You will there a solution with an overview of a variety of possible API requests. I did not put much effort in the building of the portal. It was just a testing device for me, but works pretty good so i uploaded it as well. 
+
 ## Connect Data Source
 
-Before the training of a recommender it is necessary to connect a data source. You can use one of the predefined data source connectors or write your own one. So far the following data source connectors exists:
-- MySQL Connector
-- MovieLens File Connector
+Before the training of a recommender it is necessary to connect a data source. You can use one of the predefined data source builders or write your own one. So far the following data source builders exists:
+- MySQL Source Builder
+- MovieLens File Source Builder
 
-More connectors are coming soon. 
-
+More builders are coming soon. Each builder has this own configurations. Before you connect a data source you can access the configuration of the builder by sending a GET request to ``/sources/{data-source-id}``.  The result will contain an configuration object with an array of configuration items. e.g. MySQL Data Builder:
+```
+configuration: [
+{key: "sql-database", requirement: "Required", type: "String", value: ""},
+{key: "sql-password", requirement: "Required", type: "String", value: ""},
+{key: "sql-username", requirement: "Required", type: "String", value: ""},
+{key: "data-builder-id", requirement: "Hidden", type: "String", value: "mysql"},
+{key: "source-id", requirement: "Required", type: "String", value: ""},
+{key: "sql-server", requirement: "Required", type: "String", value: ""}
+]
+```
+For a detailed description of the data schema take a look at the swagger documention. Link coming soon. 
 
 ## Train Recommender
 coming soon

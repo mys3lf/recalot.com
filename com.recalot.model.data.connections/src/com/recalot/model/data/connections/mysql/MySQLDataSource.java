@@ -116,6 +116,7 @@ public class MySQLDataSource extends DataSource {
             this.initialized = true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new NotFoundException("SQL Server not found");
         } finally {
             try {
                 close();

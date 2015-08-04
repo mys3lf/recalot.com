@@ -159,19 +159,31 @@ var structure = [
     children: [
         {
         name:"Finished experiments",
-        id:"finished"
+        id:"finished",
+       content: {
+                 type: "list",
+                 action:"/experiments/?state=FINISHED",
+                 method: "get",
+                 autoupdate: 10,
+                 buttons: [],
+                 detail: {
+                     action: "/experiments/{0}",
+                     type: "json",
+                     buttons: []
+                     }
+                 }
         },
         {
         name:"Running experiments",
         id:"running",
         content: {
              type: "list",
-             action:"/experiments/splitters",
+             action:"/experiments/?state=RUNNING",
              method: "get",
              autoupdate: 10,
              buttons: [],
              detail: {
-                 action: "/experiments/splitters/{0}",
+                 action: "/experiments/{0}",
                  type: "json",
                  buttons: []
                  }
@@ -180,7 +192,7 @@ var structure = [
         {
         name:"Available DataSplitters",
         id:"splitter",
-         content: {
+        content: {
              type: "list",
              action:"/experiments/splitters",
              method: "get",
