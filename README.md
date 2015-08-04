@@ -53,9 +53,8 @@ The quick install quide will show how to install the "Experiments Portal" bundle
 ### Todos
 
  - Write Tests
- - Rethink Github Save
  - Add Code Comments
- - Add Night Mode
+ - Add more functionality
 
 # License
 
