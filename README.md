@@ -13,8 +13,8 @@ between data, recommendations and evaluation affiliation.
 
 The API consists of the following OSGi bundles:
 
-| Bundle   | Description |      MVC-Affiliation      |  Type |
-| -|-|-|-|
+| Bundle  | Description | MVC | Type |
+| ------------- | ------------- | ------------- | ------------- |
 | **com.recalot.common**  | Contains all interface definitions, helpers and common used classes | Global | Global |  
 | **com.recalot.controller.data** | Contains the controller that is responsible for data requests. | Controller | Data | 
 | **com.recalot.controller.experiments** | Contains the controller that is responsible for evaluation requests.  | Controller | Evaluation |
@@ -45,10 +45,10 @@ Furthermore the following OSGi bundles are also part of the project, but represe
 
 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| First Header  | Second Header | Second Header | Second Header |
+| ------------- | ------------- | ------------- | ------------- |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 
 
 # Getting Started
