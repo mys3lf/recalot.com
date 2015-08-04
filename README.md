@@ -13,26 +13,26 @@ between data, recommendations and evaluation affiliation.
 
 The API consists of the following OSGi bundles:
 
-| Bundle  | Description | MVC | Type |
-| ------------- | ------------- | ------------- | ------------- |
-| **com.recalot.common**  | Contains all interface definitions, helpers and common used classes | Global | Global |  
-| **com.recalot.controller.data** | Contains the controller that is responsible for data requests. | Controller | Data | 
-| **com.recalot.controller.experiments** | Contains the controller that is responsible for evaluation requests.  | Controller | Evaluation |
-| **com.recalot.controller.recommendations** | Contains the controller that is responsible for recommendations requests. | Controller | Recommendations |  
-| **com.recalot.model.data.access** | Does the actual "data" work. Listens to new service of data builders. Delegate data source connection processes. Stores data source instances.  | Model | Data |  
-| **com.recalot.model.data.connections** | Contains a few data source builders. | Model | Data|  
-| **com.recalot.model.experiments.common** | Contains helpers and common used classes for the experiment model classes | Model | Evaluation |  
-| **com.recalot.model.experiments.metrics** | Contains experiments metrics. | Model | Evaluation |   
-| **com.recalot.model.rec.access** | Does the actual "recommendation" work. Listens to new servicse of recommender builder. Delegate all kind of recommendation computation to the right recommendation instance. Stores recommendation instances.  | Model | Recommendations |  
-| **com.recalot.model.rec.recommender** | Contains recommendation algorithms. | Model | Recommendations |  
-| **com.recalot.templates** | Contains output templates. | Global | Global |   
-| **com.recalot.views.common** | Contains helpers and common used classes for the view classes  | View | Global |  
-| **com.recalot.views.data.access** | Allows to access data via REST | View | Data |  
-| **com.recalot.views.data.sources** |  Allows to access, connect and delete data sources via REST  | View | Data |  
-| **com.recalot.views.data.tracking** | Allows to save tracking information via REST  | View | Data |  
-| **com.recalot.views.experiments** |  Allows to perform experiments via REST  | View | Experiments |  
-| **com.recalot.views.recommend** | Allows to compute recommendations via REST  | View | Recommendations|  
-| **com.recalot.views.recommend.train** | Allows to train recommender algorithms via REST | View | Recommendations |  
+| Bundle  |  MVC | Type |
+| ------------- | ------------- | ------------- |
+| **com.recalot.common**  contains all interface definitions, helpers and common used classes | Global | Global |
+| **com.recalot.controller.data**  contains the controller that is responsible for data requests. | Controller | Data |
+| **com.recalot.controller.experiments** contains the controller that is responsible for evaluation requests.  | Controller | Evaluation |
+| **com.recalot.controller.recommendations** contains the controller that is responsible for recommendations requests. | Controller | Recommendations |
+| **com.recalot.model.data.access** does the actual "data" work. Listens to new service of data builders. Delegate data source connection processes. Stores data source instances.  | Model | Data |
+| **com.recalot.model.data.connections** contains a few data source builders. | Model | Data|
+| **com.recalot.model.experiments.common** contains helpers and common used classes for the experiment model classes | Model | Evaluation |
+| **com.recalot.model.experiments.metrics** contains experiments metrics. | Model | Evaluation |
+| **com.recalot.model.rec.access** does the actual "recommendation" work. Listens to new servicse of recommender builder. Delegate all kind of recommendation computation to the right recommendation instance. Stores recommendation instances.  | Model | Recommendations |
+| **com.recalot.model.rec.recommender** contains recommendation algorithms. | Model | Recommendations |
+| **com.recalot.templates** contains output templates. | Global | Global |
+| **com.recalot.views.common** contains helpers and common used classes for the view classes  | View | Global |
+| **com.recalot.views.data.access** allows to access data via REST | View | Data |
+| **com.recalot.views.data.sources** allows to access, connect and delete data sources via REST  | View | Data |
+| **com.recalot.views.data.tracking** allows to save tracking information via REST  | View | Data |
+| **com.recalot.views.experiments** allows to perform experiments via REST  | View | Experiments |
+| **com.recalot.views.recommend** allows to compute recommendations via REST  | View | Recommendations|
+| **com.recalot.views.recommend.train** allows to train recommender algorithms via REST | View | Recommendations |
 
 Furthermore the following OSGi bundles are also part of the project, but represent unit tests, tools or demos.
 
