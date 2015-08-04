@@ -6,32 +6,42 @@ The idea behind recalot.com is to build a RESTFul recommender system that can be
 If you have any comments or suggestions for improvement, feel free to contact us <info@recalot.com>
 
 # Architecture Overview
+The architecture of recalot.com is following the [MVC pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) and distinguishes furthermore
+between data, recommendations and evaluation affiliation. 
 
-Containing OSGi Bundles:
--   **com.recalot.common**
-    contains all interface defintions, helpers and common used classes.
--   **com.recalot.controller.data**
-    
--   **com.recalot.controller.experiments**
--   **com.recalot.controller.recommendations**
--   **com.recalot.demos.wallpaper**
--   **com.recalot.model.data.access**
--   **com.recalot.model.data.connections**
--   **com.recalot.model.experiments.common**
--   **com.recalot.model.experiments.metrics**
--   **com.recalot.model.rec.access**
--   **com.recalot.model.rec.recommender**
--   **com.recalot.portal**
--   **com.recalot.repo**
--   **com.recalot.templates**
--   **com.recalot.unittests**
--   **com.recalot.views.common**
--   **com.recalot.views.data.access**
--   **com.recalot.views.data.sources**
--   **com.recalot.views.data.tracking**
--   **com.recalot.views.experiments**
--   **com.recalot.views.recommend**
--   **com.recalot.views.recommend.train**
+![recalot.com Architecture](https://raw.githubusercontent.com/mys3lf/recalot.com/master/docs/imgs/architecture.png)
+
+The API consists of the following bundles:
+
+| Bundle   | Description |      MVC-Affiliation      |  Type |
+|-|-|-|-|
+| **com.recalot.common**  | contains all interface definitions, helpers and common used classes | Global | Global |  
+| **com.recalot.controller.data** | | Controller | Data |  
+| **com.recalot.controller.experiments** | | Controller | Evaluation|  
+| **com.recalot.controller.recommendations** | | Controller | Recommendations |  
+| **com.recalot.model.data.access** || Model | Data |  
+| **com.recalot.model.data.connections** || Model | Data|  
+| **com.recalot.model.experiments.common** || Model | Evaluation |  
+| **com.recalot.model.experiments.metrics** || Model | Evaluation |   
+| **com.recalot.model.rec.access** || Model | Recommendations |  
+| **com.recalot.model.rec.recommender** || Model | Recommendations |  
+| **com.recalot.templates** || Global | Global |   
+| **com.recalot.views.common** || View | Global |  
+| **com.recalot.views.data.access** || View | Data |  
+| **com.recalot.views.data.sources** || View | Data |  
+| **com.recalot.views.data.tracking** || View | Data |  
+| **com.recalot.views.experiments** || View | Experiments |  
+| **com.recalot.views.recommend** || View | Recommendations|  
+| **com.recalot.views.recommend.train** || View | Recommendations |  
+
+Furthermore the following bundles are also part of the project, but represent unit tests, tools or demos.
+
+| Bundle   | Description |  
+|-|-|
+| **com.recalot.portal** ||
+| **com.recalot.demos.wallpaper** ||
+| **com.recalot.repo** ||
+| **com.recalot.unittests** ||
 
 # Getting Started
 
@@ -128,7 +138,7 @@ coming soon
 
 # Todos
 
- - Write Tests
+ - Write more Tests
  - Write more documentation and tutorials
  - Add Code Comments
  - Add more functionality
