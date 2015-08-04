@@ -1,7 +1,7 @@
 # recalot.com
 Generic RESTful Recommender Service
 
-The idea behind recalot.com is to build a RESTFul recommender system that can be used for all sorts of applications. Currently the system is in alpha phase and documentation and tutorials are coming soon.
+The ideas behind recalot.com are to build a RESTFul recommender system that can be used for all sorts of applications, can easily be extended, can be used for offline as well as online evaluations and can be adjusted for scientific as well as industrial applications. Therefor we decide to build the API with the help of Apache Felix, which is an OSGi Framework. This allows a modular development, modules can easily be replaced in runtime and modules with new functionality can easily be added to the system. Currently the system is in alpha phase and documentation and tutorials are coming soon.
 
 If you have any comments or suggestions for improvement, feel free to contact us <info@recalot.com>
 
@@ -11,37 +11,37 @@ between data, recommendations and evaluation affiliation.
 
 ![recalot.com Architecture](https://raw.githubusercontent.com/mys3lf/recalot.com/master/docs/imgs/architecture.png)
 
-The API consists of the following bundles:
+The API consists of the following OSGi bundles:
 
 | Bundle   | Description |      MVC-Affiliation      |  Type |
 |-|-|-|-|
-| **com.recalot.common**  | contains all interface definitions, helpers and common used classes | Global | Global |  
-| **com.recalot.controller.data** | | Controller | Data |  
-| **com.recalot.controller.experiments** | | Controller | Evaluation|  
-| **com.recalot.controller.recommendations** | | Controller | Recommendations |  
-| **com.recalot.model.data.access** || Model | Data |  
-| **com.recalot.model.data.connections** || Model | Data|  
-| **com.recalot.model.experiments.common** || Model | Evaluation |  
-| **com.recalot.model.experiments.metrics** || Model | Evaluation |   
-| **com.recalot.model.rec.access** || Model | Recommendations |  
-| **com.recalot.model.rec.recommender** || Model | Recommendations |  
-| **com.recalot.templates** || Global | Global |   
-| **com.recalot.views.common** || View | Global |  
-| **com.recalot.views.data.access** || View | Data |  
-| **com.recalot.views.data.sources** || View | Data |  
-| **com.recalot.views.data.tracking** || View | Data |  
-| **com.recalot.views.experiments** || View | Experiments |  
-| **com.recalot.views.recommend** || View | Recommendations|  
-| **com.recalot.views.recommend.train** || View | Recommendations |  
+| **com.recalot.common**  | Contains all interface definitions, helpers and common used classes | Global | Global |  
+| **com.recalot.controller.data** | Contains the controller that is responsible for data requests. | Controller | Data | 
+| **com.recalot.controller.experiments** | Contains the controller that is responsible for evaluation requests.  | Controller | Evaluation|  
+| **com.recalot.controller.recommendations** | Contains the controller that is responsible for recommendations requests. | Controller | Recommendations |  
+| **com.recalot.model.data.access** | Does the actual "data" work. Listens to new service of data builders. Delegate data source connection processes. Stores data source instances.  | Model | Data |  
+| **com.recalot.model.data.connections** | Contains a few data source builders. | Model | Data|  
+| **com.recalot.model.experiments.common** | Contains helpers and common used classes for the experiment model classes | Model | Evaluation |  
+| **com.recalot.model.experiments.metrics** | Contains experiments metrics. | Model | Evaluation |   
+| **com.recalot.model.rec.access** | Does the actual "recommendation" work. Listens to new servicse of recommender builder. Delegate all kind of recommendation computation to the right recommendation instance. Stores recommendation instances.  | Model | Recommendations |  
+| **com.recalot.model.rec.recommender** | Contains recommendation algorithms. | Model | Recommendations |  
+| **com.recalot.templates** | Contains output templates. | Global | Global |   
+| **com.recalot.views.common** | Contains helpers and common used classes for the view classes  | View | Global |  
+| **com.recalot.views.data.access** | Allows to access data via REST | View | Data |  
+| **com.recalot.views.data.sources** |  Allows to access, connect and delete data sources via REST  | View | Data |  
+| **com.recalot.views.data.tracking** | Allows to save tracking information via REST  | View | Data |  
+| **com.recalot.views.experiments** |  Allows to perform experiments via REST  | View | Experiments |  
+| **com.recalot.views.recommend** | Allows to compute recommendations via REST  | View | Recommendations|  
+| **com.recalot.views.recommend.train** | Allows to train recommender algorithms via REST | View | Recommendations |  
 
-Furthermore the following bundles are also part of the project, but represent unit tests, tools or demos.
+Furthermore the following OSGi bundles are also part of the project, but represent unit tests, tools or demos.
 
 | Bundle   | Description |  
 |-|-|
-| **com.recalot.portal** ||
-| **com.recalot.demos.wallpaper** ||
-| **com.recalot.repo** ||
-| **com.recalot.unittests** ||
+| **com.recalot.portal** | A user interface that allows the call a lot of the API functionality. |
+| **com.recalot.demos.wallpaper** | A wallpaper recommendations website. |
+| **com.recalot.repo** | The Recalot.com OSGi Repository |
+| **com.recalot.unittests** | Some unittests |
 
 # Getting Started
 
