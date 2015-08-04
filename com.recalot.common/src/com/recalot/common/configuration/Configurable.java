@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ *
+ *
  * @author Matthäus Schmedding (info@recalot.com)
  */
 public abstract class Configurable {

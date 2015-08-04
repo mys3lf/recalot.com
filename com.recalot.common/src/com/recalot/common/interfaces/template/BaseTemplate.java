@@ -6,6 +6,7 @@ import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.exceptions.BaseException;
 
 /**
+ *
  * @author Matthaeus.schmedding
  */
 public interface BaseTemplate extends Service {
