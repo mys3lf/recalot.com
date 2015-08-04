@@ -5,17 +5,17 @@ The idea behind recalot.com is to build a RESTFul recommender system that can be
 
 If you have any comments or suggestions for improvement, feel free to contact us <info@recalot.com>
 
-## Architecture Overview
+# Architecture Overview
 
-## Documentation
+# Getting Started
 
-### Quick Install
+## Quick Install
 
 The quick install quide will show how to install the "Experiments Portal" bundle, that comes with all available bundles, with an minimal effort. However, we would recommend to install the following bundles as well:
 - Apache Felix File Install (org.apache.felix.fileinstall)
 - Apache Felix Web Console (org.apache.felix.webconsole)
 
-#### Step-by-Step Guide
+### Step-by-Step Guide
 
 -   Download [Apache Felix](http://felix.apache.org/downloads.cgi) 
 -   Run Felix in your favorite bash
@@ -49,10 +49,31 @@ The quick install quide will show how to install the "Experiments Portal" bundle
         start {bundle-id}
         ```
 
+The webservice uses a jetty as a webserver and under the default configuration the jetty listens to port 8080 on your local machine. Try to call http://localhost:8080/sources to list all data sources, that are available, connected or are currently connecting. The default output format is json. 
+## Connect Data Source
 
-### Todos
+Before the training of a recommender it is necessary to connect a data source. You can use one of the predefined data source connectors or write your own one. So far the following data source connectors exists:
+- MySQL Connector
+- MovieLens File Connector
+
+More connectors are coming soon. 
+
+
+## Train Recommender
+coming soon
+## Run Offline Experiment
+coming soon
+## Start Online Experiment
+
+coming soon
+
+# Advanced Documentation
+coming soon
+
+# Todos
 
  - Write Tests
+ - Write more documentation and tutorials
  - Add Code Comments
  - Add more functionality
 
