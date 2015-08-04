@@ -36,19 +36,12 @@ The API consists of the following OSGi bundles:
 
 Furthermore the following OSGi bundles are also part of the project, but represent unit tests, tools or demos.
 
-| Bundle   | Description |  
-|-|-|
+| Bundle  | Description |
+| ------------- | ------------- |
 | **com.recalot.portal** | A user interface that allows the call a lot of the API functionality. |
 | **com.recalot.demos.wallpaper** | A wallpaper recommendations website. |
 | **com.recalot.repo** | The Recalot.com OSGi Repository |
 | **com.recalot.unittests** | Some unittests |
-
-
-
-| First Header  | Second Header | Second Header | Second Header |
-| ------------- | ------------- | ------------- | ------------- |
-| Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 
 
 # Getting Started
