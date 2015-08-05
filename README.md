@@ -47,7 +47,6 @@ Furthermore the following OSGi bundles are also part of the project, but represe
 # Getting Started
 
 
-
 ## Quick Install
 
 The quick install guide will show how to install the "Experiments Portal" bundle, that comes with all available bundles, with an minimal effort. However, we would recommend to install the following bundles as well:
@@ -136,12 +135,13 @@ You need to have a connected data source. If not, please read "Connect Data Sour
 e.g.:
 ```js
 [
-{"id":"rec-builder-wallpaper-mp","state":"AVAILABLE"},
-{"id":"rec-builder-cosine-user-knn","state":"AVAILABLE"},
-{"id":"rec-builder-bprmf","state":"AVAILABLE"},
-{"id":"rec-builder-wallpaper-survey","state":"AVAILABLE"},
-{"id":"rec-builder-funk-svd","state":"AVAILABLE"},
-{"id":"rec-builder-mp","state":"AVAILABLE"}]
+    {"id":"rec-builder-wallpaper-mp","state":"AVAILABLE"},
+    {"id":"rec-builder-cosine-user-knn","state":"AVAILABLE"},
+    {"id":"rec-builder-bprmf","state":"AVAILABLE"},
+    {"id":"rec-builder-wallpaper-survey","state":"AVAILABLE"},
+    {"id":"rec-builder-funk-svd","state":"AVAILABLE"},
+    {"id":"rec-builder-mp","state":"AVAILABLE"}
+]
 ```
 
 Get the configuration of the recommender, you want to train, by calling a GET request to ```/train/{recommender-id}```. The request will return an json object which contains the configuration (analogical to the data source connection).
@@ -187,10 +187,12 @@ coming soon
 
 # Todos
 
- - Write more Tests
+ - Write more tests
  - Write more documentation and tutorials
- - Add Code Comments
+ - Add code comments
  - Add more functionality
+ - Build website
+ - Add more demos
 
 # License
 

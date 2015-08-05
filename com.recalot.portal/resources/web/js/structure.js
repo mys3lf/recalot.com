@@ -157,10 +157,61 @@ var structure = [
     name: "Experiments",
     id:"experiments",
     children: [
+     {
+            name:"Create Offline Experiment",
+            id:"createoffline",
+            content: {
+                 type: "form",
+                 form: [
+                    {
+                        id: "experiment-id",
+                        type: "string"
+                    },
+                    {
+                        id: "source-id",
+                        enum: {
+                             action: "/sources?state=READY"
+                        },
+                        type: "enum"
+                    },
+                    {
+                        id: "splitter-id",
+                        enum: {
+                             action: "/experiments/splitters"
+                        },
+                        type: "enum"
+                    },
+                    {
+                        id: "rec-id",
+                        content: {
+                            type: "idkeyconfiguration",
+                            enum: {
+                              action: "/train/?state=AVAILABLE",
+                            },
+                            action: "/train/{0}"
+                        },
+                        type: "array"
+                    },
+                    {
+                        id: "metric-ids",
+                        content: {
+                            type: "idkeyconfiguration",
+                            enum: {
+                              action: "/experiments/metrics/",
+                            },
+                            action: "/experiments/metrics/{0}"
+                        },
+                        type: "array"
+                    }
+
+                 ],
+                 action: {url: "/experiments", method: "PUT"}
+            }
+        },
         {
         name:"Finished experiments",
         id:"finished",
-       content: {
+        content: {
                  type: "list",
                  action:"/experiments/?state=FINISHED",
                  method: "get",
@@ -222,6 +273,6 @@ var structure = [
             }
         }
     ],
-     contentRef: "finished"
+     contentRef: "createoffline"
     }
 ];

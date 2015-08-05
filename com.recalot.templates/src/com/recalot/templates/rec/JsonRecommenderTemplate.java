@@ -17,7 +17,7 @@ import java.io.IOException;
 public class JsonRecommenderTemplate extends JsonBaseTemplate implements RecommenderTemplate  {
     @Override
     public TemplateResult transform(RecommenderInformation[] recommenders) {
-        String result = getSerializer().include("id", "state").exclude("*").serialize(recommenders);
+        String result = getSerializer().include("id", "key", "state").exclude("*").serialize(recommenders);
 
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }

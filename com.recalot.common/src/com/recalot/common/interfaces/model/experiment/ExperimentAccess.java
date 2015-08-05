@@ -2,6 +2,7 @@ package com.recalot.common.interfaces.model.experiment;
 
 import com.recalot.common.communication.DataSet;
 import com.recalot.common.communication.Message;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.communication.Service;
 import com.recalot.common.interfaces.model.data.DataSource;

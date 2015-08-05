@@ -83,6 +83,10 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                     result = getExperiment(template, param);
                     break;
                 }
+                case GetExperimentConfiguration: {
+                    result = getExperiment(template, param);
+                    break;
+                }
                 case GetMetrics: {
                     result = getMetrics(template, param);
                     break;
@@ -126,16 +130,24 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                 String[] split = recommenderId.split(",");
 
                 for (String s : split) {
-//TODO id should be something like mp@mp-test
+                    //id should be something like mp@mp-test -> id@display-name
                     if (s != null && !s.isEmpty()) {
                         Recommender rec = null;
 
                         if (s.contains("@")) {
                             String[] idSplit = s.split("@");
                             if (idSplit.length > 1) {
+
+                                param.put(idSplit[1] + "." +Helper.Keys.ID, idSplit[1]);
+                                param.put(idSplit[1] + "." +Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+
                                 rec = recommenderAccess.getInstance(idSplit[0]).createInstance(idSplit[1], idSplit[1], param);
                             }
                         } else {
+
+                            param.put(s + "." +Helper.Keys.ID, s);
+                            param.put(s + "." +Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+
                             rec = recommenderAccess.getInstance(s).createInstance(s, s, param);
                         }
 
@@ -148,9 +160,17 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                 if (recommenderId.contains("@")) {
                     String[] idSplit = recommenderId.split("@");
                     if (idSplit.length > 1) {
+
+                        param.put(idSplit[1] + "." + Helper.Keys.ID, idSplit[1]);
+                        param.put(idSplit[1] + "." + Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+
                         rec = recommenderAccess.getInstance(idSplit[0]).createInstance(idSplit[1], idSplit[1], param);
                     }
                 } else {
+
+                    param.put(recommenderId + "." +Helper.Keys.ID, recommenderId);
+                    param.put(recommenderId + "." +Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+
                     rec = recommenderAccess.getInstance(recommenderId).createInstance(recommenderId, recommenderId, param);
                 }
 
@@ -188,7 +208,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                 }
             }
         }
-
+//TODO: i would be nicer if every experiment instance has its own splitter instance. Thread safe you know
         try {
             splitter.checkConfiguration(splitter.getKey(), param);
             Configurable.applyConfiguration(splitter, splitter.getClass(), splitter.getConfiguration());
@@ -196,21 +216,23 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
             e.printStackTrace();
         }
 
-
+//TODO: move the split part into the experiment
         DataSet[] split = splitter.split(dataSource);
 
         return template.transform(access.createExperiment(recommender.toArray(new Recommender[recommender.size()]), split, metrics, param));
     }
 
     private TemplateResult deleteExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {
-        ExperimentAccess access = (ExperimentAccess) experimentsAccess.getFirstInstance();
+        ExperimentAccess access = experimentsAccess.getFirstInstance();
 
 
         return template.transform(access.deleteExperiment(param.get(Helper.Keys.ExperimentId)));
     }
 
     private TemplateResult getExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {
-        ExperimentAccess access = (ExperimentAccess) experimentsAccess.getFirstInstance();
+        ExperimentAccess access = experimentsAccess.getFirstInstance();
+
+
 
         return template.transform(access.getExperiment(param.get(Helper.Keys.ExperimentId)));
     }

@@ -30,3 +30,13 @@
 #detail-buttons > a {
   margin: 0 5px;
 }
+
+#table .add-button a {
+    display: block;
+    margin: 10px 29px;
+}
+
+#table .add-button a span{
+   display: inline-block;
+   min-width: 100%;
+}

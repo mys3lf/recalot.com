@@ -12,7 +12,8 @@ public interface ExperimentsController extends Controller {
         GetMetrics (4),
         GetMetric (5),
         GetSplitters (6),
-        GetSplitter (7);
+        GetSplitter (7),
+        GetExperimentConfiguration(8);
 
         private final int value;
 
@@ -25,6 +26,4 @@ public interface ExperimentsController extends Controller {
             this.value = value;
         }
     }
-
-
 }

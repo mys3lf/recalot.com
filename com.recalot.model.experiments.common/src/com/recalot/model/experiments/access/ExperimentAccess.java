@@ -2,6 +2,7 @@ package com.recalot.model.experiments.access;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.DataSet;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.AlreadyExistsException;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.MissingArgumentException;
