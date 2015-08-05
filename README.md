@@ -23,7 +23,7 @@ The API consists of the following OSGi bundles:
 | **com.recalot.model.data.connections** contains a few data source builders. | Model | Data|
 | **com.recalot.model.experiments.common** contains helpers and common used classes for the experiment model classes | Model | Evaluation |
 | **com.recalot.model.experiments.metrics** contains experiments metrics. | Model | Evaluation |
-| **com.recalot.model.rec.access** does the actual "recommendation" work. Listens to new servicse of recommender builder. Delegate all kind of recommendation computation to the right recommendation instance. Stores recommendation instances.  | Model | Recommendations |
+| **com.recalot.model.rec.access** does the actual "recommendation" work. Listens to new services of recommender builder. Delegate all kind of recommendation computation to the right recommendation instance. Stores recommendation instances.  | Model | Recommendations |
 | **com.recalot.model.rec.recommender** contains recommendation algorithms. | Model | Recommendations |
 | **com.recalot.templates** contains output templates. | Global | Global |
 | **com.recalot.views.common** contains helpers and common used classes for the view classes  | View | Global |
@@ -46,9 +46,11 @@ Furthermore the following OSGi bundles are also part of the project, but represe
 
 # Getting Started
 
+
+
 ## Quick Install
 
-The quick install quide will show how to install the "Experiments Portal" bundle, that comes with all available bundles, with an minimal effort. However, we would recommend to install the following bundles as well:
+The quick install guide will show how to install the "Experiments Portal" bundle, that comes with all available bundles, with an minimal effort. However, we would recommend to install the following bundles as well:
 - Apache Felix File Install (org.apache.felix.fileinstall)
 - Apache Felix Web Console (org.apache.felix.webconsole)
 
@@ -86,7 +88,7 @@ The quick install quide will show how to install the "Experiments Portal" bundle
         start {bundle-id}
         ```
 
-The webservice uses a jetty as a webserver and under the default configuration the jetty listens to port 8080 on your local machine. Try to call http://localhost:8080/sources to list all data sources, that are available, connected or are currently connecting. The default output format is json. 
+The webservice uses a jetty as a webserver and under the default configuration the jetty listens to port 8080 on your local machine. Try to call ```http://localhost:8080/sources``` to list all data sources, that are available, connected or are currently connecting. The default output format is json.
 ## Tools
 
 Take a look at ```/portal/```. You will there a solution with an overview of a variety of possible API requests. I did not put much effort in the building of the portal. It was just a testing device for me, but works pretty good so i uploaded it as well. 
@@ -97,7 +99,9 @@ Before the training of a recommender it is necessary to connect a data source. Y
 - MySQL Source Builder
 - MovieLens File Source Builder
 
-More builders are coming soon. Each builder has this own configurations. Before you connect a data source you can access the configuration of the builder by sending a GET request to ``/sources/{data-source-id}``.  The result contains an configuration object with an array of configuration items. e.g. MySQL Data Builder:
+More builders are coming soon.
+
+Each builder has this own configurations. Before you connect a data source you can access the configuration of the builder by sending a GET request to ```/sources/{data-source-id}```.  The result contains an configuration object with an array of configuration items. e.g. MySQL Data Builder:
 ```js
 configuration: [
 {key: "sql-database", requirement: "Required", type: "String", value: ""},
@@ -108,7 +112,7 @@ configuration: [
 {key: "sql-server", requirement: "Required", type: "String", value: ""}
 ]
 ```
-For a detailed description of the data schema take a look at the swagger documention. Link coming soon. 
+For a detailed description of the data schema take a look at the swagger documentation. Link coming soon.
 
 This configuration object shows which configuration items the data source needs. The field "requirement" provides information about the requirement of the configuration item. Items with the value "Hidden" and "Required" are required and must be send within the request body. For the connection of a data source, send a PUT request with the necessary configuration items to ```/sources``` e.g. MySQL:
 
@@ -124,10 +128,54 @@ Form Data
     sql-server:mysql://localhost:3306
 ```
 
-The MySQL Data Source will automaticly create all necessary tables. Take a look at the "Experiments Portal" (```\portal\```), a lot of request can be done there with help of an user interface. 
+The MySQL Data Source will automatically create all necessary tables. Take a look at the "Experiments Portal" (```/portal/```), a lot of requests can be done there with help of a user interface.
 
 ## Train Recommender
-coming soon
+
+You need to have a connected data source. If not, please read "Connect Data Source". A well as the data source builders, every recommender builder has its own configuration. Call ```/train?state=AVAILABLE``` to get an overview over all available recommender builders.
+e.g.:
+```js
+[
+{"id":"rec-builder-wallpaper-mp","state":"AVAILABLE"},
+{"id":"rec-builder-cosine-user-knn","state":"AVAILABLE"},
+{"id":"rec-builder-bprmf","state":"AVAILABLE"},
+{"id":"rec-builder-wallpaper-survey","state":"AVAILABLE"},
+{"id":"rec-builder-funk-svd","state":"AVAILABLE"},
+{"id":"rec-builder-mp","state":"AVAILABLE"}]
+```
+
+Get the configuration of the recommender, you want to train, by calling a GET request to ```/train/{recommender-id}```. The request will return an json object which contains the configuration (analogical to the data source connection).
+e.g. (rec-builder-funk-svd):
+
+```js
+{
+"configuration":[
+    {"key":"numFeatures","options":[],"requirement":"Optional","type":"Integer","value":"50"},
+    {"key":"id","options":[],"requirement":"Required","type":"String","value":""},
+    {"key":"initialSteps","options":[],"requirement":"Optional","type":"Integer","value":"50"},
+    {"key":"source-id","options":["movielens"],"requirement":"Required","type":"Options","value":""},
+    {"key":"rec-builder-id","options":[],"requirement":"Hidden","type":"String","value":"funk-svd"}],
+ "description":"",
+ "id":"rec-builder-funk-svd",
+ "key":"funk-svd",
+ "state":"AVAILABLE"
+}
+```
+
+To start the training of a recommender, you have to send a PUT request to ```/train``` with the required configuration items.
+
+e.g (Funk-SVD for the movielens data set):
+```
+Request URL:http://localhost:8080/train
+Request Method:PUT
+Form Data
+    id:movielens-funksvd
+    source-id:movielens
+    rec-builder-id:funk-svd
+```
+
+Here again, you can use the Experiments Portal. It simplifies the task by generating a form of the configuration object.
+
 ## Run Offline Experiment
 coming soon
 ## Start Online Experiment

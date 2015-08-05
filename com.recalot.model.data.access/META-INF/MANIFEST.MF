@@ -4,7 +4,7 @@ Bundle-Description:  Establish and manage connections to data sources
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.data.access
 Bundle-Name: Recalot.com Model - Data Access
-Bundle-Version: 1.0.0.510
+Bundle-Version: 1.0.0.511
 Bundle-Activator: com.recalot.model.data.access.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
