@@ -30,7 +30,7 @@ public class BPRMFRecommender extends Recommender  {
 
 	// / Sample uniformly from users, for the strategy of the original paper set
 	// false
-	public boolean UniformUserSampling = true;
+	public boolean uniformUserSampling = true;
 
 	private static final Random random = RandomUtils.getRandom();
 
@@ -208,7 +208,7 @@ public class BPRMFRecommender extends Recommender  {
 		int user_id, pos_item_id, neg_item_id;
 
 		
-		if (UniformUserSampling) {
+		if (uniformUserSampling) {
 
 			//performing convergence-heuristic of LearnBPR
 			for (int i = 0; i < num_pos_events; i++) {
@@ -487,7 +487,7 @@ public class BPRMFRecommender extends Recommender  {
 	 * @param n
 	 */
 	public void setUniformSampling(boolean n) {
-		this.UniformUserSampling = n;
+		this.uniformUserSampling = n;
 	}
 
 	/**

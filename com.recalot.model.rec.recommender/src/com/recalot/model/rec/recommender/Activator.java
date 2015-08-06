@@ -1,13 +1,10 @@
 package com.recalot.model.rec.recommender;
 
 
-import com.recalot.common.Helper;
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.builder.RecommenderBuilder;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.impl.experiment.Experiment;
-import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -17,6 +14,8 @@ import java.util.List;
 
 
 /**
+ * Register the recommender builder services. This class is called automatically when the bundle is activated.
+ *
  * @author Matthaeus.schmedding
  */
 public class Activator implements BundleActivator, Initiator {
@@ -36,7 +35,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, MostPopularRecommender.class.getName(), "mp", "");
-            builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+       //     builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -44,7 +43,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "wallpaper-mp", "");
-            builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+        //    builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -52,7 +51,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "wallpaper-survey", "");
-            builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+           // builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -79,7 +78,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName(), "bprmf", "");
-            builder.setConfiguration(new ConfigurationItem("UniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));

@@ -18,8 +18,6 @@ import java.util.*;
 public class MostPopularRecommender extends Recommender {
 
     private RecommendationResult result;
-    private int topN = 10;
-
 
     @Override
     public void train() throws BaseException {
@@ -63,21 +61,11 @@ public class MostPopularRecommender extends Recommender {
 
         if(items == null) items = new ArrayList<>();
 
-
-        items =  Helper.applySubList(items, param, topN);
         return new RecommendationResult(getId(), items);
     }
 
     @Override
     public Double predict(String userId, String itemId, Context context, Map<String, String> param) {
         return 0.0;
-    }
-
-    public int getTopN() {
-        return topN;
-    }
-
-    public void setTopN(Integer topN) {
-        this.topN = topN;
     }
 }

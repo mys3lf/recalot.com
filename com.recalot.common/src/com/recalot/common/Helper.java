@@ -236,6 +236,21 @@ public class Helper {
     }
 
     /**
+     * Trims a list if its size exceeds the topN.
+     *
+     * @param items a list that should be trimmed.
+     * @param topN the fallback if no count parameter is given.
+     * @param <T> Type of the items containing in the list
+     *
+     * @return the trimmed list.
+     */
+    public static <T> List<T> applySubList(List<T> items, int topN) {
+        if(items.size() > topN) items = items.subList(0, topN);
+
+        return items;
+    }
+
+    /**
      * Check whether the string is an positive integer value or not. Uses regex.
      *
      * @param str a string that should be checked.

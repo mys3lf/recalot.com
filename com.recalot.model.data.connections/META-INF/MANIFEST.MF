@@ -6,7 +6,7 @@ Bundle-Description:  Contains data connectors. e.g. MovieLensFileConne
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.data.connections
 Bundle-Name: Recalot.com Model - Data Connections
-Bundle-Version: 1.0.0.577
+Bundle-Version: 1.0.0.579
 Bundle-Activator: com.recalot.model.data.connections.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com

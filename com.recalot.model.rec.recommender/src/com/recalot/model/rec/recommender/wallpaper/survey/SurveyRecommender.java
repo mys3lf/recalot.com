@@ -19,7 +19,6 @@ import java.util.*;
 public class SurveyRecommender extends Recommender {
 
     private RecommendationResult result;
-    private int topN = 10;
 
     private HashMap<String, LinkedHashMap<String, Integer>> categoryMP;
 
@@ -133,8 +132,6 @@ public class SurveyRecommender extends Recommender {
 
         if (param.containsKey("count")) {
             max = Integer.parseInt(param.get("count"));
-        } else {
-            max = topN;
         }
 
         while (items.size() > max) {
@@ -153,12 +150,4 @@ public class SurveyRecommender extends Recommender {
         return 0.0;
     }
 
-
-    public int getTopN() {
-        return topN;
-    }
-
-    public void setTopN(Integer topN) {
-        this.topN = topN;
-    }
 }
