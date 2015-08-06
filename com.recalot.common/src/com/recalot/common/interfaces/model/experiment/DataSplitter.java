@@ -10,7 +10,7 @@ import com.recalot.common.interfaces.model.data.DataSource;
 /**
  * @author matthaeus.schmedding
  */
-public abstract class DataSplitter extends Configurable implements Service {
+public abstract class DataSplitter extends Configurable implements DataSplitterInformation {
 
     // Use a global split and not a per-user split; could be set to false in later experiments as default
     private boolean globalRandomSplit = false;

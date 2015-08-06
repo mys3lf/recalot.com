@@ -1,7 +1,10 @@
 package com.recalot.common.impl.experiment;
 
+import com.recalot.common.Parallel;
 import com.recalot.common.communication.*;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.data.DataSource;
+import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.interfaces.model.experiment.RatingMetric;
@@ -9,7 +12,9 @@ import com.recalot.common.interfaces.model.rec.Recommender;
 import org.osgi.service.log.LogService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
@@ -17,10 +22,11 @@ import java.util.HashMap;
 public class Experiment extends com.recalot.common.interfaces.model.experiment.Experiment {
 
     private final HashMap<String, Metric[]> metrics;
-    private DataSet[] sets;
+    private final DataSource dataSource;
+    private final DataSplitter splitter;
 
-    public Experiment(String id, String dataSourceId, DataSet[] sets, Recommender[] recommenders, HashMap<String, Metric[]> metrics) {
-        this.sets = sets;
+    public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics) {
+
         this.id = id;
         this.recommenders = recommenders;
 
@@ -29,8 +35,9 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
             recommenderIds[i] = recommenders[i].getId();
         }
 
-        this.dataSourceId = dataSourceId;
-
+        this.dataSourceId = source.getId();
+        this.dataSource = source;
+        this.splitter = splitter;
         this.metrics = metrics;
         this.result = new HashMap<>();
     }
@@ -39,80 +46,110 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     public void run() {
         setState(ExperimentState.RUNNING);
         setPercentage(0);
-        //do cross validation, train one set and test it with the users
-        for (int i = 0; i < sets.length; i++) {
-            for (Recommender r : recommenders) {
-                try {
-                    r.setDataSet(this.sets[i]);
-                    r.train();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (this.logger != null) {
-                        this.logger.log(LogService.LOG_ERROR, String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
-                    }
-                }
-            }
+        setInfo("Split data source");
 
-            //iterate over all sets
-            for (int j = 0; j < sets.length; j++) {
-                //check if the current set is not the trained set
-                if (i != j) {
-                    //iterate over all recommenders
-                    for (Recommender r : recommenders) {
-                        try {
-                            User[] users = sets[j].getUsers();
-                            //iterate over all users
-                            for (User u : users) {
-                                //get the interactions of the user in the test set
-                                Interaction[] userInteractions = sets[j].getInteractions(u.getId());
-                                //iterate over all metric for this recommender
-                                for (Metric m : metrics.get(r.getId())) {
+        try {
+            DataSet[] sets = splitter.split(dataSource);
 
-                                    if (m instanceof RatingMetric) {
-                                        for (Interaction interaction : userInteractions) {
-                                            Integer value = Integer.parseInt(interaction.getValue());
-                                            Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
-
-                                            ((RatingMetric) m).addRating(value, predict);
-                                        }
-                                    } else if (m instanceof ListMetric) {
-                                        ArrayList<String> interactions = new ArrayList();
-                                        for (Interaction interaction : userInteractions) {
-                                            interactions.add(interaction.getItemId());
-                                        }
-
-                                        ArrayList<String> result = new ArrayList();
-
-                                        RecommendationResult rr = r.recommend(u.getId());
-
-                                        for (RecommendedItem item : rr.getItems()) {
-                                            result.add(item.getItemId());
-                                        }
-
-                                        ((ListMetric) m).addList(interactions, result);
-                                    }
-                                }
-                            }
-                        } catch (BaseException e) {
-                            e.printStackTrace();
+            //do cross validation, train one set and test it with the users
+            for (int i = 0; i < sets.length; i++) {
+//TODO: make this parallel
+                for (Recommender r : recommenders) {
+                    try {
+                        r.setDataSet(sets[i]);
+                        setInfo(String.format("Train recommender %s with split %s", r.getId(), i));
+                        r.train();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (this.logger != null) {
+                            this.logger.log(LogService.LOG_ERROR, String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
+                            setInfo(String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
                         }
+                    }
+                }
 
-                        setPercentage(getPercentage() +  100.0 / (this.sets.length * (this.sets.length - 1) * this.recommenderIds.length));
+                //iterate over all sets
+                for (int j = 0; j < sets.length; j++) {
+                    //check if the current set is not the trained set
+                    if (i != j) {
+                        //iterate over all recommenders
+                        for (Recommender r : recommenders) {
+
+                            setInfo(String.format("Evaluate recommender %s trained with split %s against split %s", r.getId(), i, j));
+
+                            try {
+                                User[] users = sets[j].getUsers();
+
+                                //iterate over all users
+
+                                final int finalJ = j;
+                                // make it parallel
+                                Parallel.For(Arrays.asList(users),
+                                        u -> {
+                                            try {//get the interactions of the user in the test set
+                                                Interaction[] userInteractions = new Interaction[0];
+
+                                                userInteractions = sets[finalJ].getInteractions(u.getId());
+
+                                                //iterate over all metric for this recommender
+                                                for (Metric m : metrics.get(r.getId())) {
+
+                                                    if (m instanceof RatingMetric) {
+                                                        for (Interaction interaction : userInteractions) {
+                                                            Integer value = Integer.parseInt(interaction.getValue());
+                                                            Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
+                                                            if(predict != Double.NaN) {
+                                                                System.out.println("value:" + value + " predict:" + predict);
+                                                                ((RatingMetric) m).addRating(value, predict);
+                                                            } else {
+                                                                System.out.println(interaction.getUserId() +":" +interaction.getItemId() +  " NaN");
+                                                            }
+                                                        }
+                                                    } else if (m instanceof ListMetric) {
+                                                        ArrayList<String> interactions = new ArrayList();
+                                                        for (Interaction interaction : userInteractions) {
+                                                            interactions.add(interaction.getItemId());
+                                                        }
+
+                                                        ArrayList<String> result1 = new ArrayList();
+
+                                                        RecommendationResult rr = r.recommend(u.getId());
+
+                                                        for (RecommendedItem item : rr.getItems()) {
+                                                            result1.add(item.getItemId());
+                                                        }
+
+                                                        ((ListMetric) m).addList(interactions, result1);
+                                                    }
+                                                }
+                                            } catch (BaseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
+
+                            } catch (BaseException e) {
+                                e.printStackTrace();
+
+                                setInfo(e.getMessage());
+                            }
+
+                            setPercentage(getPercentage() + 100.0 / (sets.length * (sets.length - 1) * this.recommenderIds.length));
+                        }
                     }
                 }
             }
 
+            for (String key : metrics.keySet()) {
+                Metric[] ms = metrics.get(key);
+                HashMap<String, Double> r = new HashMap<>();
+                for (Metric m : ms) {
+                    r.put(m.getId(), m.getResult());
+                }
 
-        }
-
-        for (String key : metrics.keySet()) {
-            Metric[] ms = metrics.get(key);
-            HashMap<String, Double> r = new HashMap<>();
-            for (Metric m : ms) {
-                r.put(m.getId(), m.getResult());
+                this.result.put(key, r);
             }
-
-            this.result.put(key, r);
+        } catch (BaseException e) {
+            setInfo(e.getMessage());
         }
 
         setState(ExperimentState.FINISHED);

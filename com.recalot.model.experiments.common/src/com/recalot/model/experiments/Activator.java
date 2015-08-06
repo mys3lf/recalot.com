@@ -1,7 +1,10 @@
 package com.recalot.model.experiments;
 
 
+import com.recalot.common.builder.DataSplitterBuilder;
+import com.recalot.common.builder.Initiator;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.model.experiments.access.ExperimentAccess;
 import com.recalot.model.experiments.splitter.RandomDataSplitter;
@@ -15,11 +18,11 @@ import java.util.ArrayList;
 /**
  * @author Matthaeus.schmedding
  */
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, Initiator {
 
 
     private ExperimentAccess access;
-    private ArrayList<DataSplitter> splitters;
+    private ArrayList<DataSplitterBuilder> splitters;
 
     /**
      * Implements BundleActivator.start(). Prints
@@ -34,26 +37,34 @@ public class Activator implements BundleActivator {
 
         splitters = new ArrayList<>();
 
-        RandomDataSplitter randomDataSplitter = new RandomDataSplitter();
+        try {
+            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomDataSplitter.class.getName(), "random", "Random Data Splitter");
+            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
-        randomDataSplitter.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        randomDataSplitter.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        randomDataSplitter.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        randomDataSplitter.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitters.add(splitterBuilder);
 
+        } catch (BaseException e) {
 
-        TimeBasedDataSplitter timeBasedSplitter = new TimeBasedDataSplitter();
+        }
 
-        timeBasedSplitter.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        timeBasedSplitter.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        timeBasedSplitter.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        timeBasedSplitter.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        try {
+            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, TimeBasedDataSplitter.class.getName(), "timebased", "Time-based Data Splitter");
+            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
-        splitters.add(randomDataSplitter);
-        splitters.add(timeBasedSplitter);
+            splitters.add(splitterBuilder);
 
-        for (DataSplitter splitter : splitters) {
-            context.registerService(DataSplitter.class.getName(), splitter, null);
+        } catch (BaseException e) {
+
+        }
+
+        for (DataSplitterBuilder splitter : splitters) {
+            context.registerService(DataSplitterBuilder.class.getName(), splitter, null);
         }
     }
 
@@ -71,11 +82,22 @@ public class Activator implements BundleActivator {
         }
 
         if (splitters != null) {
-            for (DataSplitter splitter : splitters) {
+            for (DataSplitterBuilder splitter : splitters) {
                 splitter.close();
             }
 
             splitters = null;
         }
+    }
+
+    @Override
+    public Object createInstance(String className) {
+        try {
+            Class c = Class.forName(className);
+            return c.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

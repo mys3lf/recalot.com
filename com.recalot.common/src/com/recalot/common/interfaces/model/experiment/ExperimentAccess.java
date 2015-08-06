@@ -19,5 +19,5 @@ public interface ExperimentAccess extends Service {
     public Experiment getExperiment(String id) throws BaseException;
     public Message deleteExperiment(String id)  throws BaseException;
     public List<Experiment> getExperiments()  throws BaseException;
-    public Experiment createExperiment(Recommender[] recommender, DataSet[] sets,   HashMap<String, Metric[]> metrics, Map<String, String> param) throws BaseException;
+    public Experiment createExperiment(Recommender[] recommender, DataSource source, DataSplitter splitter, HashMap<String, Metric[]> metrics, Map<String, String> param) throws BaseException;
 }

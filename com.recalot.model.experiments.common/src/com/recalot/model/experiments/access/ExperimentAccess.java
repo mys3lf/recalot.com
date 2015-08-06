@@ -9,6 +9,7 @@ import com.recalot.common.exceptions.MissingArgumentException;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.common.communication.Message;
 import com.recalot.common.interfaces.model.data.DataSource;
+import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.Experiment;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.interfaces.model.rec.Recommender;
@@ -70,7 +71,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
     }
 
     @Override
-    public Experiment createExperiment(Recommender[] recommender, DataSet[] sets, HashMap<String, Metric[]> metrics, Map<String, String> param) throws BaseException {
+    public Experiment createExperiment(Recommender[] recommender, DataSource dataSource, DataSplitter splitter, HashMap<String, Metric[]> metrics, Map<String, String> param) throws BaseException {
 
         String id = param.get(Helper.Keys.ExperimentId);
         if (id == null) id = UUID.randomUUID().toString();
@@ -80,7 +81,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
         if (param.get(Helper.Keys.MetricIDs) == null)
             throw new MissingArgumentException("The argument %s is missing.", Helper.Keys.MetricIDs);
 
-        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, param.get(Helper.Keys.SourceId), sets, recommender, metrics);
+        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics);
 
         Thread thread = new Thread() {
             public void run() {

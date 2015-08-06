@@ -54,12 +54,16 @@ public class RandomDataSplitter extends DataSplitter {
             result.get(next).addInteraction(i);
         }
 
-
         return result.toArray(new DataSet[result.size()]);
     }
 
     @Override
     public String getKey() {
+        return "random";
+    }
+
+    @Override
+    public String getId() {
         return "random";
     }
 

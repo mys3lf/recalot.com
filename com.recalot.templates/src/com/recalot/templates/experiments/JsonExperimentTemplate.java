@@ -1,9 +1,11 @@
 package com.recalot.templates.experiments;
 
+import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.MetricBuilder;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
+import com.recalot.common.interfaces.model.experiment.DataSplitterInformation;
 import com.recalot.common.interfaces.model.experiment.Experiment;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import com.recalot.templates.base.JsonBaseTemplate;
@@ -17,7 +19,7 @@ import java.util.List;
 public class JsonExperimentTemplate extends JsonBaseTemplate implements ExperimentTemplate {
     @Override
     public TemplateResult transform(Experiment experiment) throws BaseException {
-        String result = getSerializer().include("id", "state", "percentage", "results", "results.*", "recommenderIds", "dataSourceId").exclude("*").serialize(experiment);
+        String result = getSerializer().include("id", "state", "percentage", "results", "results.*", "recommenderIds", "dataSourceId", "info").exclude("*").serialize(experiment);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
 
@@ -40,13 +42,13 @@ public class JsonExperimentTemplate extends JsonBaseTemplate implements Experime
     }
 
     @Override
-        public TemplateResult transformSplitters(List<DataSplitter> splitters) throws BaseException {
+        public TemplateResult transformSplitters(List<DataSplitterBuilder> splitters) throws BaseException {
         String result = getSerializer().serialize(splitters);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
 
     @Override
-    public TemplateResult transform(DataSplitter splitter) throws BaseException {
+    public TemplateResult transform(DataSplitterBuilder splitter) throws BaseException {
 
         String result = getSerializer().include("configuration").serialize(splitter);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);

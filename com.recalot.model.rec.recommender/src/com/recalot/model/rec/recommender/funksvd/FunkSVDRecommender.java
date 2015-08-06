@@ -117,8 +117,8 @@ public class FunkSVDRecommender extends Recommender {
         interactionMap = new HashMap<>(numInteractions);
 
         idx = 0;
-        for (Item item : getDataSet().getItems()) {
-            itemMap.put(item.getId(), idx++);
+        for (Interaction item : getDataSet().getInteractions()) {
+            interactionMap.put(item.getId(), idx++);
         }
 
         double average = RecommenderHelper.getGlobalRatingAverage(getDataSet());

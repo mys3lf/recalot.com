@@ -16,6 +16,18 @@ public abstract class Experiment extends Loggable {
     protected String[] recommenderIds;
     protected ExperimentState state;
     protected String id;
+    protected String info;
+    protected double percentage;
+    protected Recommender[] recommenders;
+    protected Map<String, String> config;
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getInfo() {
+        return info;
+    }
 
     public double getPercentage() {
         return percentage;
@@ -24,10 +36,6 @@ public abstract class Experiment extends Loggable {
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
-
-    protected double percentage;
-    protected Recommender[] recommenders;
-    protected Map<String, String> config;
 
     public HashMap<String, Map<String, Double>> getResults() {
         return result;

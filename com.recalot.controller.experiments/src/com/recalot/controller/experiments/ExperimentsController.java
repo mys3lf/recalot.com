@@ -3,6 +3,7 @@ package com.recalot.controller.experiments;
 
 import com.recalot.common.GenericServiceListener;
 import com.recalot.common.Helper;
+import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.MetricBuilder;
 import com.recalot.common.builder.RecommenderBuilder;
 import com.recalot.common.communication.DataSet;
@@ -38,7 +39,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
     private final GenericServiceListener<ExperimentTemplate> templates;
     private final GenericServiceListener<DataAccess> dataAccess;
     private final GenericServiceListener<ExperimentAccess> experimentsAccess;
-    private final GenericServiceListener<DataSplitter> dataSplitterAccess;
+    private final GenericServiceListener<DataSplitterBuilder> dataSplitterAccess;
     private final GenericServiceListener<MetricBuilder> metricsListener;
 
 
@@ -47,7 +48,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         this.recommenderAccess = new GenericServiceListener(context, RecommenderBuilder.class.getName());
         this.dataAccess = new GenericServiceListener(context, DataAccess.class.getName());
         this.experimentsAccess = new GenericServiceListener(context, ExperimentAccess.class.getName());
-        this.dataSplitterAccess = new GenericServiceListener(context, DataSplitter.class.getName());
+        this.dataSplitterAccess = new GenericServiceListener(context, DataSplitterBuilder.class.getName());
         this.templates = new GenericServiceListener(context, ExperimentTemplate.class.getName());
         this.metricsListener = new GenericServiceListener(context, MetricBuilder.class.getName());
 
@@ -179,7 +180,6 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         }
 
         DataSource dataSource = dAccess.getDataSource(param.get(Helper.Keys.SourceId));
-        DataSplitter splitter = dataSplitterAccess.getInstance(param.get(Helper.Keys.DataSplitterId));
 
         String metricIds = param.get(Helper.Keys.MetricIDs);
         HashMap<String, Metric[]> metrics = new HashMap<>();
@@ -208,18 +208,12 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                 }
             }
         }
-//TODO: i would be nicer if every experiment instance has its own splitter instance. Thread safe you know
-        try {
-            splitter.checkConfiguration(splitter.getKey(), param);
-            Configurable.applyConfiguration(splitter, splitter.getClass(), splitter.getConfiguration());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-//TODO: move the split part into the experiment
-        DataSet[] split = splitter.split(dataSource);
+        DataSplitterBuilder splitterBuilder = dataSplitterAccess.getInstance(param.get(Helper.Keys.DataSplitterId));
 
-        return template.transform(access.createExperiment(recommender.toArray(new Recommender[recommender.size()]), split, metrics, param));
+        DataSplitter splitter = splitterBuilder.createInstance(param.get(Helper.Keys.DataSplitterId), param.get(Helper.Keys.DataSplitterId), param);
+
+        return template.transform(access.createExperiment(recommender.toArray(new Recommender[recommender.size()]), dataSource, splitter, metrics, param));
     }
 
     private TemplateResult deleteExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {
@@ -231,8 +225,6 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
 
     private TemplateResult getExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {
         ExperimentAccess access = experimentsAccess.getFirstInstance();
-
-
 
         return template.transform(access.getExperiment(param.get(Helper.Keys.ExperimentId)));
     }

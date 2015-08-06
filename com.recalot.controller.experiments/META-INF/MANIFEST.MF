@@ -6,7 +6,7 @@ Bundle-Description: Controller which delegates the execution of experi
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.experiments
 Bundle-Name: Recalot.com Controller - Experiments
-Bundle-Version: 1.0.0.561
+Bundle-Version: 1.0.0.571
 Bundle-Activator: com.recalot.controller.experiments.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
