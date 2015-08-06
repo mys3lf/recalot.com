@@ -10,6 +10,7 @@ import com.recalot.common.communication.DataSet;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.configuration.Configurable;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.impl.experiment.Experiment;
 import com.recalot.common.interfaces.controller.RequestAction;
 import com.recalot.common.interfaces.model.data.*;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -69,7 +70,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         try {
             switch ((ExperimentsRequestAction) action) {
                 case GetExperiments: {
-                    result = getExperiments(template);
+                    result = getExperiments(template, param);
                     break;
                 }
                 case CreateExperiment: {
@@ -112,10 +113,23 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         return result;
     }
 
-    private TemplateResult getExperiments(ExperimentTemplate template) throws BaseException {
+    private TemplateResult getExperiments(ExperimentTemplate template, Map<String, String> param) throws BaseException {
         ExperimentAccess access = experimentsAccess.getFirstInstance();
+        List<com.recalot.common.interfaces.model.experiment.Experiment> experiments = access.getExperiments();
 
-        return template.transform(access.getExperiments());
+        if (param.containsKey(Helper.Keys.State)) {
+            Experiment.ExperimentState state = Experiment.ExperimentState.valueOf(param.get(Helper.Keys.State));
+            List<com.recalot.common.interfaces.model.experiment.Experiment> temp = new ArrayList<>();
+            for (com.recalot.common.interfaces.model.experiment.Experiment info : experiments) {
+                if (info.getState() == state) {
+                    temp.add(info);
+                }
+            }
+
+            return template.transform(temp);
+        }
+
+        return template.transform(experiments);
     }
 
     private TemplateResult createExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {

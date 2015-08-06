@@ -37,22 +37,30 @@ public class RandomDataSplitter extends DataSplitter {
 
         Interaction[] allInteractions = source.getInteractions();
 
+        //split interactions
         Random r = new Random();
         for (Interaction i : allInteractions) {
             int next = r.nextInt(this.getNbFolds());
 
-            if (result.get(next).getUser(i.getUserId()) == null) {
-                User user = source.getUser(i.getUserId());
-                if (user != null) result.get(next).addUser(user);
-            }
-
-            if (result.get(next).getItem(i.getItemId()) == null) {
-                Item item = source.getItem(i.getItemId());
-                if (item != null) result.get(next).addItem(item);
-            }
-
             result.get(next).addInteraction(i);
         }
+
+        User[] allUsers = source.getUsers();
+        Item[] allItems = source.getItems();
+
+        // but every data set gets all users and items
+        for(User user: allUsers) {
+            for(FillableDataSet dataSet : result) {
+                dataSet.addUser(user);
+            }
+        }
+
+        for(Item item: allItems) {
+            for(FillableDataSet dataSet : result) {
+                dataSet.addItem(item);
+            }
+        }
+
 
         return result.toArray(new DataSet[result.size()]);
     }

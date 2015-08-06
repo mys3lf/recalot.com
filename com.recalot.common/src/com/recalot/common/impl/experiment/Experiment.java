@@ -47,7 +47,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         setState(ExperimentState.RUNNING);
         setPercentage(0);
         setInfo("Split data source");
-
+//TODO add total time of experiment
         try {
             DataSet[] sets = splitter.split(dataSource);
 
@@ -98,11 +98,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                                         for (Interaction interaction : userInteractions) {
                                                             Integer value = Integer.parseInt(interaction.getValue());
                                                             Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
-                                                            if(predict != Double.NaN) {
-                                                                System.out.println("value:" + value + " predict:" + predict);
+                                                            if(!predict.isNaN()) {
                                                                 ((RatingMetric) m).addRating(value, predict);
-                                                            } else {
-                                                                System.out.println(interaction.getUserId() +":" +interaction.getItemId() +  " NaN");
                                                             }
                                                         }
                                                     } else if (m instanceof ListMetric) {
@@ -152,6 +149,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
             setInfo(e.getMessage());
         }
 
+        setInfo("Done");
         setState(ExperimentState.FINISHED);
     }
 }

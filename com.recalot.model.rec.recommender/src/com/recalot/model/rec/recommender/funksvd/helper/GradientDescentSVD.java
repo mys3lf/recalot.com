@@ -90,7 +90,8 @@ public final class GradientDescentSVD {
                 * (err * rightVectorJ[k] - K * leftVectorI[k]);
         rightVectorJ[k] += LEARNING_RATE
                 * (err * leftVectorI[k] - K * rightVectorJ[k]);
-    }
+
+     }
 
     int getM() {
         return m;

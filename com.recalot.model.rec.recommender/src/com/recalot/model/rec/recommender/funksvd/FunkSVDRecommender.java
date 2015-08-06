@@ -24,7 +24,7 @@ public class FunkSVDRecommender extends Recommender {
 
     private HashMap<String, Integer> userMap = null;
     private HashMap<String, Integer> itemMap = null;
-    private HashMap<String, Integer> interactionMap = null;
+    private HashMap<String, Integer> interactionValueMap = null;
     private GradientDescentSVD emSvd = null;
     private List<Interaction> cachedPreferences = null;
 
@@ -48,14 +48,15 @@ public class FunkSVDRecommender extends Recommender {
             for (Interaction rating : cachedPreferences) {
                 int useridx = userMap.get(rating.getUserId());
                 int itemidx = itemMap.get(rating.getItemId());
-                int interactionidx = interactionMap.get(rating.getId());
+                int interactionValue = interactionValueMap.get(rating.getValue());
                 // System.out.println("Training useridx: " + useridx + ", itemidx: " + // itemidx);
-                emSvd.train(useridx, itemidx, i, interactionidx);
+                emSvd.train(useridx, itemidx, i, interactionValue);
             }
         }
     }
 
     // =====================================================================================
+   @Deprecated
     private void recachePreferences() {
         cachedPreferences.clear();
         try {
@@ -114,11 +115,13 @@ public class FunkSVDRecommender extends Recommender {
         }
 
         int numInteractions = getDataSet().getInteractionsCount();
-        interactionMap = new HashMap<>(numInteractions);
+        interactionValueMap = new HashMap<>(numInteractions);
 
-        idx = 0;
+
         for (Interaction item : getDataSet().getInteractions()) {
-            interactionMap.put(item.getId(), idx++);
+            if(!interactionValueMap.containsKey(item.getValue())) {
+                interactionValueMap.put(item.getValue(), Integer.parseInt(item.getValue()));
+            }
         }
 
         double average = RecommenderHelper.getGlobalRatingAverage(getDataSet());
@@ -126,7 +129,9 @@ public class FunkSVDRecommender extends Recommender {
 
         emSvd = new GradientDescentSVD(numUsers, numItems, numFeatures, defaultValue);
         cachedPreferences = new ArrayList<>(numUsers);
-        recachePreferences();
+
+        cachedPreferences.addAll(Arrays.asList(getDataSet().getInteractions()));
+        //recachePreferences();
 
         train(initialSteps);
     }

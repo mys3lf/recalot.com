@@ -6,7 +6,7 @@ Bundle-Description: Controller which delegates the computation of reco
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.recommendations
 Bundle-Name: Recalot.com Controller - Recommendations
-Bundle-Version: 1.0.0.589
+Bundle-Version: 1.0.0.597
 Bundle-Activator: com.recalot.controller.recommendations.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
