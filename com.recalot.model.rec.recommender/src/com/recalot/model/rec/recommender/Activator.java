@@ -93,6 +93,28 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
 
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalAverageRatingRecommender.class.getName(), "global-average-rating", "This recommender is used for comparison in experiments and provides a global average as prediction.");
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalItemAverageRatingRecommender.class.getName(), "item-average-rating", "This recommender is used for comparison in experiments and provides a item average as prediction.");
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalUserAverageRatingRecommender.class.getName(), "user-average-rating", "This recommender is used for comparison in experiments and provides a user average as prediction.");
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
 
         for (RecommenderBuilder c : recommenders) {
             context.registerService(RecommenderBuilder.class.getName(), c, null);

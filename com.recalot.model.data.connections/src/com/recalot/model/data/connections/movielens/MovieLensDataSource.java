@@ -103,7 +103,7 @@ public class MovieLensDataSource extends DataSourceBase {
                         users.put(userId, new User(userId));
                     }
 
-                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "", split[2].intern(), map));
+                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
                 }
             }
         } catch (IOException x) {
@@ -227,7 +227,7 @@ public class MovieLensDataSource extends DataSourceBase {
                         users.put(userId, new User(userId));
                     }
 
-                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "", split[2].intern(), map));
+                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
                 }
             }
         } catch (IOException x) {
