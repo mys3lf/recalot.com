@@ -53,11 +53,15 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
             //do cross validation, train one set and test it with the users
             for (int i = 0; i < sets.length; i++) {
-//TODO: make this parallel
-                for (Recommender r : recommenders) {
+
+                final int finalI = i;
+
+                setInfo(String.format("Started training recommenders with split %s", finalI));
+
+                Parallel.For(Arrays.asList(recommenders), r -> {
                     try {
-                        r.setDataSet(sets[i]);
-                        setInfo(String.format("Train recommender %s with split %s", r.getId(), i));
+                        r.setDataSet(sets[finalI]);
+
                         r.train();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -66,7 +70,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                             setInfo(String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
                         }
                     }
-                }
+                });
 
                 //iterate over all sets
                 for (int j = 0; j < sets.length; j++) {

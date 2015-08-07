@@ -4,8 +4,6 @@ import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.MetricBuilder;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.experiment.DataSplitter;
-import com.recalot.common.interfaces.model.experiment.DataSplitterInformation;
 import com.recalot.common.interfaces.model.experiment.Experiment;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import com.recalot.templates.base.JsonBaseTemplate;

@@ -4,7 +4,7 @@ Bundle-Description: Contains a servlet which process tracking informat
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.views.tracking
 Bundle-Name: Recalot.com Tracking
-Bundle-Version: 1.0.0.119
+Bundle-Version: 1.0.0.137
 Bundle-Activator: com.recalot.views.tracking.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com

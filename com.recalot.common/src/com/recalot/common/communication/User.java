@@ -1,5 +1,7 @@
 package com.recalot.common.communication;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,6 +29,15 @@ public class User {
     public User(String id, Map<String, String> map){
         this.id = id;
         this.map = map;
+    }
+
+    /**
+     * Constructor with id as parameter
+     * @param id user id
+     */
+    public User(String id){
+        this.id = id;
+        this.map = new HashMap<>();
     }
 
     /**
