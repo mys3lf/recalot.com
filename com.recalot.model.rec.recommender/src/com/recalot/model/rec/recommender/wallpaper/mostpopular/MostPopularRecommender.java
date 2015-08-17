@@ -70,7 +70,7 @@ public class MostPopularRecommender extends Recommender {
 
         recommendedItems.addAll(remainingItems);
 
-        this.result = new RecommendationResult(getId(), recommendedItems);
+        this.result = new RecommendationResult(getId(), Helper.applySubList(recommendedItems, 10));
     }
 
 

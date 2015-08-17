@@ -62,6 +62,7 @@ public class Servlet extends HttpServlet {
     }
     protected void processRequest(HttpServletRequest req, HttpServletResponse res, HTTPMethods method) throws ServletException, IOException {
         res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Origin", "*");
 
         String pathInfo = req.getPathInfo();
 

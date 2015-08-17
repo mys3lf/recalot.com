@@ -2,8 +2,9 @@ Manifest-Version: 1
 Bundle-Description:  Contains experiment logic
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.experiments.common
+Export-Package: com.recalot.model.experiments.access;version="1.0.0"
 Bundle-Name: Recalot.com Model - Experiment Common
-Bundle-Version: 1.0.0.590
+Bundle-Version: 1.0.0.629
 Bundle-Activator: com.recalot.model.experiments.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com

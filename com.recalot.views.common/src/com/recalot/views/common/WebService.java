@@ -18,7 +18,6 @@ public class WebService extends ConfigurationService implements Closeable {
     private String lastPath;
     private HttpServiceTracker httpTracker;
     private HttpServlet servlet;
-
     public String PATH = "path";
 
     public WebService(String id, BundleContext context, HttpServlet servlet, Dictionary config) {

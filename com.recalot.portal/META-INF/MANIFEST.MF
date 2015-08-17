@@ -15,24 +15,24 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  .data.sources,com.recalot.views.data.access,com.recalot.views.data.tr
  acking
 Bundle-Name: Recalot.com - Experiments Portal
-Bundle-Version: 1.0.0.608
+Bundle-Version: 1.0.0.647
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.portal.Activator
 Import-Service: com.recalot.controller.data.DataAccessController,com.r
  ecalot.controller.experiments.ExperimentsController,com.recalot.contr
-     oller.recommendations.RecommendationsController,com.recalot.model
- .data.access.DataAccess,com.recalot.model.data.connections.movielens.
- MovieLensFileConnection,com.recalot.model.experiments.metrics.list.Co
- verage,com.recalot.model.experiments.metrics.list.FScore,com.recalot.
- model.experiments.metrics.list.Gini,com.recalot.model.experiments.met
- rics.list.Precision,com.recalot.model.experiments.metrics.list.Recall
- ,com.recalot.model.rec.access.RecommenderAccess,com.recalot.model.rec
- .recommender.mostpopular.MostPopularRecommender,com.recalot.templates
- .data.CSVDataTemplate,com.recalot.templates.data.JsonDataTemplate,com
- .recalot.templates.data.XmlDataTemplate,com.recalot.templates.data.Pl
- ainTextDataTemplate,com.recalot.templates.rec.CSVRecommenderTemplate,
- com.recalot.templates.rec.JsonRecommenderTemplate,com.recalot.templat
- es.rec.XmlRecommenderTemplate,com.recalot.templates.experiments.JsonE
- xperimentTemplate,com.recalot.templates.experiments.PlainTextExperime
- ntTemplate,com.recalot.views.common.WebService
+ oller.recommendations.RecommendationsController,com.recalot.model.dat
+ a.access.DataAccess,com.recalot.model.data.connections.movielens.Movi
+ eLensFileConnection,com.recalot.model.experiments.metrics.list.Covera
+ ge,com.recalot.model.experiments.metrics.list.FScore,com.recalot.mode
+ l.experiments.metrics.list.Gini,com.recalot.model.experiments.metrics
+ .list.Precision,com.recalot.model.experiments.metrics.list.Recall,com
+ .recalot.model.rec.access.RecommenderAccess,com.recalot.model.rec.rec
+ ommender.mostpopular.MostPopularRecommender,com.recalot.templates.dat
+ a.CSVDataTemplate,com.recalot.templates.data.JsonDataTemplate,com.rec
+ alot.templates.data.XmlDataTemplate,com.recalot.templates.data.PlainT
+ extDataTemplate,com.recalot.templates.rec.CSVRecommenderTemplate,com.
+ recalot.templates.rec.JsonRecommenderTemplate,com.recalot.templates.r
+ ec.XmlRecommenderTemplate,com.recalot.templates.experiments.JsonExper
+ imentTemplate,com.recalot.templates.experiments.PlainTextExperimentTe
+ mplate,com.recalot.views.common.WebService
 

@@ -1,12 +1,9 @@
 package com.recalot.portal;
 
-import com.recalot.portal.HttpContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.*;
+import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
-
-import javax.servlet.http.HttpServlet;
 
 /**
  * @author Matthaeus.schmedding

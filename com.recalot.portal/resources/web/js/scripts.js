@@ -335,15 +335,17 @@ function _collectFormData(container, prefix) {
     return formData;
 }
 
-function _renderTableFormContent(container, form ){
+function _renderTableFormContent(container, form, skipLabel){
+    var skip = skipLabel != null ? skipLabel : false;
+
     for(var i in form){
         var item = form[i];
         var formElement = $("<div class='form-group'></div>");
 
+        if(!skip)    formElement.append("<label class='control-label' for='" + item.id + "'>" +  item.id + "</label>");
 
         switch(item.type) {
             case "enum":
-                formElement.append("<label class='control-label' for='" + item.id + "'>" +  item.id + "</label>");
 
                 var $select = $("<select class='form-control' name='" + item.id + "'>");
 
@@ -372,13 +374,12 @@ function _renderTableFormContent(container, form ){
                 formElement.append($select);
             break;
             case "array":
-                formElement.append("<label class='control-label array'>" +  item.id + "</label>");
 
                 var draft = $("<div class='array-draft col-xs-12'><div class='array-content col-xs-10'></div><div class='array-controls  col-xs-2' ></div></div>");
                 draft.appendTo(formElement);
                 draft.attr("name", item.id);
 
-                _renderTableFormContent(draft.children(".array-content"), [item.content]);
+                _renderTableFormContent(draft.children(".array-content"), [item.content], true);
                 var removeButton = $("<a href='javascript:void(0)' onclick='removeArrayElement(this, event)' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></a>");
                 removeButton.appendTo(draft.children(".array-controls"));
 
@@ -414,8 +415,32 @@ function _renderTableFormContent(container, form ){
 
                 formElement.append($div);
             break;
+            case "idconfiguration":
+                var $select = $("<select class='form-control array-item col-xs-6' onchange='idChange(this);' >");
+                $select.data("item", item);
+
+                if(typeof item.enum == "object" && item.enum.action != null) {
+                    callFunctionAfterAjax(
+                        item.enum.action,
+                        "GET",
+                        null,
+                        {item: item, select: $select},
+                        function(context, data){
+                            for(var d in data){
+                                context.select.append("<option value='"  + (data[d].key != null ? data[d].key : data[d].id) + "' >" + (data[d].id != null ? data[d].id : data[d].key) +"</option>")
+                            }
+
+                            context.select.trigger("onchange");
+                        }
+                    );
+                }
+
+                var $div = $("<div class='panel panel-default col-xs-12''><div class='panel-body configurations-container'></div></div>")
+                formElement.append($select);
+
+                formElement.append($div);
+            break;
             case "string":
-                formElement.append("<label class='control-label' for='" +  item.id + "'>" +  item.id + "</label>");
                 formElement.append("<input type='text' class='form-control' name='" + item.id + "' value='" + (item.value == null ? "" : item.value) + "' />");
             break;
         }

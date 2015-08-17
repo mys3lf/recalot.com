@@ -179,7 +179,8 @@ var structure = [
                         enum: {
                              action: "/experiments/splitters"
                         },
-                        type: "enum"
+                        type: "idconfiguration",
+                        action: "/experiments/splitters/{0}"
                     },
                     {
                         id: "rec-id",

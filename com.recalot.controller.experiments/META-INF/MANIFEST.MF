@@ -6,7 +6,7 @@ Bundle-Description: Controller which delegates the execution of experi
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.experiments
 Bundle-Name: Recalot.com Controller - Experiments
-Bundle-Version: 1.0.0.590
+Bundle-Version: 1.0.0.629
 Bundle-Activator: com.recalot.controller.experiments.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
@@ -16,5 +16,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  common.interfaces.model.data,com.recalot.common.interfaces.model.rec,
  com.recalot.common.interfaces.model.experiment,com.recalot.common.int
  erfaces.controller,com.recalot.common.interfaces.template,com.recalot
- .common, com.recalot.common.builder,com.recalot.common.configuration
+ .common, com.recalot.common.builder,com.recalot.common.configuration,
+  com.recalot.model.experiments.access
 

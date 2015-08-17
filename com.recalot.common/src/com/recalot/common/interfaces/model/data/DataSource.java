@@ -7,6 +7,8 @@ import com.recalot.common.exceptions.BaseException;
 import java.io.Closeable;
 
 /**
+ *
+ * TODO: add relationship between users
  * @author Matthaeus.schmedding
  */
 public abstract class DataSource implements DataInformation, UserDataAccess, ItemDataAccess, InteractionDataAccess, Closeable {
