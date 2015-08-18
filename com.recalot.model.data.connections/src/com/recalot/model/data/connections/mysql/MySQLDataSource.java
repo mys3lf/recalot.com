@@ -31,12 +31,13 @@ public class MySQLDataSource extends DataSource {
     private String sqlPassword;
     private String sqlDatabase;
 
-    private String connectionPlaceHolder = "jdbc:%s/%s?user=%s&password=%s";
+    private String connectionPlaceHolder = "jdbc:%s/%s?autoReconnect=true";
     private Connection connection;
 
     public ConcurrentHashMap<String, User> users;
     public ConcurrentHashMap<String, Item> items;
     public ConcurrentHashMap<String, Interaction> interactions;
+    public ConcurrentHashMap<String, Relation> relations;
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock writeLock = lock.writeLock();
@@ -46,6 +47,7 @@ public class MySQLDataSource extends DataSource {
         users = new ConcurrentHashMap<>();
         items = new ConcurrentHashMap<>();
         interactions = new ConcurrentHashMap<>();
+        relations = new ConcurrentHashMap<>();
         this.initialized = false;
     }
 
@@ -84,10 +86,10 @@ public class MySQLDataSource extends DataSource {
 
     public Connection getNewConnection() {
 
-       // System.out.println("getNewConnection");
+        // System.out.println("getNewConnection");
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            return DriverManager.getConnection(String.format(connectionPlaceHolder, sqlServer, sqlDatabase, sqlUsername, sqlPassword));
+            return DriverManager.getConnection(String.format(connectionPlaceHolder, sqlServer, sqlDatabase), sqlUsername, sqlPassword);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +102,7 @@ public class MySQLDataSource extends DataSource {
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            this.connection = DriverManager.getConnection(String.format(connectionPlaceHolder, sqlServer, sqlDatabase, sqlUsername, sqlPassword));
+            this.connection = DriverManager.getConnection(String.format(connectionPlaceHolder, sqlServer, sqlDatabase), sqlUsername, sqlPassword);
             this.dataSet = new DataSourceDataSet(this);
 
             if (!structureAvailable()) {
@@ -111,6 +113,7 @@ public class MySQLDataSource extends DataSource {
             readUsers();
             readItems();
             readInteractions();
+            readRelations();
 
 
             this.initialized = true;
@@ -169,6 +172,7 @@ public class MySQLDataSource extends DataSource {
         }
     }
 
+
     private class IdComputation {
         private final HashMap<String, Integer> nextDict;
 
@@ -212,13 +216,14 @@ public class MySQLDataSource extends DataSource {
             while (result.next()) {
                 existingTables.add(result.getString(3).toLowerCase());
 
-               // System.out.println(result.getString(3).toLowerCase());
+                // System.out.println(result.getString(3).toLowerCase());
             }
 
             ArrayList<String> necessaryTables = new ArrayList<>();
             necessaryTables.add("users");
             necessaryTables.add("items");
             necessaryTables.add("interactions");
+            necessaryTables.add("relations");
             necessaryTables.add("idcomputation");
 
             for (String t : necessaryTables) {
@@ -236,34 +241,64 @@ public class MySQLDataSource extends DataSource {
     public void createDBstructure() throws SQLException {
 
         Statement statement = null;
+        ResultSet result = null;
+
         try {
+
+            DatabaseMetaData md = connection.getMetaData();
+            result = md.getTables(null, null, "%", null);
+
+            ArrayList<String> existingTables = new ArrayList<>();
+            while (result.next()) {
+                existingTables.add(result.getString(3).toLowerCase());
+            }
+
+
             statement = connection.createStatement();
-            statement.execute("DROP TABLE IF EXISTS users");
-            statement.execute("CREATE TABLE users (" +
-                    "id VARCHAR(128) NOT NULL PRIMARY KEY," +
-                    "content TEXT NOT NULL)");
 
-            statement.execute("DROP TABLE IF EXISTS items");
-            statement.execute("CREATE TABLE items (" +
-                    "id VARCHAR(128) NOT NULL PRIMARY KEY," +
-                    "content TEXT NOT NULL)");
+            if (!existingTables.contains("users")) {
+                //    statement.execute("DROP TABLE IF EXISTS users");
+                statement.execute("CREATE TABLE users (" +
+                        "id VARCHAR(128) NOT NULL PRIMARY KEY," +
+                        "content TEXT NOT NULL)");
+            }
 
-            statement.execute("DROP TABLE IF EXISTS interactions");
-            statement.execute("CREATE TABLE interactions (" +
-                    "id VARCHAR(128) NOT NULL PRIMARY KEY," +
-                    "userId VARCHAR(128) NOT NULL," +
-                    "itemId VARCHAR(128) NOT NULL," +
-                    "timeStamp TIMESTAMP NOT NULL," +
-                    "type VARCHAR(128) NOT NULL," +
-                    "value VARCHAR(128) NOT NULL," +
-                    "content TEXT NOT NULL)");
+            if (!existingTables.contains("items")) {
+                //     statement.execute("DROP TABLE IF EXISTS items");
+                statement.execute("CREATE TABLE items (" +
+                        "id VARCHAR(128) NOT NULL PRIMARY KEY," +
+                        "content TEXT NOT NULL)");
 
-            statement.execute("DROP TABLE IF EXISTS idcomputaion");
-            statement.execute("CREATE TABLE IDCOMPUTATION (" +
-                    "id VARCHAR(128) NOT NULL PRIMARY KEY," +
-                    "next INT  NOT NULL)");
+            }
 
+            if (!existingTables.contains("interactions")) {
+                //    statement.execute("DROP TABLE IF EXISTS interactions");
+                statement.execute("CREATE TABLE interactions (" +
+                        "id VARCHAR(128) NOT NULL PRIMARY KEY," +
+                        "userId VARCHAR(128) NOT NULL," +
+                        "itemId VARCHAR(128) NOT NULL," +
+                        "timeStamp TIMESTAMP NOT NULL," +
+                        "type VARCHAR(128) NOT NULL," +
+                        "value VARCHAR(128) NOT NULL," +
+                        "content TEXT NOT NULL)");
 
+            }
+
+            if (!existingTables.contains("relations")) {
+                statement.execute("CREATE TABLE relations (" +
+                        "id VARCHAR(128) NOT NULL PRIMARY KEY," +
+                        "fromId VARCHAR(128) NOT NULL," +
+                        "toId VARCHAR(128) NOT NULL," +
+                        "type VARCHAR(128) NOT NULL," +
+                        "content TEXT NOT NULL)");
+            }
+
+            if (!existingTables.contains("idcomputation")) {
+                //     statement.execute("DROP TABLE IF EXISTS idcomputaion");
+                statement.execute("CREATE TABLE idcomputation (" +
+                        "id VARCHAR(128) NOT NULL PRIMARY KEY," +
+                        "next INT  NOT NULL)");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -276,6 +311,8 @@ public class MySQLDataSource extends DataSource {
                     e.printStackTrace();
                 }
             }
+
+            if (result != null) result.close();
         }
     }
 
@@ -285,6 +322,51 @@ public class MySQLDataSource extends DataSource {
 
         try {
             statement = connection.prepareStatement("SELECT * FROM " + sqlDatabase + ".interactions");
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                try {
+                    String id = result.getString(1);
+                    String userId = result.getString(2);
+                    String itemId = result.getString(3);
+                    Date timeStamp = new Date(result.getTimestamp(4).getTime());
+                    String type = result.getString(5);
+                    String value = result.getString(6);
+
+                    HashMap map = new JSONDeserializer<HashMap>().deserialize(result.getString(7));
+
+                    interactions.put(id, new Interaction(id, userId, itemId, timeStamp, type, value, map));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if (result != null) try {
+                result.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void readRelations() {
+        ResultSet result = null;
+        PreparedStatement statement = null;
+
+        try {
+            statement = connection.prepareStatement("SELECT * FROM " + sqlDatabase + ".relation");
             result = statement.executeQuery();
 
             while (result.next()) {
@@ -423,6 +505,61 @@ public class MySQLDataSource extends DataSource {
     }
 
     @Override
+    public int getRelationCount() {
+        return relations.size();
+    }
+
+    @Override
+    public Relation[] getRelations() throws BaseException {
+        return relations.values().toArray(new Relation[relations.size()]);
+    }
+
+    @Override
+    public Relation getRelation(String relationId) throws BaseException {
+        return relations.get(relationId);
+    }
+    @Override
+    public Relation[] getRelations(String fromId, String toId) throws BaseException {
+        if(fromId != null && toId == null) {
+            return relations.values().stream().filter(i -> i.getFromId().equals(fromId) ).toArray(s -> new Relation[s]);
+        } else if(fromId == null && toId != null){
+            return relations.values().stream().filter(i -> i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+        } else {
+            return relations.values().stream().filter(i -> i.getFromId().equals(fromId) && i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+        }
+    }
+
+    @Override
+    public Relation updateRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {
+        if (relations.containsKey(relationId)) {
+            Relation relation = new Relation(relationId, fromId, toId,  type, filterParams(content));
+
+            relations.replace(relationId, relation);
+
+            //  new Thread() {
+            //      public void run() {
+            updateAtSql(relation);
+            //       }
+            //  }.start();
+
+            return relation;
+
+        } else {
+            throw new NotFoundException("An relationId with the id '%s' could not be found", relationId);
+        }
+    }
+
+    @Override
+    public Relation createRelation(String fromId, String toId, String type, Map<String, String> content) throws BaseException {
+        Relation relation = new Relation("" + this.idComputation.getNextID("relation"), fromId, toId,  type, filterParams(content));
+        relations.put(relation.getId(), relation);
+
+        putToSql(relation);
+
+        return relation;
+    }
+
+    @Override
     public Interaction[] getInteractions() throws BaseException {
         return interactions.values().toArray(new Interaction[interactions.size()]);
     }
@@ -448,11 +585,11 @@ public class MySQLDataSource extends DataSource {
         Interaction interaction = new Interaction("" + this.idComputation.getNextID("interactions"), userId, itemId, timestamp, type, value, filterParams(content));
         interactions.put(interaction.getId(), interaction);
 
-      //  new Thread() {
+        //  new Thread() {
         //    public void run() {
-                putToSql(interaction);
+        putToSql(interaction);
         //    }
-       // }.start();
+        // }.start();
 
         return new Message("Interaction successful saved", "Interaction successful saved", Message.Status.INFO);
     }
@@ -480,11 +617,11 @@ public class MySQLDataSource extends DataSource {
             Item item = new Item(itemId, filterParams(content));
             items.replace(itemId, item);
 
-          //  new Thread() {
-          //      public void run() {
-                    updateAtSql(item);
-         //       }
-          //  }.start();
+            //  new Thread() {
+            //      public void run() {
+            updateAtSql(item);
+            //       }
+            //  }.start();
 
             return item;
 
@@ -498,8 +635,9 @@ public class MySQLDataSource extends DataSource {
     public Item createItem(Map<String, String> content) throws BaseException {
         String wishedItemId = content.get(Helper.Keys.ItemId);
 
-        if(wishedItemId != null && !wishedItemId.isEmpty()){
-            if(users.containsKey(wishedItemId)) throw new AlreadyExistsException("An item with the id %s already exists.", wishedItemId);
+        if (wishedItemId != null && !wishedItemId.isEmpty()) {
+            if (users.containsKey(wishedItemId))
+                throw new AlreadyExistsException("An item with the id %s already exists.", wishedItemId);
         } else {
             wishedItemId = "" + this.idComputation.getNextID("items");
         }
@@ -508,12 +646,12 @@ public class MySQLDataSource extends DataSource {
         items.put(item.getId(), item);
 
 
-       // new Thread() {
+        // new Thread() {
         //    public void run() {
 
-                putToSql(item);
-       //     }
-      //  }.start();
+        putToSql(item);
+        //     }
+        //  }.start();
 
         return item;
 
@@ -543,12 +681,12 @@ public class MySQLDataSource extends DataSource {
             User user = new User(userId, filterParams(content));
             users.replace(userId, user);
 
-          //  new Thread() {
-           //     public void run() {
+            //  new Thread() {
+            //     public void run() {
 
-                    updateAtSql(user);
-           //     }
-          //  }.start();
+            updateAtSql(user);
+            //     }
+            //  }.start();
 
 
             return user;
@@ -564,8 +702,9 @@ public class MySQLDataSource extends DataSource {
     public User createUser(Map<String, String> content) throws BaseException {
         String wishedUserId = content.get(Helper.Keys.UserId);
 
-        if(wishedUserId != null && !wishedUserId.isEmpty()){
-            if(users.containsKey(wishedUserId)) throw new AlreadyExistsException("A user with the id %s already exists.", wishedUserId);
+        if (wishedUserId != null && !wishedUserId.isEmpty()) {
+            if (users.containsKey(wishedUserId))
+                throw new AlreadyExistsException("A user with the id %s already exists.", wishedUserId);
         } else {
             wishedUserId = "" + this.idComputation.getNextID("users");
         }
@@ -574,10 +713,10 @@ public class MySQLDataSource extends DataSource {
         users.put(user.getId(), user);
 
         //new Thread() {
-       //     public void run() {
-                putToSql(user);
-     //       }
-      //  }.start();
+        //     public void run() {
+        putToSql(user);
+        //       }
+        //  }.start();
 
         return user;
 
@@ -596,7 +735,7 @@ public class MySQLDataSource extends DataSource {
             if (connection == null || connection.isClosed()) connection = getNewConnection();
 
             // PreparedStatements can use variables and are more efficient
-            statement = connection.prepareStatement("INSERT IGNORE INTO USERS (id, content) VALUES (?, ?)");
+            statement = connection.prepareStatement("INSERT IGNORE INTO users (id, content) VALUES (?, ?)");
 
             statement.setString(1, user.getId());    //user_id
             statement.setString(2, content);    //content
@@ -604,7 +743,6 @@ public class MySQLDataSource extends DataSource {
             statement.executeUpdate();
 
             putToSql(idComputation);
-
 
 
         } catch (Exception e) {
@@ -630,9 +768,9 @@ public class MySQLDataSource extends DataSource {
 
             // PreparedStatements can use variables and are more efficient
 
-            statement = connection.prepareStatement("REPLACE INTO IDCOMPUTATION (id, next) VALUES (?, ?)");
+            statement = connection.prepareStatement("REPLACE INTO idcomputation (id, next) VALUES (?, ?)");
 
-            for (String key : idComputation.getTypes()){
+            for (String key : idComputation.getTypes()) {
 
                 statement.setString(1, key);    //user_id
                 statement.setInt(2, idComputation.getCurrent(key));    //content
@@ -668,7 +806,7 @@ public class MySQLDataSource extends DataSource {
             if (connection == null || connection.isClosed()) connection = getNewConnection();
 
             // PreparedStatements can use variables and are more efficient
-            statement = connection.prepareStatement("INSERT IGNORE INTO ITEMS (id, content) VALUES (?, ?)");
+            statement = connection.prepareStatement("INSERT IGNORE INTO items (id, content) VALUES (?, ?)");
 
             statement.setString(1, item.getId());    //user_id
             statement.setString(2, content);    //content
@@ -706,7 +844,7 @@ public class MySQLDataSource extends DataSource {
             if (connection == null || connection.isClosed()) connection = getNewConnection();
 
             // PreparedStatements can use variables and are more efficient
-            statement = connection.prepareStatement("INSERT IGNORE INTO INTERACTIONS (id, userId, itemId, timeStamp, type, value, content) VALUES (?, ?, ?, ?, ? , ? , ?)");
+            statement = connection.prepareStatement("INSERT IGNORE INTO interactions (id, userId, itemId, timeStamp, type, value, content) VALUES (?, ?, ?, ?, ? , ? , ?)");
 
             statement.setString(1, interaction.getId());    //user_id
             statement.setString(2, interaction.getUserId());    //user_id
@@ -737,6 +875,85 @@ public class MySQLDataSource extends DataSource {
         }
     }
 
+    private void putToSql(Relation relation) {
+        PreparedStatement statement = null;
+        try {
+            writeLock.lock();
+
+            Map<String, String> contentMap = filterParams(relation.getContent(), "type", "value");
+
+            String content = new JSONSerializer().serialize(contentMap);
+
+            if (connection == null || connection.isClosed()) connection = getNewConnection();
+
+            // PreparedStatements can use variables and are more efficient
+            statement = connection.prepareStatement("INSERT IGNORE INTO relations (id, fromId, toId, type, content) VALUES (?, ?, ?, ?, ?)");
+
+            statement.setString(1, relation.getId());    //user_id
+            statement.setString(2, relation.getFromId());    //user_id
+            statement.setString(3, relation.getToId());    //user_id
+            statement.setString(4, relation.getType());    //user_id
+            statement.setString(5, content);    //content
+
+            statement.executeUpdate();
+
+            putToSql(idComputation);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                statement = null;
+            }
+
+            writeLock.unlock();
+        }
+    }
+
+    private void updateAtSql(Relation relation) {
+        PreparedStatement statement = null;
+        try {
+            writeLock.lock();
+
+            Map<String, String> contentMap = filterParams(relation.getContent(), "type", "value");
+
+            String content = new JSONSerializer().serialize(contentMap);
+
+            if (connection == null || connection.isClosed()) connection = getNewConnection();
+
+            // PreparedStatements can use variables and are more efficient
+            statement = connection.prepareStatement("UPDATE relations SET fromId=?, toId=?, type=?, content=? WHERE id=?");
+
+            statement.setString(5, relation.getId());    //user_id
+            statement.setString(1, relation.getFromId());    //user_id
+            statement.setString(2, relation.getToId());    //user_id
+            statement.setString(3, relation.getType());    //user_id
+            statement.setString(4, content);    //content
+
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                statement = null;
+            }
+
+            writeLock.unlock();
+        }
+    }
+
     private void updateAtSql(User user) {
         PreparedStatement statement = null;
         try {
@@ -749,7 +966,7 @@ public class MySQLDataSource extends DataSource {
             if (connection == null || connection.isClosed()) connection = getNewConnection();
 
             // PreparedStatements can use variables and are more efficient
-            statement = connection.prepareStatement("UPDATE USERS SET content=? WHERE id=?");
+            statement = connection.prepareStatement("UPDATE users SET content=? WHERE id=?");
 
             statement.setString(2, user.getId());    //user_id
             statement.setString(1, content);    //content
@@ -783,7 +1000,7 @@ public class MySQLDataSource extends DataSource {
             if (connection == null || connection.isClosed()) connection = getNewConnection();
 
             // PreparedStatements can use variables and are more efficient
-            statement = connection.prepareStatement("UPDATE ITEMS SET content=? WHERE id=?");
+            statement = connection.prepareStatement("UPDATE items SET content=? WHERE id=?");
 
             statement.setString(2, item.getId());    //user_id
             statement.setString(1, content);    //content

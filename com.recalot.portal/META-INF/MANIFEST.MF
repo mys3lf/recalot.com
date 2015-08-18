@@ -11,11 +11,11 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
    javax.servlet.http,   org.apache.felix.http.api,com.recalot.common.
  interfaces.controller,com.recalot.common.log,com.recalot.common.inter
  faces.template,com.recalot.common,com.recalot.views.common,com.recalo
- t.views.recommend.train,com.recalot.views.recommend,com.recalot.views
- .data.sources,com.recalot.views.data.access,com.recalot.views.data.tr
- acking
+ t.views.recommend.train,com.recalot.views.experiments,com.recalot.vie
+ ws.recommend,com.recalot.views.data.sources,com.recalot.views.data.ac
+ cess,com.recalot.views.data.tracking
 Bundle-Name: Recalot.com - Experiments Portal
-Bundle-Version: 1.0.0.647
+Bundle-Version: 1.0.0.660
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.portal.Activator
 Import-Service: com.recalot.controller.data.DataAccessController,com.r

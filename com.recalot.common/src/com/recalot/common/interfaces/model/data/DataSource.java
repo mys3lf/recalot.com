@@ -8,10 +8,9 @@ import java.io.Closeable;
 
 /**
  *
- * TODO: add relationship between users
  * @author Matthaeus.schmedding
  */
-public abstract class DataSource implements DataInformation, UserDataAccess, ItemDataAccess, InteractionDataAccess, Closeable {
+public abstract class DataSource implements DataInformation, RelationDataAccess, UserDataAccess, ItemDataAccess, InteractionDataAccess, Closeable {
 
     private DataState state;
     private String dataBuilderId;

@@ -52,6 +52,21 @@ public class DataSourceDataSet implements DataSet {
     }
 
     @Override
+    public Relation[] getRelations() throws BaseException {
+        return dataSource.getRelations();
+    }
+
+    @Override
+    public Relation getRelation(String relationId) throws BaseException {
+        return dataSource.getRelation(relationId);
+    }
+
+    @Override
+    public Relation[] getRelations(String fromId, String toId) throws BaseException {
+        return dataSource.getRelations(fromId, toId);
+    }
+
+    @Override
     public int getItemsCount() {
         return dataSource.getItemsCount();
     }
@@ -64,5 +79,9 @@ public class DataSourceDataSet implements DataSet {
     @Override
     public int getInteractionsCount() {
         return dataSource.getInteractionsCount();
+    }
+    @Override
+    public int getRelationCount() {
+        return dataSource.getRelationCount();
     }
 }

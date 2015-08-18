@@ -46,6 +46,16 @@ public class XmlDataTemplate extends XmlBaseTemplate implements DataTemplate {
     }
 
     @Override
+    public TemplateResult transform(Relation relation) throws BaseException {
+        return null;
+    }
+
+    @Override
+    public TemplateResult transform(Relation[] relations) throws BaseException {
+        return null;
+    }
+
+    @Override
     public TemplateResult transform(User user) {
         return null;
     }

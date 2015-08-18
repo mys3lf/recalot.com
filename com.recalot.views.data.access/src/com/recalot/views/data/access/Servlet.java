@@ -126,6 +126,15 @@ public class Servlet extends HttpServlet {
                                     result = handler.process(DataAccessController.DataAccessRequestAction.GetInteractions, templateKey, params);
                                     break;
                             }
+                        } else if (split[2].toLowerCase().equals("relations")) {
+                            switch (method) {
+                                case GET:
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetRelations, templateKey, params);
+                                    break;
+                                case PUT:
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.CreateRelation, templateKey, params);
+                                    break;
+                            }
                         }
                     }
                     break;
@@ -159,6 +168,18 @@ public class Servlet extends HttpServlet {
                                     result = handler.process(DataAccessController.DataAccessRequestAction.GetItem, templateKey, params);
                                     break;
                             }
+                        } else if (split[2].toLowerCase().equals("relations")) {
+
+                            params.put(Helper.Keys.RelationId, split[3]);
+
+                            switch (method) {
+                                case PUT:
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.UpdateRelation, templateKey, params);
+                                    break;
+                                case GET:
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetRelation, templateKey, params);
+                                    break;
+                            }
                         }
                     }
                     break;
@@ -174,7 +195,17 @@ public class Servlet extends HttpServlet {
                                 result = handler.process(DataAccessController.DataAccessRequestAction.GetInteractions, templateKey, params);
                                 break;
                         }
-                    } else if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("items") && split[4].toLowerCase().equals("interactions")) {
+                    } else if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("users") && split[4].toLowerCase().equals("relations")) {
+
+                        params.put(Helper.Keys.SourceId, split[1]);
+                        params.put(Helper.Keys.FromId, split[3]);
+
+                        switch (method) {
+                            case GET:
+                                result = handler.process(DataAccessController.DataAccessRequestAction.GetRelations, templateKey, params);
+                                break;
+                        }
+                    }  else if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("items") && split[4].toLowerCase().equals("interactions")) {
 
                         params.put(Helper.Keys.SourceId, split[1]);
                         params.put(Helper.Keys.ItemId, split[3]);
@@ -186,6 +217,21 @@ public class Servlet extends HttpServlet {
                         }
                     }
 
+                    break;
+                }
+                case 6: {
+                     if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("users") && split[4].toLowerCase().equals("relations")) {
+
+                        params.put(Helper.Keys.SourceId, split[1]);
+                        params.put(Helper.Keys.FromId, split[3]);
+                        params.put(Helper.Keys.ToId, split[5]);
+
+                        switch (method) {
+                            case GET:
+                                result = handler.process(DataAccessController.DataAccessRequestAction.GetRelations, templateKey, params);
+                                break;
+                        }
+                    }
 
                     break;
                 }

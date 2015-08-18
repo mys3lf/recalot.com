@@ -7,6 +7,8 @@ import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.communication.*;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.MissingArgumentException;
+import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.common.exceptions.NotReadyException;
 import com.recalot.common.interfaces.controller.RequestAction;
 import com.recalot.common.interfaces.model.data.DataAccess;
@@ -124,6 +126,22 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
                     result = deleteSource(access, template, param);
                     break;
                 }
+                case GetRelation: {
+                    result = getRelations(access, template, param);
+                    break;
+                }
+                case GetRelations: {
+                    result = getRelations(access, template, param);
+                    break;
+                }
+                case CreateRelation: {
+                    result = createRelation(access, template, param);
+                    break;
+                }
+                case UpdateRelation: {
+                    result = updateRelation(access, template, param);
+                    break;
+                }
             }
         } catch (BaseException ex) {
             if (template != null) result = template.transform(ex);
@@ -141,7 +159,7 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
         String id = param.get(Helper.Keys.SourceId);
         DataSourceBuilder builder = access.getDataSourceBuilder(id);
 
-        if(builder.getConfiguration(Helper.Keys.DataBuilderId) == null) {
+        if (builder.getConfiguration(Helper.Keys.DataBuilderId) == null) {
             builder.setConfiguration(new ConfigurationItem(Helper.Keys.DataBuilderId, ConfigurationItem.ConfigurationItemType.String, builder.getKey(), ConfigurationItem.ConfigurationItemRequirementType.Hidden));
         }
 
@@ -150,15 +168,80 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult getData(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         DataSet data = dataSource.getDataSet();
         return template.transform(data);
     }
 
+
+    private TemplateResult getRelations(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
+        DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+
+        String relationId = param.get(Helper.Keys.RelationId);
+        String fromId = param.get(Helper.Keys.FromId);
+        String toId = param.get(Helper.Keys.ToId);
+
+        if (relationId != null) {
+            Relation relation = dataSource.getRelation(relationId);
+            return template.transform(relation);
+        } else if (fromId != null || toId != null) {
+            Relation[] relations = dataSource.getRelations(fromId, toId);
+            return template.transform(relations);
+        } else {
+
+            Relation[] relations = dataSource.getRelations();
+            return template.transform(relations);
+        }
+    }
+
+    private TemplateResult createRelation(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
+        DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+
+        String fromId = param.get(Helper.Keys.FromId);
+        if(fromId == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.FromId );
+
+        String toId = param.get(Helper.Keys.ToId);
+        if(toId == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.ToId );
+
+        String type = param.get(Helper.Keys.Type);
+        if(type == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.Type );
+
+        Relation relation = dataSource.createRelation(fromId, toId, type, param);
+        return template.transform(relation);
+    }
+
+    private TemplateResult updateRelation(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
+        DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+
+        String relationId = param.get(Helper.Keys.RelationId);
+        if(relationId == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.RelationId );
+
+        String fromId = param.get(Helper.Keys.FromId);
+        if(fromId == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.FromId );
+
+        String toId = param.get(Helper.Keys.ToId);
+        if(toId == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.ToId );
+
+        String type = param.get(Helper.Keys.Type);
+        if(type == null) throw new MissingArgumentException("The argument %s is missing!", Helper.Keys.Type );
+
+
+        Relation relation = dataSource.updateRelation(relationId, fromId, toId, type, param);
+        return template.transform(relation);
+    }
+
     private TemplateResult getUser(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         String userId = param.get(Helper.Keys.UserId);
         User user = dataSource.getUser(userId);
@@ -168,7 +251,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult getUsers(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         User[] users = dataSource.getUsers();
 
@@ -179,7 +263,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult updateUser(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         String userId = param.get(Helper.Keys.UserId);
 
@@ -189,7 +274,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult createUser(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         User user = dataSource.createUser(param);
         return template.transform(user);
@@ -198,7 +284,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult getItems(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         Item[] items = dataSource.getItems();
 
@@ -209,7 +296,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult getItem(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         Item item = dataSource.getItem(param.get(Helper.Keys.ItemId));
         return template.transform(item);
@@ -217,7 +305,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult updateItem(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         Item item = dataSource.updateItem(param.get(Helper.Keys.ItemId), param);
         return template.transform(item);
@@ -225,7 +314,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult createItem(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         Item item = dataSource.createItem(param);
         return template.transform(item);
@@ -234,26 +324,41 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
     private TemplateResult addInteraction(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
 
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         String itemId = param.get(Helper.Keys.ItemId);
         String userId = param.get(Helper.Keys.UserId);
         String type = param.get(Helper.Keys.Type);
         String value = param.get(Helper.Keys.Value);
+        String timestamp = param.get(Helper.Keys.TimeStamp);
 
-        Message message = dataSource.addInteraction(itemId, userId, new Date(), type, value, param);
+        Date date = null;
+        if (timestamp != null && !timestamp.isEmpty()) {
+            Long t = Long.parseLong(timestamp);
+            if (t != null) {
+                date = new Date(t);
+            }
+        }
+
+        if (date == null) {
+            date = new Date();
+        }
+
+        Message message = dataSource.addInteraction(itemId, userId, date, type, value, param);
         return template.transform(message);
 
     }
 
     private TemplateResult getInteractions(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         String userId = param.get(Helper.Keys.UserId);
         Interaction[] interaction;
 
-        if(userId != null) {
+        if (userId != null) {
             interaction = dataSource.getInteractions(userId);
         } else {
             interaction = dataSource.getInteractions();
@@ -266,7 +371,8 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
     private TemplateResult getInteraction(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
         DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
-        if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
         String itemId = param.get(Helper.Keys.ItemId);
         String userId = param.get(Helper.Keys.UserId);

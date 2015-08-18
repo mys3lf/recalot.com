@@ -54,7 +54,6 @@ public abstract class DataSourceBase extends DataSource {
         return interactions.values().stream().filter(i -> i.getUserId().equals(userId) && i.getItemId().equals(itemId)).toArray(s -> new Interaction[s]);
     }
 
-
     @Override
     public Message addInteraction(String itemId, String userId, Date timestamp, String type, String value,  Map<String, String> content) throws BaseException {
         throw throwNotSupportedException("addInteraction");
@@ -110,6 +109,37 @@ public abstract class DataSourceBase extends DataSource {
     @Override
     public User createUser(Map<String, String> content) throws BaseException {
         throw throwNotSupportedException("createUser");
+    }
+
+
+    @Override
+    public Relation[] getRelations() throws BaseException {
+        return new Relation[0];
+    }
+
+    @Override
+    public int getRelationCount() {
+        return 0;
+    }
+
+    @Override
+    public Relation getRelation(String relationId) throws BaseException {
+        throw throwNotSupportedException("getRelation");
+    }
+
+    @Override
+    public Relation[] getRelations(String fromId, String toId) throws BaseException {
+        throw throwNotSupportedException("getRelations");
+    }
+
+    @Override
+    public Relation updateRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("updateRelation");
+    }
+
+    @Override
+    public Relation createRelation(String fromId, String toId, String type, Map<String, String> content) throws BaseException {
+        throw throwNotSupportedException("    public Item createRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {\n");
     }
 
     private NotSupportedException throwNotSupportedException(String createUser) throws NotSupportedException {

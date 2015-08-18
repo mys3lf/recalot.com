@@ -18,6 +18,8 @@ public interface DataTemplate extends BaseTemplate {
     public TemplateResult transform(Item[] items) throws BaseException;
     public TemplateResult transform(Item item) throws BaseException;
     public TemplateResult transform(User[] users) throws BaseException;
+    public TemplateResult transform(Relation relation) throws BaseException;
+    public TemplateResult transform(Relation[] relations) throws BaseException;
     public TemplateResult transform(User user) throws BaseException;
     public TemplateResult transform(DataSource source) throws BaseException;
     public TemplateResult transform(DataInformation source) throws BaseException;

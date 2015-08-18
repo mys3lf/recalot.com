@@ -269,6 +269,9 @@ public class Helper {
         public static final String OutputParam = "output".intern();
         public static final String ItemId = "item-id".intern();
         public static final String UserId = "user-id".intern();
+        public static final String RelationId = "relation-id".intern();
+        public static final String FromId = "from-id".intern();
+        public static final String ToId = "to-id".intern();
         public static final String SourceId = "source-id".intern();
         public static final String DataBuilderId = "data-builder-id".intern();
         public static final String RecommenderId = "rec-id".intern();
@@ -286,6 +289,7 @@ public class Helper {
         public static final String PageSizeKey = "page-size".intern();
         public static final String Count = "count".intern();
         public static final String Key = "key".intern();
+        public static final String TimeStamp = "timeStamp".intern();
 
         public static final Integer PageSize = 10;
     }

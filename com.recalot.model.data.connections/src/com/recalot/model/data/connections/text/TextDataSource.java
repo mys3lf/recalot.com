@@ -1,5 +1,7 @@
 package com.recalot.model.data.connections.text;
 
+import com.recalot.common.communication.Item;
+import com.recalot.common.communication.Relation;
 import com.recalot.common.communication.User;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.data.connections.base.DataSourceBase;
@@ -7,6 +9,7 @@ import com.recalot.model.data.connections.base.DataSourceBase;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by matthaeus.schmedding on 11.06.2015.

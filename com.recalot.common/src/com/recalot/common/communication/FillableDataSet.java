@@ -28,6 +28,11 @@ public class FillableDataSet implements DataSet {
     private final ArrayList<Item> items;
 
     /**
+     * Relation list
+     */
+    private final ArrayList<Relation> relations;
+
+    /**
      * Default constructor
      *
      * Initializes the lists
@@ -36,6 +41,7 @@ public class FillableDataSet implements DataSet {
         this.items = new ArrayList<>();
         this.users = new ArrayList<>();
         this.interactions = new ArrayList<>();
+        this.relations = new ArrayList<>();
     }
 
     /**
@@ -86,6 +92,29 @@ public class FillableDataSet implements DataSet {
     }
 
     @Override
+    public Relation[] getRelations() throws BaseException {
+        return relations.toArray(new Relation[relations.size()]);
+    }
+
+    @Override
+    public Relation getRelation(String relationId) throws BaseException {
+        Optional<Relation> item = relations.stream().filter(i -> i.getId().equals(relationId)).findFirst();
+
+        return item.isPresent() ? item.get() : null;
+    }
+
+    @Override
+    public Relation[] getRelations(String fromId, String toId) throws BaseException {
+        if(fromId != null && toId == null) {
+            return relations.stream().filter(i -> i.getFromId().equals(fromId) ).toArray(s -> new Relation[s]);
+        } else if(fromId == null && toId != null){
+            return relations.stream().filter(i -> i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+        } else {
+            return relations.stream().filter(i -> i.getFromId().equals(fromId) && i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+        }
+    }
+
+    @Override
     public Item getItem(String itemId) throws BaseException {
         Optional<Item> item = items.stream().filter(i -> i.getId().equals(itemId)).findFirst();
 
@@ -112,5 +141,10 @@ public class FillableDataSet implements DataSet {
     @Override
     public int getInteractionsCount() {
         return interactions.size();
+    }
+
+    @Override
+    public int getRelationCount() {
+        return 0;
     }
 }

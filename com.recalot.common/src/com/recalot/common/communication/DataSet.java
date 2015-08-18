@@ -8,7 +8,7 @@ import com.recalot.common.exceptions.BaseException;
  *  -users
  *  -items
  *  -interactions between users/items
- *
+ *  -relations
  * @author Matthäus Schmedding (info@recalot.com)
  */
 public interface DataSet {
@@ -59,6 +59,30 @@ public interface DataSet {
     public User[] getUsers() throws BaseException;
 
     /**
+     * Get all relations
+     * @return all available relations in the data set
+     * @throws BaseException
+     */
+    public Relation[] getRelations() throws BaseException;
+
+    /**
+     * Get relation information
+     * @param relationId relation id
+     * @return relation information
+     * @throws BaseException
+     * */
+    public Relation getRelation(String relationId) throws BaseException;
+
+    /**
+     * Get relation information
+     * @param fromId from id
+     * @param toId to id
+     * @return relation information
+     * @throws BaseException
+     * */
+    public Relation[] getRelations(String fromId, String toId) throws BaseException;
+
+    /**
      *
      * @return item count
      */
@@ -76,4 +100,10 @@ public interface DataSet {
      * @return interaction count
      */
     public int getInteractionsCount();
+
+    /**
+     *
+     * @return relation count
+     */
+    public int getRelationCount();
 }

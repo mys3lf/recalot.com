@@ -23,7 +23,11 @@ public interface DataAccessController extends Controller {
         GetSource(14),
         DeleteSource(15),
         AddInteraction(16),
-        GetDataSourceBuilder(17);
+        GetDataSourceBuilder(17),
+        GetRelation(18),
+        GetRelations(19),
+        CreateRelation(20),
+        UpdateRelation(21);
 
         private final int value;
 
