@@ -81,10 +81,10 @@ public class WallpaperTests {
 
     @Test
     public void checkItemsAndFillWhenEmpty() {
-        String host = HOST;
-      //  String host = "http://api.recalot.com/";
+     //   String host = HOST;
+        String host = "http://api.recalot.com/";
         String sourceId = SourceId;
-      //  String sourceId = "wallpaper";
+  //      String sourceId = "wallpaper";
         WebResponse response = WebRequest.execute(host + SourcesPath + sourceId);
         assertNotNull(response);
         assertEquals(response.getContentType(), JsonMimeType);
@@ -94,7 +94,7 @@ public class WallpaperTests {
         HashMap map = new JSONDeserializer<HashMap>().deserialize(response.getBody());
 
         Integer itemsCount = (Integer) map.get("itemsCount");
-        if (itemsCount > 0  ) {
+        if (itemsCount > 0 ) {
 
         } else {
 
@@ -110,7 +110,7 @@ public class WallpaperTests {
                 String everything = sb.toString();
 
                 ArrayList items = new JSONDeserializer<ArrayList>().deserialize(everything);
-                JSONSerializer serializer = new JSONSerializer().transform(new IterableTransformer(), "Iterable.class").exclude("class", "*.class").include("Categories", "Tags");
+                JSONSerializer serializer = new JSONSerializer().transform(new IterableTransformer(), "Iterable.class").exclude("class", "*.class", "__type", "Id").include("Categories", "Tags");
 
                 Long start = System.currentTimeMillis();
                 int i = 0;
@@ -123,11 +123,23 @@ public class WallpaperTests {
                 String userId = "1";
 
                 WebRequest.Debug = false;
+
                 for (Object item : items) {
                     String result = serializer.serialize(item);
 
                     content = new HashMap<>();
                     content.put("content", result);
+
+                    String itemId = "" + ((HashMap)item).get("Id");
+
+                    Integer itemIdInt = Integer.parseInt(itemId);
+                    if(itemIdInt != null) {
+                        //wallpaperwide ids should be 100.000.000 or higher
+                        itemIdInt += 100000000;
+                        itemId = "" + itemIdInt;
+                    }
+                    content.put("item-id", itemId);
+
                     response = WebRequest.execute(WebRequest.HTTPMethod.PUT, host + Path + SourcesPath + sourceId + PathSeparator + ItemsPath, content);
 
                     i++;

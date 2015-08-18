@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1433493030397" name="recalot.com OSGi Bundle Repository">
-  <resource id="com.recalot.common/0.1.0.430" presentationname="Recalot.com Common" symbolicname="com.recalot.common" uri="bundles/com.recalot.common.jar" version="0.1.0.430">
+<repository increment="1439543119538" name="recalot.com OSGi Bundle Repository">
+  <resource id="com.recalot.common/0.1.0.648" presentationname="Recalot.com Common" symbolicname="com.recalot.common" uri="http://api.recalot.com/repo/bundles/com.recalot.common.jar" version="0.1.0.648">
     <description>
       Contains all necessary interfaces and commonly used data types
        for the recalot.com environment
@@ -12,92 +12,86 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      63117
+      79174
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.common"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.interfaces.controller"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.interfaces.model.data"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.interfaces.model.rec"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.interfaces.model.experiment"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.interfaces.template"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
-    </capability>
-    <capability name="package">
-      <p n="package" v="com.recalot.common.impl.template"/>
-      <p n="version" t="version" v="0.1.0"/>
-      <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.communication"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.exceptions"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.log"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.configuration"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.impl.experiment"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <capability name="package">
       <p n="package" v="com.recalot.common.builder"/>
       <p n="version" t="version" v="0.1.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.common"/>
-      <p n="bundle-version" t="version" v="0.1.0.430"/>
+      <p n="bundle-version" t="version" v="0.1.0.648"/>
     </capability>
     <require filter="(package=org.osgi.framework)" name="package"/>
     <require filter="(package=org.osgi.service.cm)" name="package"/>
     <require filter="(package=org.osgi.service.log)" name="package"/>
     <require filter="(package=org.osgi.util.tracker)" name="package"/>
   </resource>
-  <resource id="com.recalot.controller.data/1.0.0.429" presentationname="Recalot.com Controller - Data" symbolicname="com.recalot.controller.data" uri="bundles/com.recalot.controller.data.jar" version="1.0.0.429">
+  <resource id="com.recalot.controller.data/1.0.0.629" presentationname="Recalot.com Controller - Data" symbolicname="com.recalot.controller.data" uri="http://api.recalot.com/repo/bundles/com.recalot.controller.data.jar" version="1.0.0.629">
     <description>
       Controller which delegates the data handling
     </description>
@@ -108,7 +102,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      7352
+      7832
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.controller.data.DataAccessController"/>
@@ -116,7 +110,6 @@
     <require filter="(package=org.osgi.framework)" name="package"/>
     <require filter="(package=com.recalot.common.communication)" name="package"/>
     <require filter="(package=com.recalot.common.exceptions)" name="package"/>
-    <require filter="(package=com.recalot.common.impl.template)" name="package"/>
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.controller)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.data)" name="package"/>
@@ -124,8 +117,10 @@
     <require filter="(package=com.recalot.common.interfaces.model.experiment)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.template)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
+    <require filter="(package=com.recalot.common.configuration)" name="package"/>
+    <require filter="(package=com.recalot.common.builder)" name="package"/>
   </resource>
-  <resource id="com.recalot.controller.experiments/1.0.0.429" presentationname="Recalot.com Controller - Experiments" symbolicname="com.recalot.controller.experiments" uri="bundles/com.recalot.controller.experiments.jar" version="1.0.0.429">
+  <resource id="com.recalot.controller.experiments/1.0.0.629" presentationname="Recalot.com Controller - Experiments" symbolicname="com.recalot.controller.experiments" uri="http://api.recalot.com/repo/bundles/com.recalot.controller.experiments.jar" version="1.0.0.629">
     <description>
       Controller which delegates the execution of experiments
     </description>
@@ -136,7 +131,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6711
+      7234
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.controller.experiments.ExperimentsController"/>
@@ -152,8 +147,10 @@
     <require filter="(package=com.recalot.common.interfaces.template)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=com.recalot.common.builder)" name="package"/>
+    <require filter="(package=com.recalot.common.configuration)" name="package"/>
+    <require filter="(package=com.recalot.model.experiments.access)" name="package"/>
   </resource>
-  <resource id="com.recalot.controller.recommendations/1.0.0.429" presentationname="Recalot.com Controller - Recommendations" symbolicname="com.recalot.controller.recommendations" uri="bundles/com.recalot.controller.recommendations.jar" version="1.0.0.429">
+  <resource id="com.recalot.controller.recommendations/1.0.0.647" presentationname="Recalot.com Controller - Recommendations" symbolicname="com.recalot.controller.recommendations" uri="http://api.recalot.com/repo/bundles/com.recalot.controller.recommendations.jar" version="1.0.0.647">
     <description>
       Controller which delegates the computation of recommendations
     </description>
@@ -164,7 +161,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6698
+      6952
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.controller.recommendations.RecommendationsController"/>
@@ -180,8 +177,9 @@
     <require filter="(package=com.recalot.common.interfaces.controller)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.template)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
+    <require filter="(package=com.recalot.common.builder)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.data.access/1.0.0.430" presentationname="Recalot.com Model - Data Access" symbolicname="com.recalot.model.data.access" uri="bundles/com.recalot.model.data.access.jar" version="1.0.0.430">
+  <resource id="com.recalot.model.data.access/1.0.0.648" presentationname="Recalot.com Model - Data Access" symbolicname="com.recalot.model.data.access" uri="http://api.recalot.com/repo/bundles/com.recalot.model.data.access.jar" version="1.0.0.648">
     <description>
       Establish and manage connections to data sources
     </description>
@@ -192,7 +190,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6436
+      6287
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.model.data.access.DataAccess"/>
@@ -204,12 +202,11 @@
     <require filter="(package=com.recalot.common.interfaces.model.data)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.rec)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.experiment)" name="package"/>
-    <require filter="(package=com.recalot.common.impl.template)" name="package"/>
     <require filter="(package=com.recalot.common.exceptions)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=com.recalot.common.builder)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.data.connections/1.0.0.429" presentationname="Recalot.com Model - Data Connections" symbolicname="com.recalot.model.data.connections" uri="bundles/com.recalot.model.data.connections.jar" version="1.0.0.429">
+  <resource id="com.recalot.model.data.connections/1.0.0.647" presentationname="Recalot.com Model - Data Connections" symbolicname="com.recalot.model.data.connections" uri="http://api.recalot.com/repo/bundles/com.recalot.model.data.connections.jar" version="1.0.0.647">
     <description>
       Contains data connectors. e.g. MovieLensFileConnection, DefaultMySQLConnection
     </description>
@@ -220,7 +217,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      19706
+      23113
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.model.data.connections.movielens.MovieLensFileConnection"/>
@@ -238,7 +235,7 @@
     <require filter="(package=com.mysql.jdbc)" name="package"/>
     <require filter="(package=flexjson)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.experiments.common/1.0.0.429" presentationname="Recalot.com Model - Experiment Common" symbolicname="com.recalot.model.experiments.common" uri="bundles/com.recalot.model.experiments.jar" version="1.0.0.429">
+  <resource id="com.recalot.model.experiments.common/1.0.0.629" presentationname="Recalot.com Model - Experiment Common" symbolicname="com.recalot.model.experiments.common" uri="http://api.recalot.com/repo/bundles/com.recalot.model.experiments.jar" version="1.0.0.629">
     <description>
       Contains experiment logic
     </description>
@@ -249,8 +246,14 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      8398
+      8895
     </size>
+    <capability name="package">
+      <p n="package" v="com.recalot.model.experiments.access"/>
+      <p n="version" t="version" v="1.0.0"/>
+      <p n="bundle-symbolic-name" v="com.recalot.model.experiments.common"/>
+      <p n="bundle-version" t="version" v="1.0.0.629"/>
+    </capability>
     <require filter="(package=org.osgi.framework)" name="package"/>
     <require filter="(package=com.recalot.common.communication)" name="package"/>
     <require filter="(package=com.recalot.common.log)" name="package"/>
@@ -263,7 +266,7 @@
     <require filter="(package=com.recalot.common.impl.experiment)" name="package"/>
     <require filter="(package=com.recalot.common.configuration)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.experiments.metrics/1.0.0.429" presentationname="Recalot.com Model - Experiment Metrics" symbolicname="com.recalot.model.experiments.metrics" uri="bundles/com.recalot.model.experiments.metrics.jar" version="1.0.0.429">
+  <resource id="com.recalot.model.experiments.metrics/1.0.0.629" presentationname="Recalot.com Model - Experiment Metrics" symbolicname="com.recalot.model.experiments.metrics" uri="http://api.recalot.com/repo/bundles/com.recalot.model.experiments.metrics.jar" version="1.0.0.629">
     <description>
       Contains several evaluation metrics
     </description>
@@ -274,7 +277,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      8662
+      11615
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.model.experiments.metrics.list.Coverage"/>
@@ -302,7 +305,7 @@
     <require filter="(package=com.recalot.common.builder)" name="package"/>
     <require filter="(package=com.recalot.common.configuration)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.rec.access/1.0.0.429" presentationname="Recalot.com Model - Recommender Access" symbolicname="com.recalot.model.rec.access" uri="bundles/com.recalot.model.rec.access.jar" version="1.0.0.429">
+  <resource id="com.recalot.model.rec.access/1.0.0.647" presentationname="Recalot.com Model - Recommender Access" symbolicname="com.recalot.model.rec.access" uri="http://api.recalot.com/repo/bundles/com.recalot.model.rec.access.jar" version="1.0.0.647">
     <description>
       Train and manage connections to recommender
     </description>
@@ -313,7 +316,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      7182
+      7266
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.model.rec.access.RecommenderAccess"/>
@@ -325,12 +328,11 @@
     <require filter="(package=com.recalot.common.interfaces.model.data)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.rec)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.experiment)" name="package"/>
-    <require filter="(package=com.recalot.common.impl.template)" name="package"/>
     <require filter="(package=com.recalot.common.exceptions)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=com.recalot.common.builder)" name="package"/>
   </resource>
-  <resource id="com.recalot.model.rec.recommender/1.0.0.429" presentationname="Recalot.com Model - Recommender" symbolicname="com.recalot.model.rec.recommender" uri="bundles/com.recalot.model.recommender.jar" version="1.0.0.429">
+  <resource id="com.recalot.model.rec.recommender/1.0.0.647" presentationname="Recalot.com Model - Recommender" symbolicname="com.recalot.model.rec.recommender" uri="http://api.recalot.com/repo/bundles/com.recalot.model.recommender.jar" version="1.0.0.647">
     <description>
       Contains several recommendation algorithms
     </description>
@@ -341,7 +343,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      13124
+      2784759
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender"/>
@@ -358,7 +360,7 @@
     <require filter="(package=com.recalot.common.configuration)" name="package"/>
     <require filter="(package=flexjson)" name="package"/>
   </resource>
-  <resource id="com.recalot.portal/1.0.0.429" presentationname="Recalot.com - Experiments Portal" symbolicname="com.recalot.portal" uri="bundles/com.recalot.portal.jar" version="1.0.0.429">
+  <resource id="com.recalot.portal/1.0.0.647" presentationname="Recalot.com - Experiments Portal" symbolicname="com.recalot.portal" uri="http://api.recalot.com/repo/bundles/com.recalot.portal.jar" version="1.0.0.647">
     <description>
       Contains the recalot.com exeriments portal
     </description>
@@ -369,7 +371,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      1249927
+      256763
     </size>
     <require filter="(package=org.osgi.framework)" name="package"/>
     <require filter="(package=com.recalot.common.communication)" name="package"/>
@@ -411,27 +413,7 @@
     <require filter="(service=com.recalot.templates.experiments.PlainTextExperimentTemplate)" name="service"/>
     <require filter="(service=com.recalot.views.common.WebService)" name="service"/>
   </resource>
-  <resource id="com.recalot.repo/1.0.0.430" presentationname="Recalot.com - Repository" symbolicname="com.recalot.repo" uri="bundles/com.recalot.repo.jar" version="1.0.0.430">
-    <description>
-      Contains the recalot.com repository
-    </description>
-    <license>
-      http://recalot.com/license.txt
-    </license>
-    <documentation>
-      http://recalot.com/doc
-    </documentation>
-    <size>
-      7313081
-    </size>
-    <require filter="(package=org.osgi.framework)" name="package"/>
-    <require filter="(package=org.osgi.util.tracker)" name="package"/>
-    <require filter="(package=org.osgi.service.http)" name="package"/>
-    <require filter="(package=javax.servlet)" name="package"/>
-    <require filter="(package=javax.servlet.http)" name="package"/>
-    <require filter="(package=org.apache.felix.http.api)" name="package"/>
-  </resource>
-  <resource id="com.recalot.templates.data/1.0.0.428" presentationname="Recalot.com Templates - Data" symbolicname="com.recalot.templates.data" uri="bundles/com.recalot.templates.data.jar" version="1.0.0.428">
+  <resource id="com.recalot.templates.data/1.0.0.646" presentationname="Recalot.com Templates - Data" symbolicname="com.recalot.templates.data" uri="http://api.recalot.com/repo/bundles/com.recalot.templates.data.jar" version="1.0.0.646">
     <description>
       This bundle contains the data templates for the output formats
        json, xml, csv &amp;amp; plain text
@@ -443,7 +425,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      13673
+      13682
     </size>
     <capability name="service">
       <p n="service" v="com.recalot.templates.data.CSVDataTemplate"/>
@@ -481,14 +463,13 @@
     <require filter="(package=com.recalot.common.interfaces.model.rec)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.model.experiment)" name="package"/>
     <require filter="(package=com.recalot.common.interfaces.template)" name="package"/>
-    <require filter="(package=com.recalot.common.impl.template)" name="package"/>
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=flexjson)" name="package"/>
     <require filter="(package=flexjson.transformer)" name="package"/>
     <require filter="(package=flexjson.locators)" name="package"/>
     <require filter="(package=flexjson.factories)" name="package"/>
   </resource>
-  <resource id="com.recalot.tests.data.dummypage/1.0.0.429" presentationname="Recalot.com Test - Web Page" symbolicname="com.recalot.tests.data.dummypage" uri="bundles/com.recalot.tests.data.dummypage.jar" version="1.0.0.429">
+  <resource id="com.recalot.tests.data.dummypage/1.0.0.647" presentationname="Recalot.com Test - Web Page" symbolicname="com.recalot.tests.data.dummypage" uri="http://api.recalot.com/repo/bundles/com.recalot.tests.data.dummypage.jar" version="1.0.0.647">
     <description>
       Contains a web page with different kinds of tests
     </description>
@@ -499,7 +480,7 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      178537
+      178538
     </size>
     <require filter="(package=org.osgi.framework)" name="package"/>
     <require filter="(package=com.recalot.common.communication)" name="package"/>
@@ -514,7 +495,7 @@
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.common/1.0.0.429" presentationname="Recalot.com Views - Common" symbolicname="com.recalot.views.common" uri="bundles/com.recalot.views.common.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.common/1.0.0.647" presentationname="Recalot.com Views - Common" symbolicname="com.recalot.views.common" uri="http://api.recalot.com/repo/bundles/com.recalot.views.common.jar" version="1.0.0.647">
     <description>
       Contains components for views that access the different controller
        types
@@ -526,13 +507,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      9797
+      9796
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.common"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.common"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <require filter="(package=com.recalot.common)" name="package"/>
     <require filter="(package=org.osgi.framework)" name="package"/>
@@ -546,7 +527,7 @@
     <require filter="(package=org.osgi.service.http)" name="package"/>
     <require filter="(package=javax.servlet.http)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.data.access/1.0.0.429" presentationname="Recalot.com Views - Data Access" symbolicname="com.recalot.views.data.access" uri="bundles/com.recalot.views.data.access.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.data.access/1.0.0.647" presentationname="Recalot.com Views - Data Access" symbolicname="com.recalot.views.data.access" uri="http://api.recalot.com/repo/bundles/com.recalot.views.data.access.jar" version="1.0.0.647">
     <description>
       Contains a servlet which process tracking information
     </description>
@@ -557,13 +538,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6672
+      6682
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.data.access"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.data.access"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -585,7 +566,7 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.data.sources/1.0.0.429" presentationname="Recalot.com Views - Data Sources" symbolicname="com.recalot.views.data.sources" uri="bundles/com.recalot.views.data.sources.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.data.sources/1.0.0.647" presentationname="Recalot.com Views - Data Sources" symbolicname="com.recalot.views.data.sources" uri="http://api.recalot.com/repo/bundles/com.recalot.views.data.sources.jar" version="1.0.0.647">
     <description>
       Contains a servlet which process tracking information
     </description>
@@ -596,13 +577,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6738
+      6680
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.data.sources"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.data.sources"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -623,7 +604,7 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.data.tracking/1.0.0.429" presentationname="Recalot.com Views - Data Tracking" symbolicname="com.recalot.views.data.tracking" uri="bundles/com.recalot.views.data.tracking.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.data.tracking/1.0.0.647" presentationname="Recalot.com Views - Data Tracking" symbolicname="com.recalot.views.data.tracking" uri="http://api.recalot.com/repo/bundles/com.recalot.views.data.tracking.jar" version="1.0.0.647">
     <description>
       Contains a servlet which process tracking information
     </description>
@@ -634,13 +615,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      5390
+      5392
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.data.tracking"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.data.tracking"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -660,7 +641,7 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.experiments/1.0.0.429" presentationname="Recalot.com Views - Experiments" symbolicname="com.recalot.views.experiments" uri="bundles/com.recalot.views.experiments.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.experiments/1.0.0.647" presentationname="Recalot.com Views - Experiments" symbolicname="com.recalot.views.experiments" uri="http://api.recalot.com/repo/bundles/com.recalot.views.experiments.jar" version="1.0.0.647">
     <description>
       Contains a servlet which process experiments
     </description>
@@ -671,13 +652,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6385
+      6390
     </size>
     <capability name="package">
-      <p n="package" v="com.recalot.views.recommend.train"/>
+      <p n="package" v="com.recalot.views.experiments"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.experiments"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -698,7 +679,7 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.recommend/1.0.0.429" presentationname="Recalot.com Views - Recommend" symbolicname="com.recalot.views.recommend" uri="bundles/com.recalot.views.recommend.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.recommend/1.0.0.647" presentationname="Recalot.com Views - Recommend" symbolicname="com.recalot.views.recommend" uri="http://api.recalot.com/repo/bundles/com.recalot.views.recommend.jar" version="1.0.0.647">
     <description>
       Contains a servlet which process tracking information
     </description>
@@ -709,13 +690,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      5216
+      5223
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.recommend"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.recommend"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.647"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -736,7 +717,7 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.recalot.views.recommend.train/1.0.0.429" presentationname="Recalot.com Views - Recommend Train" symbolicname="com.recalot.views.recommend.train" uri="bundles/com.recalot.views.recommend.train.jar" version="1.0.0.429">
+  <resource id="com.recalot.views.recommend.train/1.0.0.629" presentationname="Recalot.com Views - Recommend Train" symbolicname="com.recalot.views.recommend.train" uri="http://api.recalot.com/repo/bundles/com.recalot.views.recommend.train.jar" version="1.0.0.629">
     <description>
       Contains a servlet which process tracking information
     </description>
@@ -747,13 +728,13 @@
       http://recalot.com/doc
     </documentation>
     <size>
-      6527
+      6528
     </size>
     <capability name="package">
       <p n="package" v="com.recalot.views.recommend.train"/>
       <p n="version" t="version" v="1.0.0"/>
       <p n="bundle-symbolic-name" v="com.recalot.views.recommend.train"/>
-      <p n="bundle-version" t="version" v="1.0.0.429"/>
+      <p n="bundle-version" t="version" v="1.0.0.629"/>
     </capability>
     <capability name="service">
       <p n="service" v="com.recalot.views.common.WebService"/>
@@ -774,7 +755,23 @@
     <require filter="(package=com.recalot.common.log)" name="package"/>
     <require filter="(package=com.recalot.views.common)" name="package"/>
   </resource>
-  <resource id="com.springsource.com.mysql.jdbc/5.1.6" presentationname="MySQL AB's JDBC Driver for MySQL" symbolicname="com.springsource.com.mysql.jdbc" uri="bundles/com.springsource.com.mysql.jdbc-5.1.6.jar" version="5.1.6">
+  <resource id="com.recalot.views.tracking/1.0.0.SNAPSHOT" presentationname="Recalot.com Tracking" symbolicname="com.recalot.views.tracking" uri="http://api.recalot.com/repo/bundles/com.recalot.views.tracking.jar" version="1.0.0.SNAPSHOT">
+    <description>
+      Contains a servlet which process tracking information
+    </description>
+    <size>
+      6985
+    </size>
+    <require filter="(package=org.osgi.framework)" name="package"/>
+    <require filter="(package=com.recalot.common.communication)" name="package"/>
+    <require filter="(package=org.osgi.util.tracker)" name="package"/>
+    <require filter="(package=org.osgi.service.http)" name="package"/>
+    <require filter="(package=javax.servlet)" name="package"/>
+    <require filter="(package=javax.servlet.http)" name="package"/>
+    <require filter="(package=org.apache.felix.http.api)" name="package"/>
+    <require filter="(package=com.recalot.common.interfaces.controller)" name="package"/>
+  </resource>
+  <resource id="com.springsource.com.mysql.jdbc/5.1.6" presentationname="MySQL AB's JDBC Driver for MySQL" symbolicname="com.springsource.com.mysql.jdbc" uri="http://api.recalot.com/repo/bundles/com.springsource.com.mysql.jdbc-5.1.6.jar" version="5.1.6">
     <size>
       707511
     </size>
@@ -872,7 +869,7 @@
     <require filter="(package=org.xml.sax)" name="package"/>
     <require filter="(package=org.xml.sax.helpers)" name="package"/>
   </resource>
-  <resource id="com.springsource.org.apache.commons.logging/1.1.1" presentationname="Apache Commons Logging" symbolicname="com.springsource.org.apache.commons.logging" uri="bundles/com.springsource.org.apache.commons.logging-1.1.1.jar" version="1.1.1">
+  <resource id="com.springsource.org.apache.commons.logging/1.1.1" presentationname="Apache Commons Logging" symbolicname="com.springsource.org.apache.commons.logging" uri="http://api.recalot.com/repo/bundles/com.springsource.org.apache.commons.logging-1.1.1.jar" version="1.1.1">
     <size>
       61464
     </size>
@@ -893,7 +890,7 @@
     <require filter="(&amp;(package=org.apache.log)(version&gt;=1.0.1)(version&lt;=1.0.1))" name="package" optional="true"/>
     <require filter="(&amp;(package=org.apache.log4j)(version&gt;=1.2.15)(!(version&gt;=2.0.0)))" name="package" optional="true"/>
   </resource>
-  <resource id="flexjson/2.1" presentationname="Flexjson" symbolicname="flexjson" uri="bundles/flexjson.jar" version="2.1">
+  <resource id="flexjson/2.1" presentationname="Flexjson" symbolicname="flexjson" uri="http://api.recalot.com/repo/bundles/flexjson.jar" version="2.1">
     <description>
       Flexjson is a lightweight library for serializing Java objects
        into JSON. What's different about Flexjson is it's control

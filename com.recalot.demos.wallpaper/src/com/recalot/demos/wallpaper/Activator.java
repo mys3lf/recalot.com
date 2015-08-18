@@ -9,6 +9,7 @@ import com.recalot.views.common.WebService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.http.HttpService;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -19,6 +20,7 @@ import java.util.Hashtable;
  */
 public class Activator extends AbstractWebActivator {
     private DataAccessController controller;
+    private ServiceTracker staticHttpTracker;
 
     /**
      * Implements BundleActivator.start(). Prints
@@ -30,17 +32,20 @@ public class Activator extends AbstractWebActivator {
     public void start(BundleContext context) {
 
         controller = new DataAccessController(context);
-        context.registerService(com.recalot.common.interfaces.controller.DataAccessController.class.getName(), controller, null);
+        context.registerService(DataAccessController.class.getName(), controller, null);
 
         handler = new GenericControllerHandler<DataAccessController>(context, DataAccessController.class.getName());
 
         String pid = "com.recalot.demos.wallpaper";
 
         Dictionary config = new Hashtable();
-        config.put(pid + ".path", new String("/wallpaper"));
+        config.put(pid + ".path", new String("/sample/wallpaper-controller"));
 
         service = new WebService(pid, context,  new Servlet(handler), config);
         context.registerService(ManagedService.class.getName(), service, config);
+
+        staticHttpTracker = new ServiceTracker(context, HttpService.class.getName(), null, "/web", "sample/wallpaper");
+        staticHttpTracker.open();
 
         service.initialize();
     }
@@ -55,6 +60,7 @@ public class Activator extends AbstractWebActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         if(controller != null) controller.close();
+        if(staticHttpTracker != null) staticHttpTracker.close();
 
         super.stop(context);
     }

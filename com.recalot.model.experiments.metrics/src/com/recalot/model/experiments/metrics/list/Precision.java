@@ -1,5 +1,6 @@
 package com.recalot.model.experiments.metrics.list;
 
+import com.recalot.common.Helper;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 
 import java.util.List;
@@ -9,11 +10,13 @@ import java.util.List;
  * Precision = (|relevant items| in |retrieved items|) divided by |retrieved items|
  */
 public class Precision extends ListMetric {
-    private int topN = 0;
+
     private double testRun = 0;
     private double sum = 0;
 
-    public void setTopN(int topN){
+    private int topN = 0;
+
+    public void setTopN(int topN) {
         this.topN = topN;
     }
 
@@ -26,20 +29,22 @@ public class Precision extends ListMetric {
     @Override
     public void addList(List<String> relevant, List<String> retrieved) {
 
-        List<String> topNretrieved = retrieved.size() > topN ? retrieved.subList(0, topN) : retrieved;
-        int count = 0;
+        if (retrieved.size() > 0) {
+            List<String> topNretrieved = Helper.applySubList(retrieved, topN);
+            int count = 0;
 
-        for (String item : topNretrieved) {
-            if (relevant.contains(item)) count++;
+            for (String item : topNretrieved) {
+                if (relevant.contains(item)) count++;
+            }
+
+            sum += 1.0 * count / retrieved.size();
         }
-
-        sum += 1.0 * count / retrieved.size();
 
         testRun++;
     }
 
     @Override
     public String getDescription() {
-        return null;
+        return "Precision = (|relevant items| in |retrieved items|) divided by |retrieved items|";
     }
 }

@@ -8,6 +8,6 @@ import com.recalot.common.interfaces.model.experiment.OnlineExperimentRecommenda
  */
 public abstract class OnlineExperimentDataSource extends DataSource {
     public abstract OnlineExperimentRecommendation getRecommendation(String recId) throws BaseException;
-    public abstract void createRecommendation(String recId) throws BaseException;
+    public abstract void saveRecommendation(String recId) throws BaseException;
     public abstract void updateRecommendation(String recId) throws BaseException;
 }

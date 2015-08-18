@@ -2,7 +2,7 @@ package com.recalot.demos.wallpaper.view;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.TemplateResult;
-import com.recalot.common.interfaces.controller.DataAccessController;
+import com.recalot.demos.wallpaper.controller.DataAccessController;
 import com.recalot.views.common.GenericControllerHandler;
 import com.recalot.views.common.HTTPMethods;
 import com.recalot.views.common.WebService;
@@ -50,7 +50,7 @@ public class Servlet extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-          WebService.processOptionsRequest(req, res, "GET, POST, PUT, DELETE, OPTIONS");
+        WebService.processOptionsRequest(req, res, "GET, POST, PUT, DELETE, OPTIONS");
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse res, HTTPMethods method) throws ServletException, IOException {
@@ -62,7 +62,7 @@ public class Servlet extends HttpServlet {
         Map names = req.getParameterMap();
         if (names != null) {
             for (Object key : names.keySet()) {
-               params.put(URLDecoder.decode((String) key, "UTF-8"), URLDecoder.decode(req.getParameter((String) key), "UTF-8"));
+                params.put(URLDecoder.decode((String) key, "UTF-8"), URLDecoder.decode(req.getParameter((String) key), "UTF-8"));
             }
         }
 
@@ -76,7 +76,6 @@ public class Servlet extends HttpServlet {
             }
         }
 
-
         String pathInfo = req.getPathInfo();
         TemplateResult result = null;
 
@@ -84,138 +83,48 @@ public class Servlet extends HttpServlet {
             pathInfo = pathInfo.substring(1);
             String[] split = pathInfo.split("/");
 
+            params.put(Helper.Keys.SourceId, "wallpaper-src");
+
             switch (split.length) {
+                case 1: {
+                    if (split[0].toLowerCase().equals("categories")) {
+
+                        switch (method) {
+                            case GET:
+                                result = handler.process(DataAccessController.WallpaperAccessAction.GetCategories, templateKey, params);
+                        }
+                    } else if (split[0].toLowerCase().equals("items")) {
+
+                        switch (method) {
+                            case GET:
+                                result = handler.process(DataAccessController.WallpaperAccessAction.GetData, templateKey, params);
+                        }
+                    }
+
+                    break;
+                }
                 case 2: {
-                    if (split[0].toLowerCase().equals("sources")) {
-                        params.put(Helper.Keys.SourceId, split[1]);
+                    if (split[0].toLowerCase().equals("categories") && split[1].toLowerCase().equals("update")) {
 
                         switch (method) {
                             case GET:
-                                result = handler.process(DataAccessController.DataAccessRequestAction.GetData, templateKey, params);
-                        }
-                    }
-
-                    break;
-                }
-                case 3: {
-                    if (split[0].toLowerCase().equals("sources")) {
-
-                        params.put(Helper.Keys.SourceId, split[1]);
-
-                        if (split[2].toLowerCase().equals("users")) {
-                            switch (method) {
-                                case PUT:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.CreateUser, templateKey, params);
-                                    break;
-                                case GET:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetUsers, templateKey, params);
-                                    break;
-                            }
-                        } else if (split[2].toLowerCase().equals("items")) {
-                            switch (method) {
-                                case PUT:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.CreateItem, templateKey, params);
-                                    break;
-                                case GET:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetItems, templateKey, params);
-                                    break;
-                            }
-                        } else if (split[2].toLowerCase().equals("interactions")) {
-                            switch (method) {
-                                case GET:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetInteractions, templateKey, params);
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 4: {
-                    if (split[0].toLowerCase().equals("sources")) {
-
-                        params.put(Helper.Keys.SourceId, split[1]);
-
-                        if (split[2].toLowerCase().equals("users")) {
-
-                            params.put(Helper.Keys.UserId, split[3]);
-
-                            switch (method) {
-                                case PUT:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.UpdateUser, templateKey, params);
-                                    break;
-                                case GET:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetUser, templateKey, params);
-                                    break;
-                            }
-                        } else if (split[2].toLowerCase().equals("items")) {
-
-                            params.put(Helper.Keys.ItemId, split[3]);
-
-                            switch (method) {
-                                case PUT:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.UpdateItem, templateKey, params);
-                                    break;
-                                case GET:
-                                    result = handler.process(DataAccessController.DataAccessRequestAction.GetItem, templateKey, params);
-                                    break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 5: {
-                    if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("users") && split[4].toLowerCase().equals("interactions")) {
-
-                        params.put(Helper.Keys.SourceId, split[1]);
-                        params.put(Helper.Keys.UserId, split[3]);
-
-                        switch (method) {
-                            case GET:
-                                result = handler.process(DataAccessController.DataAccessRequestAction.GetInteractions, templateKey, params);
-                                break;
-                        }
-                    } else if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("items") && split[4].toLowerCase().equals("interactions")) {
-
-                        params.put(Helper.Keys.SourceId, split[1]);
-                        params.put(Helper.Keys.ItemId, split[3]);
-
-                        switch (method) {
-                            case GET:
-                                result = handler.process(DataAccessController.DataAccessRequestAction.GetInteractions, templateKey, params);
-                                break;
-                        }
-                    }
-
-
-                    break;
-                }
-                case 6: {
-                    if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("users") && split[4].toLowerCase().equals("items")) {
-
-                        params.put(Helper.Keys.SourceId, split[1]);
-                        params.put(Helper.Keys.UserId, split[3]);
-                        params.put(Helper.Keys.ItemId, split[5]);
-
-                        switch (method) {
-                            case GET:
-                                result = handler.process(DataAccessController.DataAccessRequestAction.GetInteraction, templateKey, params);
-                                break;
+                                result = handler.process(DataAccessController.WallpaperAccessAction.UpdateCategories, templateKey, params);
                         }
                     }
 
                     break;
                 }
             }
-        }
 
-        if (result == null) {
-            //   out.println("TODO print error");
-        } else {
-            res.setContentType(result.getContentType());
-            res.setCharacterEncoding(result.getCharset().name());
-            res.setStatus(result.getStatus());
-            PrintWriter out = res.getWriter();
-            Helper.copy(out, result.getResult());
+            if (result == null) {
+                //   out.println("TODO print error");
+            } else {
+                res.setContentType(result.getContentType());
+                res.setCharacterEncoding(result.getCharset().name());
+                res.setStatus(result.getStatus());
+                PrintWriter out = res.getWriter();
+                Helper.copy(out, result.getResult());
+            }
         }
     }
 }

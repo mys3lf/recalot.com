@@ -10,11 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Implements the classical definition of the gini index
+ *
+ *  Gini, C. (1912). "Italian: Variabilità e mutabilità" 'Variability and Mutability', C. Cuppini, Bologna, 156 pages. Reprinted in Memorie di metodologica statistica (Ed. Pizetti E, Salvemini, T). Rome: Libreria Eredi Virgilio Veschi (1955).
+ *
  * Created by matthaeus.schmedding on 10.04.2015.
  */
 public class Gini extends ListMetric {
     private int topN;
-    private HashMap<String, Integer> count;
+    private HashMap<String, Integer> count = new HashMap<>();
 
     public void setTopN(Integer topN){
         this.topN = topN;
@@ -23,14 +27,23 @@ public class Gini extends ListMetric {
     @Override
     public double getResult() {
         double sum = 0.0;
-        double result = 0.0;
+        double xmean = 0.0;
 
-        for(Integer v : count.values()){
-            sum+= v;
-            result += v * v;
+        for(Integer x1 : count.values()){
+            xmean += x1;
+
+            for(Integer x2 : count.values()) {
+                sum += Math.abs(x2 - x1);
+            }
         }
 
-        return result / (sum * sum);
+        int n = count.size();
+
+        if(n > 0) {
+            return sum / (n * n * 2 *(xmean / n));
+        } else {
+            return 0.0;
+        }
     }
 
     @Override
@@ -46,6 +59,6 @@ public class Gini extends ListMetric {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Classical definition of the gini index by Gini, C. (1912)";
     }
 }

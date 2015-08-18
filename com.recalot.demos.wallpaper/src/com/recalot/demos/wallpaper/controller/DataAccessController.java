@@ -12,12 +12,15 @@ import com.recalot.common.interfaces.model.data.DataAccess;
 import com.recalot.common.interfaces.model.data.DataInformation;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.template.DataTemplate;
+import com.recalot.demos.wallpaper.model.Category;
+import com.recalot.demos.wallpaper.model.Paging;
 import flexjson.JSONDeserializer;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -28,7 +31,7 @@ public class DataAccessController implements Controller, Closeable {
     private final BundleContext context;
     private final GenericServiceListener<DataAccess> dataAccess;
     private final GenericServiceListener<DataTemplate> dataTemplates;
-    private final HashMap<String, HashMap<String, List<String>>> categories;
+    private final ConcurrentHashMap<String, ConcurrentHashMap<String, Category>> categories;
     private final WallpaperTemplate wallpapertemplate;
 
     public DataAccessController(BundleContext context) {
@@ -36,7 +39,7 @@ public class DataAccessController implements Controller, Closeable {
         this.dataAccess = new GenericServiceListener<>(context, DataAccess.class.getName());
         this.wallpapertemplate = new WallpaperTemplate();
         this.dataTemplates = new GenericServiceListener(context, DataTemplate.class.getName());
-        this.categories = new HashMap<>();
+        this.categories = new ConcurrentHashMap<>();
         this.context.addServiceListener(dataAccess);
         this.context.addServiceListener(dataTemplates);
     }
@@ -52,9 +55,10 @@ public class DataAccessController implements Controller, Closeable {
 
             DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
 
-            if(dataSource.getState() != DataInformation.DataState.READY) throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+            if (dataSource.getState() != DataInformation.DataState.READY)
+                throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
 
-            if(!categories.containsKey(dataSource.getId())) {
+            if (!categories.containsKey(dataSource.getId())) {
                 initializeCategories(dataSource, param);
             }
 
@@ -65,6 +69,10 @@ public class DataAccessController implements Controller, Closeable {
                 }
                 case GetCategories: {
                     result = getCategories(dataSource, template, param);
+                    break;
+                }
+                case UpdateCategories: {
+                    result = updateCategories(dataSource, template, param);
                     break;
                 }
             }
@@ -81,50 +89,94 @@ public class DataAccessController implements Controller, Closeable {
     }
 
     private TemplateResult getCategories(DataSource source, DataTemplate template, Map<String, String> param) {
-        return this.wallpapertemplate.transform(categories.get(source.getId()).keySet());
+
+
+        return this.wallpapertemplate.transform(categories.get(source.getId()).values());
     }
 
     private TemplateResult getData(DataSource source, DataTemplate template, Map<String, String> param) throws BaseException {
         Item[] items = new Item[0];
         String cat = param.get("cat");
-        if(cat != null && !cat.isEmpty() && categories.get(source.getId()).containsKey(cat)) {
-            List<String> itemIds = categories.get(source.getId()).get(cat);
+
+        Paging result = new Paging<Item>();
+
+        int page = 1;
+        int pageSize = Helper.Keys.PageSize;
+
+        String pageString = param.get(Helper.Keys.Page);
+        if (Helper.isIntegerRegex(pageString)) {
+            page = Integer.parseInt(pageString);
+        }
+
+
+        if (param.containsKey(Helper.Keys.PageSizeKey)) {
+            String pageSizeString = param.get(Helper.Keys.PageSizeKey);
+            if (Helper.isIntegerRegex(pageSizeString)) {
+                pageSize = Integer.parseInt(pageSizeString);
+            }
+        }
+
+        result.setPageSize(pageSize);
+        result.setPage(page);
+
+        param.put(Helper.Keys.Page, "" + page);
+        param.put(Helper.Keys.PageSizeKey, "" + pageSize);
+
+        if (cat != null && !cat.isEmpty() && categories.get(source.getId()).containsKey(cat)) {
+            String catString = cat.toLowerCase().trim();
+            List<String> itemIds = categories.get(source.getId()).get(catString).getItems();
+
+            result.setCount(itemIds.size());
+
             String[] itemWithPaging = Helper.applyPaging(itemIds.toArray(new String[itemIds.size()]), param);
             items = new Item[itemWithPaging.length];
 
             int i = 0;
-            for(String itemId : itemWithPaging){
+            for (String itemId : itemWithPaging) {
                 items[i++] = source.getItem(itemId);
             }
+
+            result.setItems(items);
         } else {
-            source.getItems();
+            items = source.getItems();
+
+            result.setCount(items.length);
+
             items = Helper.applyPaging(items, param);
+            result.setItems(items);
         }
 
-        return template.transform(items);
+        return this.wallpapertemplate.transform(result);
     }
 
     private void initializeCategories(DataSource dataSource, Map<String, String> param) throws BaseException {
-        if(!this.categories.containsKey(dataSource.getId())) {
+        if (!this.categories.containsKey(dataSource.getId())) {
             synchronized (this.categories) {
                 if (!this.categories.containsKey(dataSource.getId())) {
-                    HashMap<String, List<String>> categoryEntries = new HashMap<>();
+                    ConcurrentHashMap<String, Category> categoryEntries = new ConcurrentHashMap<>();
 
-                    Item[] items = dataSource.getItems();
+                    Item[] allItems = dataSource.getItems();
+                    ArrayList<Item> items = new ArrayList<Item>(Arrays.asList(allItems));
+
+                    Collections.shuffle(items);
 
                     for (Item item : items) {
                         String cats = item.getValue("content");
                         HashMap map = new JSONDeserializer<HashMap>().deserialize(cats);
-                        if (map.containsKey("content")) {
-                            HashMap cMap = (HashMap) map.get("content");
-                            if (cMap.containsKey("Categories")) {
-                                ArrayList categories = (ArrayList) cMap.get("Categories");
+
+                        if (map.containsKey("Categories") && map.containsKey("Src")) {
+                            ArrayList categories = (ArrayList) map.get("Categories");
+                            if (categories != null) {
+
+                                boolean first = true;
                                 for (Object cat : categories) {
-                                    if (!categoryEntries.containsKey(cat)) {
-                                        categoryEntries.put((String) cat, new ArrayList<>());
+                                    String catString = ((String) cat).toLowerCase().trim();
+
+                                    if (!categoryEntries.containsKey(catString)) {
+                                        categoryEntries.put(catString, new Category(catString, "" + map.get("Src")));
                                     }
 
-                                    categoryEntries.get(cat).add(item.getId());
+                                    categoryEntries.get(catString).addItem(item.getId());
                                 }
                             }
                         }
@@ -136,6 +188,44 @@ public class DataAccessController implements Controller, Closeable {
         }
     }
 
+    private TemplateResult updateCategories(DataSource dataSource, DataTemplate template, Map<String, String> param) throws BaseException {
+        if (this.categories.containsKey(dataSource.getId())) {
+            synchronized (this.categories) {
+                if (this.categories.containsKey(dataSource.getId())) {
+                    ConcurrentHashMap<String, Category> categoryEntries = categories.get(dataSource.getId());
+
+                    Item[] allItems = dataSource.getItems();
+                    ArrayList<Item> items = new ArrayList<Item>(Arrays.asList(allItems));
+
+                    Collections.shuffle(items);
+                    for (Item item : items) {
+                        String cats = item.getValue("content");
+                        HashMap map = new JSONDeserializer<HashMap>().deserialize(cats);
+                        if (map.containsKey("Categories") && map.containsKey("Src")) {
+                            ArrayList categories = (ArrayList) map.get("Categories");
+                            if (categories != null) {
+
+                                for (Object cat : categories) {
+                                    String catString = ((String) cat).toLowerCase().trim();
+
+                                    if (!categoryEntries.containsKey(catString)) {
+                                        categoryEntries.put(catString, new Category(catString, "" + map.get("Src")));
+                                    }
+
+                                    categoryEntries.get(catString).addItem(item.getId());
+                                }
+                            }
+                        }
+                    }
+
+
+                    return template.transform(new Message("Update performed", "Categories successfull updated", Message.Status.INFO));
+                }
+            }
+        }
+
+        return template.transform(new Message("Nope", "Nope", Message.Status.INFO));
+    }
 
     private DataSource getDataSource(DataAccess access, String sourceId) throws BaseException {
         return access.getDataSource(sourceId);
@@ -155,7 +245,8 @@ public class DataAccessController implements Controller, Closeable {
 
     public enum WallpaperAccessAction implements RequestAction {
         GetData(0),
-        GetCategories (1);
+        GetCategories(1),
+        UpdateCategories(2);
 
         private final int value;
 

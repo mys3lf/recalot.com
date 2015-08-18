@@ -125,7 +125,6 @@ public class Servlet extends HttpServlet {
                         }
                     }
                     break;
-
                 }
             } else {
                 switch (method) {

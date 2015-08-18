@@ -8,6 +8,9 @@ import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.interfaces.model.experiment.MetricInformation;
 import com.recalot.model.experiments.metrics.list.*;
+import com.recalot.model.experiments.metrics.rating.MAE;
+import com.recalot.model.experiments.metrics.rating.MSE;
+import com.recalot.model.experiments.metrics.rating.RMSE;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -37,7 +40,6 @@ public class Activator implements BundleActivator, Initiator {
         metrics = new ArrayList<>();
         try {
 
-
             MetricBuilder fscoreBuilder = new MetricBuilder(this, FScore.class.getName(), "fscore", "F-Score");
             fscoreBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             fscoreBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
@@ -47,7 +49,7 @@ public class Activator implements BundleActivator, Initiator {
           //  precisionBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder recallBuilder = new MetricBuilder(this, Recall.class.getName(), "recall", "Recall");
-          //  recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
          //   recallBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder giniBuilder = new MetricBuilder(this, Gini.class.getName(), "gini", "Gini");
@@ -58,12 +60,21 @@ public class Activator implements BundleActivator, Initiator {
             coverageBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
        //     coverageBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
+            MetricBuilder maeBuilder = new MetricBuilder(this, MAE.class.getName(), "mae", "Mean Absolute Error");
+            MetricBuilder mseBuilder = new MetricBuilder(this, MSE.class.getName(), "mse", "Mean Squared Error");
+            MetricBuilder rmseBuilder = new MetricBuilder(this, RMSE.class.getName(), "rmse", "Root Mean Squared Error");
 
             metrics.add(fscoreBuilder);
             metrics.add(precisionBuilder);
             metrics.add(recallBuilder);
             metrics.add(giniBuilder);
             metrics.add(coverageBuilder);
+
+            metrics.add(maeBuilder);
+            metrics.add(mseBuilder);
+            metrics.add(rmseBuilder);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -21,7 +21,6 @@ public class Activator implements BundleActivator {
      */
     public void start(BundleContext context) {
 
-        //TODO make the path configurable
         httpTracker = new ServiceTracker(context, HttpService.class.getName(), null, "/web", "repo");
         // start tracking all HTTP services...
         httpTracker.open();
