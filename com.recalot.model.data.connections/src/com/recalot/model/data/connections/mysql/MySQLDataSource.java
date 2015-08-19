@@ -366,21 +366,19 @@ public class MySQLDataSource extends DataSource {
         PreparedStatement statement = null;
 
         try {
-            statement = connection.prepareStatement("SELECT * FROM " + sqlDatabase + ".relation");
+            statement = connection.prepareStatement("SELECT * FROM " + sqlDatabase + ".relations");
             result = statement.executeQuery();
 
             while (result.next()) {
                 try {
                     String id = result.getString(1);
-                    String userId = result.getString(2);
-                    String itemId = result.getString(3);
-                    Date timeStamp = new Date(result.getTimestamp(4).getTime());
-                    String type = result.getString(5);
-                    String value = result.getString(6);
+                    String fromId = result.getString(2);
+                    String toId = result.getString(3);
+                    String type = result.getString(4);
 
-                    HashMap map = new JSONDeserializer<HashMap>().deserialize(result.getString(7));
+                    HashMap map = new JSONDeserializer<HashMap>().deserialize(result.getString(5));
 
-                    interactions.put(id, new Interaction(id, userId, itemId, timeStamp, type, value, map));
+                    relations.put(id, new Relation(id, fromId, toId, type, map));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -532,7 +530,7 @@ public class MySQLDataSource extends DataSource {
     @Override
     public Relation updateRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {
         if (relations.containsKey(relationId)) {
-            Relation relation = new Relation(relationId, fromId, toId,  type, filterParams(content));
+            Relation relation = new Relation(relationId, fromId, toId,  type, filterParams(content, Helper.Keys.FromId, Helper.Keys.ToId, Helper.Keys.Type));
 
             relations.replace(relationId, relation);
 
@@ -551,7 +549,7 @@ public class MySQLDataSource extends DataSource {
 
     @Override
     public Relation createRelation(String fromId, String toId, String type, Map<String, String> content) throws BaseException {
-        Relation relation = new Relation("" + this.idComputation.getNextID("relation"), fromId, toId,  type, filterParams(content));
+        Relation relation = new Relation("" + this.idComputation.getNextID("relation"), fromId, toId,  type, filterParams(content, Helper.Keys.FromId, Helper.Keys.ToId, Helper.Keys.Type));
         relations.put(relation.getId(), relation);
 
         putToSql(relation);
@@ -582,7 +580,7 @@ public class MySQLDataSource extends DataSource {
 
     @Override
     public Message addInteraction(String itemId, String userId, Date timestamp, String type, String value, Map<String, String> content) throws BaseException {
-        Interaction interaction = new Interaction("" + this.idComputation.getNextID("interactions"), userId, itemId, timestamp, type, value, filterParams(content));
+        Interaction interaction = new Interaction("" + this.idComputation.getNextID("interactions"), userId, itemId, timestamp, type, value, filterParams(content, Helper.Keys.TimeStamp, Helper.Keys.UserId, Helper.Keys.UserId, Helper.Keys.ItemId));
         interactions.put(interaction.getId(), interaction);
 
         //  new Thread() {

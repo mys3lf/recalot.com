@@ -416,7 +416,7 @@ function _renderTableFormContent(container, form, skipLabel){
                 formElement.append($div);
             break;
             case "idconfiguration":
-                var $select = $("<select class='form-control array-item col-xs-6' onchange='idChange(this);' >");
+                var $select = $("<select class='form-control array-item col-xs-6'  name='" + item.id + "' onchange='idChange(this);' >");
                 $select.data("item", item);
 
                 if(typeof item.enum == "object" && item.enum.action != null) {

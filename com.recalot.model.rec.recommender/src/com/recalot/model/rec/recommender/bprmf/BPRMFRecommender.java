@@ -191,7 +191,7 @@ public class BPRMFRecommender extends Recommender  {
 
     @Override
     public Double predict(String userId, String itemId, Context context, Map<String, String> param) {
-        return null;
+        return predictRatingBPR(userId, itemId);
     }
 
     // =====================================================================================
