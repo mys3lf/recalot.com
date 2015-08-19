@@ -15,18 +15,6 @@ import java.util.Random;
  * Created by matthaeus.schmedding on 16.04.2015.
  */
 public class RandomDataSplitter extends DataSplitter {
-
-    /**
-     * A min-ratings per user constraint for the test set
-     */
-    private int minRatingsPerUser = -1;
-
-    /**
-     * A min-ratings per item constraint for the test set
-     */
-    private int minRatingsPerItem = -1;
-
-
     @Override
     public DataSet[] split(DataSource source) throws BaseException {
         List<FillableDataSet> result = new ArrayList<>();
@@ -83,21 +71,5 @@ public class RandomDataSplitter extends DataSplitter {
     @Override
     public void close() throws IOException {
 
-    }
-
-    public int getMinRatingsPerItem() {
-        return minRatingsPerItem;
-    }
-
-    public void setMinRatingsPerItem(int minRatingsPerItem) {
-        this.minRatingsPerItem = minRatingsPerItem;
-    }
-
-    public int getMinRatingsPerUser() {
-        return minRatingsPerUser;
-    }
-
-    public void setMinRatingsPerUser(int minRatingsPerUser) {
-        this.minRatingsPerUser = minRatingsPerUser;
     }
 }

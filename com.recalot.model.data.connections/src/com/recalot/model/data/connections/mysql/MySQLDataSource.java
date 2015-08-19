@@ -329,7 +329,14 @@ public class MySQLDataSource extends DataSource {
                     String id = result.getString(1);
                     String userId = result.getString(2);
                     String itemId = result.getString(3);
-                    Date timeStamp = new Date(result.getTimestamp(4).getTime());
+                    Date timeStamp;
+
+                    try{
+                        timeStamp = new Date(result.getTimestamp(4).getTime());
+                    } catch (Exception e) {
+                        timeStamp = new Date(0);
+                    }
+
                     String type = result.getString(5);
                     String value = result.getString(6);
 

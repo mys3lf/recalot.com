@@ -39,10 +39,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomDataSplitter.class.getName(), "random", "Random Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             splitters.add(splitterBuilder);
 
@@ -52,10 +49,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, TimeBasedDataSplitter.class.getName(), "timebased", "Time-based Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerUser", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("minRatingsPerItem", ConfigurationItem.ConfigurationItemType.Integer, "-1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("globalRandomSplit", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("testPercentage", ConfigurationItem.ConfigurationItemType.Double, "0.3", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             splitters.add(splitterBuilder);
 
