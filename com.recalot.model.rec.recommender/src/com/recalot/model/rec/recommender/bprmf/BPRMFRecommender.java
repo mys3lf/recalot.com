@@ -96,7 +96,7 @@ public class BPRMFRecommender extends Recommender  {
 	// =====================================================================================
 
 	/**
-	 * This is similar to AbstractRecommender.recommendItemsByRatingPrediction but uses the internal function
+	 * Calculates prediction for all items, sorts the result and return the list.
 	 */
 	public List<String> recommendByPrediction(String userId) throws BaseException {
 		List<String> result = new ArrayList<>();
@@ -114,7 +114,7 @@ public class BPRMFRecommender extends Recommender  {
 		// Calculate rating predictions for all items we know
 		Map<String, Double> predictions = new HashMap<>();
 		double pred;
-		
+
 		// Go through all the items
 		for (Item item : getDataSet().getItems()) {
 			boolean userHasAlreadyRatedItem = false;
@@ -125,7 +125,7 @@ public class BPRMFRecommender extends Recommender  {
 					userHasAlreadyRatedItem = true;
 				}
 		//	}
-			
+
 			if (!userHasAlreadyRatedItem) {
 				// make a prediction and remember it in case the recommender
 				// could make one
@@ -137,14 +137,14 @@ public class BPRMFRecommender extends Recommender  {
 		}
 
 		predictions = Helper.sortByValueDescending(predictions);
-		
+
 		for (String item : predictions.keySet()) {
 			result.add(item);
 		}
 
 		return result;
 	}
-	
+
 
 	/**
 	 * Training of the given data

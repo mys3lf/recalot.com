@@ -77,6 +77,13 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.slopeone.SlopeOneRecommender.class.getName(), "slopeone", "");
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName(), "bprmf", "");
             builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
             builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
