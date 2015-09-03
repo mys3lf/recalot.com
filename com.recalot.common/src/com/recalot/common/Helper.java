@@ -290,6 +290,7 @@ public class Helper {
         public static final String Count = "count".intern();
         public static final String Key = "key".intern();
         public static final String TimeStamp = "timeStamp".intern();
+        public static final String SplitType = "split-type".intern();
 
         public static final Integer PageSize = 10;
     }

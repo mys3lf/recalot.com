@@ -95,56 +95,6 @@ public class BPRMFRecommender extends Recommender  {
 	}
 	// =====================================================================================
 
-	/**
-	 * Calculates prediction for all items, sorts the result and return the list.
-	 */
-	public List<String> recommendByPrediction(String userId) throws BaseException {
-		List<String> result = new ArrayList<>();
-
-		// If there are no ratings for the user in the training set,
-		// there is no point of making a recommendation.
-		Interaction[] interactions = getDataSet().getInteractions(userId);
-		// If we have no ratings...
-		if (interactions == null || interactions.length == 0) {
-			return Collections.emptyList();
-		}
-
-        List<Interaction> interactionList = Arrays.asList(interactions);
-
-		// Calculate rating predictions for all items we know
-		Map<String, Double> predictions = new HashMap<>();
-		double pred;
-
-		// Go through all the items
-		for (Item item : getDataSet().getItems()) {
-			boolean userHasAlreadyRatedItem = false;
-
-			    // We will not recommend items repeatedly here
-				// Do the standard procedure
-				if (interactionList.stream().anyMatch(i -> i.getItemId().equals(item.getId()))) {
-					userHasAlreadyRatedItem = true;
-				}
-		//	}
-
-			if (!userHasAlreadyRatedItem) {
-				// make a prediction and remember it in case the recommender
-				// could make one
-				pred = predictRatingBPR(userId, item.getId());
-				if (!Double.isNaN(pred)) {
-					predictions.put(item.getId(), pred);
-				}
-			}
-		}
-
-		predictions = Helper.sortByValueDescending(predictions);
-
-		for (String item : predictions.keySet()) {
-			result.add(item);
-		}
-
-		return result;
-	}
-
 
 	/**
 	 * Training of the given data
@@ -174,7 +124,7 @@ public class BPRMFRecommender extends Recommender  {
     public RecommendationResult recommend(String userId, Context context, Map<String, String> param) {
         List<RecommendedItem> items = new ArrayList<>();
         try {
-            List<String> rec = recommendByPrediction(userId);
+            List<String> rec = recommendItemsByRatingPrediction(userId);
 
             for(String key: rec){
                 items.add(new RecommendedItem(key, 0.0));

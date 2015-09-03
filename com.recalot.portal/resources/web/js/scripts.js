@@ -300,6 +300,15 @@ function _collectFormData(container, prefix) {
                 value = formControl.val();
             }
 
+            var configContainer = group.find(".configurations-container");
+            if(configContainer.length > 0){
+                var config = _collectFormData(group.find(".configurations-container"), value + ".");
+                for(var c in config) {
+                    formData[c] = config[c];
+                }
+            }
+
+
             formData[prefix != null ? prefix + name : name] = value;
         } else {
 
@@ -349,7 +358,7 @@ function _renderTableFormContent(container, form, skipLabel){
 
                 var $select = $("<select class='form-control' name='" + item.id + "'>");
 
-                if(typeof item.enum == "array") {
+                if(item.enum instanceof Array) {
 
                     for(var op in item.enum ){
                         $select.append("<option>" + item.enum[op] +"</option>")

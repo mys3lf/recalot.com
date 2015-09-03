@@ -1,5 +1,6 @@
 package com.recalot.common.impl.experiment;
 
+import com.recalot.common.Helper;
 import com.recalot.common.Parallel;
 import com.recalot.common.communication.*;
 import com.recalot.common.exceptions.BaseException;
@@ -11,10 +12,8 @@ import com.recalot.common.interfaces.model.experiment.RatingMetric;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import org.osgi.service.log.LogService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
@@ -24,8 +23,10 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     private final HashMap<String, Metric[]> metrics;
     private final DataSource dataSource;
     private final DataSplitter splitter;
+    private Map<String, String> param;
 
-    public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics) {
+    public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics, Map<String, String> param) {
+        this.param = param;
 
         this.id = id;
         this.recommenders = recommenders;
@@ -47,94 +48,41 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         setState(ExperimentState.RUNNING);
         setPercentage(0);
         setInfo("Split data source");
+
 //TODO add total time of experiment
         try {
+
             DataSet[] sets = splitter.split(dataSource);
 
-            //do cross validation, train one set and test it with the users
-            for (int i = 0; i < sets.length; i++) {
+            if (!param.containsKey(Helper.Keys.SplitType) || param.get(Helper.Keys.SplitType).equals("simple")) {
+                //check test data set against train data set
 
-                final int finalI = i;
+                setInfo("Started training recommenders with first split");
 
-                setInfo(String.format("Started training recommenders with split %s", finalI));
+                trainRecommender(sets[0]);
+                setPercentage(50);
+                setInfo("Started testing of the recommenders with second split");
+                performTest(recommenders, sets[1], 1.0 * 50 /  recommenders.length );
 
-                Parallel.For(Arrays.asList(recommenders), r -> {
-                    try {
-                        r.setDataSet(sets[finalI]);
+            } else if (param.get(Helper.Keys.SplitType).equals("n-fold")) {
 
-                        r.train();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        if (this.logger != null) {
-                            this.logger.log(LogService.LOG_ERROR, String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
-                            setInfo(String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
-                        }
-                    }
-                });
+                //steps for completion
+                //train each recommender with each data set
+                // test each trained recommender with each data set, except the one used for the training
+                double percentageSteps = 100.00 / (recommenders.length * sets.length + recommenders.length * sets.length * (sets.length - 1));
 
-                //iterate over all sets
-                for (int j = 0; j < sets.length; j++) {
-                    //check if the current set is not the trained set
-                    if (i != j) {
-                        //iterate over all recommenders
-                        for (Recommender r : recommenders) {
+                //do cross validation, train one set and test it with the users
+                for (int i = 0; i < sets.length; i++) {
+                    setInfo(String.format("Started training recommenders with split %s", i));
 
-                            setInfo(String.format("Evaluate recommender %s trained with split %s against split %s", r.getId(), i, j));
+                    trainRecommender(sets[i]);
+                    setPercentage(getPercentage() + (recommenders.length * percentageSteps));
 
-                            try {
-                                User[] users = sets[j].getUsers();
-
-                                //iterate over all users
-
-                                final int finalJ = j;
-                                // make it parallel
-                                Parallel.For(Arrays.asList(users),
-                                        u -> {
-                                            try {//get the interactions of the user in the test set
-                                                Interaction[] userInteractions = new Interaction[0];
-
-                                                userInteractions = sets[finalJ].getInteractions(u.getId());
-
-                                                //iterate over all metric for this recommender
-                                                for (Metric m : metrics.get(r.getId())) {
-
-                                                    if (m instanceof RatingMetric) {
-                                                        for (Interaction interaction : userInteractions) {
-                                                            Integer value = Integer.parseInt(interaction.getValue());
-                                                            Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
-                                                            if(!predict.isNaN()) {
-                                                                ((RatingMetric) m).addRating(value, predict);
-                                                            }
-                                                        }
-                                                    } else if (m instanceof ListMetric) {
-                                                        ArrayList<String> interactions = new ArrayList();
-                                                        for (Interaction interaction : userInteractions) {
-                                                            interactions.add(interaction.getItemId());
-                                                        }
-
-                                                        ArrayList<String> result1 = new ArrayList();
-
-                                                        RecommendationResult rr = r.recommend(u.getId());
-
-                                                        for (RecommendedItem item : rr.getItems()) {
-                                                            result1.add(item.getItemId());
-                                                        }
-
-                                                        ((ListMetric) m).addList(interactions, result1);
-                                                    }
-                                                }
-                                            } catch (BaseException e) {
-                                                e.printStackTrace();
-                                            }
-                                        });
-
-                            } catch (BaseException e) {
-                                e.printStackTrace();
-
-                                setInfo(e.getMessage());
-                            }
-
-                            setPercentage(getPercentage() + 100.0 / (sets.length * (sets.length - 1) * this.recommenderIds.length));
+                    //iterate over all sets
+                    for (int j = 0; j < sets.length; j++) {
+                        //check if the current set is not the trained set
+                        if (i != j) {
+                            performTest(recommenders, sets[j], percentageSteps);
                         }
                     }
                 }
@@ -155,5 +103,83 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
         setInfo("Done");
         setState(ExperimentState.FINISHED);
+    }
+
+    private void performTest(Recommender[] recommenders, DataSet test, double percentage) {
+        //iterate over all recommenders
+        for (Recommender r : recommenders) {
+
+            setInfo(String.format("Evaluate recommender %s trained", r.getId()));
+
+            try {
+                User[] users = test.getUsers();
+            DataSet t = test;
+                //iterate over all users
+                // make it parallel
+                Parallel.For(Arrays.asList(users),
+                        u -> {
+
+                            Interaction[] userInteractions = new Interaction[0];
+
+                            //get the interactions of the user in the test set
+                            try{
+                                userInteractions = test.getInteractions(u.getId());
+                            } catch (BaseException e) {
+
+                            }
+
+                            //iterate over all metric for this recommender
+                            for (Metric m : metrics.get(r.getId())) {
+
+                                if (m instanceof RatingMetric) {
+                                    for (Interaction interaction : userInteractions) {
+                                        Integer value = Integer.parseInt(interaction.getValue());
+                                        Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
+                                        if (!predict.isNaN()) {
+                                            ((RatingMetric) m).addRating(value, predict);
+                                        }
+                                    }
+                                } else if (m instanceof ListMetric) {
+                                    ArrayList<String> interactions = new ArrayList();
+                                    for (Interaction interaction : userInteractions) {
+                                        interactions.add(interaction.getItemId());
+                                    }
+
+                                    ArrayList<String> result1 = new ArrayList();
+
+                                    RecommendationResult rr = r.recommend(u.getId());
+
+                                    for (RecommendedItem item : rr.getItems()) {
+                                        result1.add(item.getItemId());
+                                    }
+
+                                    ((ListMetric) m).addList(interactions, result1);
+                                }
+                            }
+                        });
+                setPercentage(getPercentage() + percentage);
+            } catch (BaseException e) {
+                e.printStackTrace();
+
+                setInfo(e.getMessage());
+            }
+        }
+    }
+
+    private void trainRecommender(DataSet train) {
+
+        Parallel.For(Arrays.asList(recommenders), r -> {
+            try {
+                r.setDataSet(train);
+
+                r.train();
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (this.logger != null) {
+                    this.logger.log(LogService.LOG_ERROR, String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
+                    setInfo(String.format("The training of recommender %s failed. Exception message: %s", r.getId(), e.getMessage()));
+                }
+            }
+        });
     }
 }

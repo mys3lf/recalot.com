@@ -81,7 +81,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
         if (param.get(Helper.Keys.MetricIDs) == null)
             throw new MissingArgumentException("The argument %s is missing.", Helper.Keys.MetricIDs);
 
-        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics);
+        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics, param);
 
         Thread thread = new Thread() {
             public void run() {

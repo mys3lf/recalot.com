@@ -18,7 +18,7 @@ public abstract class DataSplitter extends Configurable implements DataSplitterI
     /**
      * Remember the number of folds
      */
-    private int nbFolds = 5;
+    private int nbFolds = 2;
 
     public void setNbFolds(int nbFolds) {
         this.nbFolds = nbFolds;

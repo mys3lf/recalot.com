@@ -5,9 +5,9 @@ import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.model.experiments.access.ExperimentAccess;
-import com.recalot.model.experiments.splitter.RandomDataSplitter;
+import com.recalot.model.experiments.splitter.RandomNFoldDataSplitter;
+import com.recalot.model.experiments.splitter.RandomPercentageDataSplitter;
 import com.recalot.model.experiments.splitter.TimeBasedDataSplitter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -38,8 +38,20 @@ public class Activator implements BundleActivator, Initiator {
         splitters = new ArrayList<>();
 
         try {
-            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomDataSplitter.class.getName(), "random", "Random Data Splitter");
+            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomNFoldDataSplitter.class.getName(), "random-nfold", "Random N-Fold Data Splitter");
             splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+            splitters.add(splitterBuilder);
+
+        } catch (BaseException e) {
+
+        }
+
+        try {
+            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomPercentageDataSplitter.class.getName(), "random-percentage", "Random Percentage Data Splitter");
+            splitterBuilder.setConfiguration(new ConfigurationItem("percentage", ConfigurationItem.ConfigurationItemType.Double, "0.7", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             splitters.add(splitterBuilder);
 

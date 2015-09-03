@@ -175,6 +175,11 @@ var structure = [
                         type: "enum"
                     },
                     {
+                        id: "split-type",
+                        enum: ["simple", "n-fold"],
+                        type: "enum"
+                    },
+                    {
                         id: "splitter-id",
                         enum: {
                              action: "/experiments/splitters"

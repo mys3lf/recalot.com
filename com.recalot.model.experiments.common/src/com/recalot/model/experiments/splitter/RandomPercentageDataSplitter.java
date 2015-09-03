@@ -1,7 +1,6 @@
 package com.recalot.model.experiments.splitter;
 
 import com.recalot.common.communication.*;
-import com.recalot.common.configuration.Configurable;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -14,23 +13,32 @@ import java.util.Random;
 /**
  * Created by matthaeus.schmedding on 16.04.2015.
  */
-public class RandomDataSplitter extends DataSplitter {
+public class RandomPercentageDataSplitter extends DataSplitter {
+    private int seed = 1;
+    private double percentage = 0.7;
+
     @Override
     public DataSet[] split(DataSource source) throws BaseException {
         List<FillableDataSet> result = new ArrayList<>();
-        // Create the empty lists
-        for (int i = 0; i < this.getNbFolds(); i++) {
-            result.add(new FillableDataSet());
-        }
+
+        // Create empty lists
+        result.add(new FillableDataSet()); //train
+        result.add(new FillableDataSet()); //test
 
         Interaction[] allInteractions = source.getInteractions();
 
         //split interactions
-        Random r = new Random();
+        Random r = new Random(seed);
         for (Interaction i : allInteractions) {
-            int next = r.nextInt(this.getNbFolds());
 
-            result.get(next).addInteraction(i);
+            double next = r.nextDouble();
+
+            if(next > percentage) {
+                result.get(1).addInteraction(i); //add to test
+            } else {
+                result.get(0).addInteraction(i); //add to train
+            }
+
         }
 
         User[] allUsers = source.getUsers();
@@ -71,5 +79,22 @@ public class RandomDataSplitter extends DataSplitter {
     @Override
     public void close() throws IOException {
 
+    }
+
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setSeed(int seed) {
+        this.seed = seed;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 }

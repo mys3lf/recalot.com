@@ -15,7 +15,7 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  ws.recommend,com.recalot.views.data.sources,com.recalot.views.data.ac
  cess,com.recalot.views.data.tracking
 Bundle-Name: Recalot.com - Experiments Portal
-Bundle-Version: 1.0.0.667
+Bundle-Version: 1.0.0.686
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.portal.Activator
 Import-Service: com.recalot.controller.data.DataAccessController,com.r

@@ -110,7 +110,7 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         for (Item item : getDataSet().getItems()) {
 
             // check if we have seen the item already
-            if(interactionList.stream().anyMatch(i -> i.getItemId().equals(item.getId()))) {
+            if(!interactionList.stream().anyMatch(i -> i.getItemId().equals(item.getId()))) {
                 // make a prediction and remember it in case the recommender
                 // could make one
 
