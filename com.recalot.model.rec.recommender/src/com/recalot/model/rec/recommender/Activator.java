@@ -107,6 +107,7 @@ public class Activator implements BundleActivator, Initiator {
         } catch (BaseException e) {
             e.printStackTrace();
         }
+
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalItemAverageRatingRecommender.class.getName(), "item-average-rating", "This recommender is used for comparison in experiments and provides a item average as prediction.");
 
@@ -114,6 +115,7 @@ public class Activator implements BundleActivator, Initiator {
         } catch (BaseException e) {
             e.printStackTrace();
         }
+
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalUserAverageRatingRecommender.class.getName(), "user-average-rating", "This recommender is used for comparison in experiments and provides a user average as prediction.");
 

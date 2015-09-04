@@ -38,7 +38,7 @@ public class JsonDataTemplate extends JsonBaseTemplate implements DataTemplate {
 
     @Override
     public TemplateResult transform(DataSourceBuilder source) throws BaseException {
-        String result = getSerializer().include("id", "state", "configuration").serialize(source);
+        String result = getSerializer().include("id", "state", "configuration", "configuration.*").serialize(source);
 
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }

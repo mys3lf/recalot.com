@@ -87,16 +87,6 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                     }
                 }
             }
-
-            for (String key : metrics.keySet()) {
-                Metric[] ms = metrics.get(key);
-                HashMap<String, Double> r = new HashMap<>();
-                for (Metric m : ms) {
-                    r.put(m.getId(), m.getResult());
-                }
-
-                this.result.put(key, r);
-            }
         } catch (BaseException e) {
             setInfo(e.getMessage());
         }
@@ -109,7 +99,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         //iterate over all recommenders
         for (Recommender r : recommenders) {
 
-            setInfo(String.format("Evaluate recommender %s trained", r.getId()));
+            setInfo(String.format("Evaluate trained recommender %s", r.getId()));
 
             try {
                 User[] users = test.getUsers();
@@ -162,6 +152,18 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 e.printStackTrace();
 
                 setInfo(e.getMessage());
+            }
+
+
+            //copy results to output
+            for (String key : metrics.keySet()) {
+                Metric[] ms = metrics.get(key);
+                HashMap<String, Double> res = new HashMap<>();
+                for (Metric m : ms) {
+                    res.put(m.getId(), m.getResult());
+                }
+
+                this.result.put(key, res);
             }
         }
     }
