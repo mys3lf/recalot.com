@@ -617,6 +617,11 @@ public class MySQLDataSource extends DataSource {
     }
 
     @Override
+    public Item tryGetItem(String itemId) throws BaseException {
+        return items.get(itemId);
+    }
+
+    @Override
     public Item updateItem(String itemId, Map<String, String> content) throws BaseException {
         if (items.containsKey(itemId)) {
             Item item = new Item(itemId, filterParams(content));
@@ -677,6 +682,11 @@ public class MySQLDataSource extends DataSource {
     @Override
     public User getUser(String userId) throws BaseException {
         if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
+        return users.get(userId);
+    }
+
+    @Override
+    public User tryGetUser(String userId) throws BaseException {
         return users.get(userId);
     }
 

@@ -19,10 +19,7 @@ import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -345,9 +342,20 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
             date = new Date();
         }
 
+        if(dataSource.tryGetItem(itemId) == null) {
+            Map<String, String> temp = new HashMap<>();
+            temp.put(Helper.Keys.ItemId, itemId);
+            dataSource.createItem(temp);
+        }
+
+        if(dataSource.tryGetUser(userId) == null) {
+            Map<String, String> temp = new HashMap<>();
+            temp.put(Helper.Keys.UserId, userId);
+            dataSource.createUser(temp);
+        }
+
         Message message = dataSource.addInteraction(itemId, userId, date, type, value, param);
         return template.transform(message);
-
     }
 
     private TemplateResult getInteractions(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {

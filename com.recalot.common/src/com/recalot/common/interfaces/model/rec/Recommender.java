@@ -103,14 +103,23 @@ public abstract class Recommender extends Configurable implements RecommenderInf
 
         List<Interaction> interactionList = Arrays.asList(interactions);
 
+        //put visited item into a map. It is faster this way
+        Map<String, Boolean> visited = new HashMap<>();
+        for(Interaction interaction: interactionList) {
+            if(!visited.containsKey(interaction.getItemId())) {
+                visited.put(interaction.getItemId(), true);
+            }
+        }
+
         // Calculate rating predictions for all items we know
         Map<String, Double> predictions = new HashMap<>();
         double pred = Float.NaN;
         // Go through all the items
         for (Item item : getDataSet().getItems()) {
 
+
             // check if we have seen the item already
-            if(!interactionList.stream().anyMatch(i -> i.getItemId().equals(item.getId()))) {
+            if(!visited.containsKey(item.getId())) {
                 // make a prediction and remember it in case the recommender
                 // could make one
 
@@ -120,7 +129,7 @@ public abstract class Recommender extends Configurable implements RecommenderInf
                 }
             }
         }
-
+        // Calculate rating predictions for all items we know
         predictions = Helper.sortByValueDescending(predictions);
 
         for (String item : predictions.keySet()) {

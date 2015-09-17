@@ -142,6 +142,7 @@ public class Activator implements BundleActivator, Initiator {
             for (RecommenderBuilder c : recommenders) {
                 c.close();
             }
+
             recommenders = null;
         }
     }

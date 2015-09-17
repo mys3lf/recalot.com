@@ -46,53 +46,20 @@ public class FunkSVDRecommender extends Recommender {
 
         for (int i = 0; i < numFeatures; i++) {
             for (Interaction rating : cachedPreferences) {
-                int useridx = userMap.get(rating.getUserId());
-                int itemidx = itemMap.get(rating.getItemId());
-                int interactionValue = interactionValueMap.get(rating.getValue());
-                // System.out.println("Training useridx: " + useridx + ", itemidx: " + // itemidx);
-                emSvd.train(useridx, itemidx, i, interactionValue);
-            }
-        }
-    }
 
-    // =====================================================================================
-   @Deprecated
-    private void recachePreferences() {
-        cachedPreferences.clear();
-        try {
-            for (User user : getDataSet().getUsers()) {
-                for (Interaction rating : getDataSet().getInteractions(user.getId())) {
-                    cachedPreferences.add(rating);
+                if(userMap.containsKey(rating.getUserId()) && itemMap.containsKey(rating.getItemId()) && interactionValueMap.containsKey(rating.getValue())) {
+                    int useridx = userMap.get(rating.getUserId());
+                    int itemidx = itemMap.get(rating.getItemId());
+                    int interactionValue = interactionValueMap.get(rating.getValue());
+                    // System.out.println("Training useridx: " + useridx + ", itemidx: " + // itemidx);
+                    emSvd.train(useridx, itemidx, i, interactionValue);
                 }
             }
-        } catch (BaseException e) {
-
-            e.printStackTrace();
         }
     }
-
 
     // --------------------------------------
     private static final Random random = RandomUtils.getRandom();
-
-
-    /**
-     * Returns the user vector in the latent space
-     *
-     * @param u the user id
-     * @return the array with the weights
-     */
-    public double[] getUserVector(int u) {
-
-        Integer user = this.userMap.get(u);
-        if (user == null) {
-         //   System.err.println("Cannot find internal ID for " + u);
-            System.exit(1);
-            return null;
-        } else {
-            return this.emSvd.getLeftVector(user);
-        }
-    }
 
 
     @Override
@@ -114,9 +81,7 @@ public class FunkSVDRecommender extends Recommender {
             itemMap.put(item.getId(), idx++);
         }
 
-        int numInteractions = getDataSet().getInteractionsCount();
-        interactionValueMap = new HashMap<>(numInteractions);
-
+        interactionValueMap = new HashMap<>();
 
         for (Interaction item : getDataSet().getInteractions()) {
             if(!interactionValueMap.containsKey(item.getValue())) {
@@ -128,7 +93,7 @@ public class FunkSVDRecommender extends Recommender {
         double defaultValue = Math.sqrt((average - 1.0) / numFeatures);
 
         emSvd = new GradientDescentSVD(numUsers, numItems, numFeatures, defaultValue);
-        cachedPreferences = new ArrayList<>(numUsers);
+        cachedPreferences = new ArrayList<>();
 
         cachedPreferences.addAll(Arrays.asList(getDataSet().getInteractions()));
         //recachePreferences();

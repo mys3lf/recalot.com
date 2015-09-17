@@ -76,6 +76,11 @@ public abstract class DataSourceBase extends DataSource {
     }
 
     @Override
+    public Item tryGetItem(String itemId) throws BaseException {
+        return items.get(itemId);
+    }
+
+    @Override
     public User[] getUsers() throws BaseException {
         return users.values().toArray(new User[users.size()]);
     }
@@ -87,6 +92,12 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public User getUser(String userId) throws BaseException {
+        if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
+        return users.get(userId);
+    }
+
+    @Override
+    public User tryGetUser(String userId) throws BaseException {
         if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
         return users.get(userId);
     }

@@ -13,6 +13,7 @@ public interface UserDataAccess {
     public User[] getUsers() throws BaseException;
     public int getUsersCount();
     public User getUser(String userId) throws BaseException;
+    public User tryGetUser(String userId) throws BaseException;
     public User updateUser(String userId, Map<String, String> content) throws BaseException;
     public User createUser(Map<String, String> content) throws BaseException;
 }
