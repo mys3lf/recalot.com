@@ -3,7 +3,7 @@ package com.recalot.model.rec.recommender.knn;
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.rec.Context;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
 
 import java.util.*;
@@ -78,12 +78,12 @@ public class UserBasedCosineNearestNeighborsRecommender extends Recommender {
     }
 
     @Override
-    public Double predict(String userId, String itemId, Context context, Map<String, String> param) {
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
         return 0.0;
     }
 
     @Override
-    public RecommendationResult recommend(String userId, Context context, Map<String, String> param) {
+    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         List<RecommendedItem> result = new ArrayList<>();
 
         double maxValue = 0;

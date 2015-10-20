@@ -4,7 +4,7 @@ import com.recalot.common.Helper;
 import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.rec.Context;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
 
 import java.util.ArrayList;
@@ -55,12 +55,12 @@ public class GlobalUserAverageRatingRecommender extends Recommender {
     }
 
     @Override
-    public RecommendationResult recommend(String userId, Context context, Map<String, String> param) {
+    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         return result;
     }
 
     @Override
-    public Double predict(String userId, String itemId, Context context, Map<String, String> param) {
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
         return prediction.containsKey(userId) ? prediction.get(userId) : Double.NaN;
     }
 }

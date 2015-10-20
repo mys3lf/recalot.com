@@ -161,6 +161,8 @@ public class DataAccess implements com.recalot.common.interfaces.model.data.Data
                     threads.remove(source.getId());
                 } catch (BaseException e) {
                     e.printStackTrace();
+                    threads.remove(source.getId());
+                    dataSources.remove(source.getId());
                 }
             }
         };

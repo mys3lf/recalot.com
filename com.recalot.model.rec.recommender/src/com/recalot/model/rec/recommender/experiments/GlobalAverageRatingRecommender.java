@@ -1,14 +1,10 @@
 package com.recalot.model.rec.recommender.experiments;
 
-import com.recalot.common.Helper;
 import com.recalot.common.communication.Interaction;
-import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
-import com.recalot.common.communication.RecommendedItem;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.rec.Context;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
-import flexjson.JSONDeserializer;
 
 import java.util.*;
 
@@ -43,12 +39,12 @@ public class GlobalAverageRatingRecommender extends Recommender {
     }
 
     @Override
-    public RecommendationResult recommend(String userId, Context context, Map<String, String> param) {
+    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         return result;
     }
 
     @Override
-    public Double predict(String userId, String itemId, Context context, Map<String, String> param) {
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
         return prediction;
     }
 }

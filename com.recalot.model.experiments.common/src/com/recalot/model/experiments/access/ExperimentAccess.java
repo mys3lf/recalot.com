@@ -1,8 +1,6 @@
 package com.recalot.model.experiments.access;
 
 import com.recalot.common.Helper;
-import com.recalot.common.communication.DataSet;
-import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.AlreadyExistsException;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.MissingArgumentException;
@@ -12,6 +10,7 @@ import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.Experiment;
 import com.recalot.common.interfaces.model.experiment.Metric;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import org.osgi.framework.BundleContext;
 
@@ -71,7 +70,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
     }
 
     @Override
-    public Experiment createExperiment(Recommender[] recommender, DataSource dataSource, DataSplitter splitter, HashMap<String, Metric[]> metrics, Map<String, String> param) throws BaseException {
+    public Experiment createExperiment(Recommender[] recommender, DataSource dataSource, DataSplitter splitter, HashMap<String, Metric[]> metrics, ContextProvider context, Map<String, String> param) throws BaseException {
 
         String id = param.get(Helper.Keys.ExperimentId);
         if (id == null) id = UUID.randomUUID().toString();
@@ -81,7 +80,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
         if (param.get(Helper.Keys.MetricIDs) == null)
             throw new MissingArgumentException("The argument %s is missing.", Helper.Keys.MetricIDs);
 
-        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics, param);
+        Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics, context, param);
 
         Thread thread = new Thread() {
             public void run() {

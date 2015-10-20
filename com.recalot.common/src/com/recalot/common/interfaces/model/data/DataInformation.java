@@ -7,6 +7,7 @@ public interface DataInformation {
 
     public DataState getState();
     public String getId();
+    public String getInfo();
 
     public enum DataState {
         AVAILABLE,

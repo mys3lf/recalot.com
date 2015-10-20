@@ -14,6 +14,7 @@ public abstract class DataSource implements DataInformation, RelationDataAccess,
 
     private DataState state;
     private String dataBuilderId;
+    private String info;
     private String id;
 
     @Override
@@ -23,6 +24,15 @@ public abstract class DataSource implements DataInformation, RelationDataAccess,
 
     public void setState(DataState state) {
         this.state = state;
+    }
+
+    @Override
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public void setDataBuilderId(String id) {

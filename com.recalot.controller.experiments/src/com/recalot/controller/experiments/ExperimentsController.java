@@ -15,6 +15,7 @@ import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.ExperimentAccess;
 import com.recalot.common.interfaces.model.experiment.Metric;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import org.osgi.framework.BundleContext;
@@ -39,6 +40,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
     private final GenericServiceListener<ExperimentAccess> experimentsAccess;
     private final GenericServiceListener<DataSplitterBuilder> dataSplitterAccess;
     private final GenericServiceListener<MetricBuilder> metricsListener;
+    private final ContextProvider contextProvider;
 
 
     public ExperimentsController(BundleContext context) {
@@ -49,6 +51,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         this.dataSplitterAccess = new GenericServiceListener(context, DataSplitterBuilder.class.getName());
         this.templates = new GenericServiceListener(context, ExperimentTemplate.class.getName());
         this.metricsListener = new GenericServiceListener(context, MetricBuilder.class.getName());
+        this.contextProvider = new ContextProvider(context);
 
         this.context.addServiceListener(recommenderAccess);
         this.context.addServiceListener(dataAccess);
@@ -56,6 +59,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         this.context.addServiceListener(dataSplitterAccess);
         this.context.addServiceListener(templates);
         this.context.addServiceListener(metricsListener);
+        this.context.addServiceListener(contextProvider);
     }
 
     @Override
@@ -224,7 +228,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
 
         DataSplitter splitter = splitterBuilder.createInstance(param.get(Helper.Keys.DataSplitterId), param.get(Helper.Keys.DataSplitterId), param);
 
-        return template.transform(access.createExperiment(recommender.toArray(new Recommender[recommender.size()]), dataSource, splitter, metrics, param));
+        return template.transform(access.createExperiment(recommender.toArray(new Recommender[recommender.size()]), dataSource, splitter, metrics, contextProvider, param));
     }
 
     private TemplateResult deleteExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {

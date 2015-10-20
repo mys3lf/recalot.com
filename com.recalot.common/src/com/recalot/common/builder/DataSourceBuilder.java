@@ -47,4 +47,9 @@ public class DataSourceBuilder extends InstanceBuilder<DataSource> implements Da
     public String getId() {
         return "data-builder-" + getKey();
     }
+
+    @Override
+    public String getInfo() {
+        return "";
+    }
 }

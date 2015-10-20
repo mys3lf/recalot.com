@@ -106,15 +106,22 @@ public class MySQLDataSource extends DataSource {
             this.dataSet = new DataSourceDataSet(this);
 
             if (!structureAvailable()) {
+                setInfo("Create DB structure");
                 createDBstructure();
             }
 
+            setInfo("Read ID table");
             readIdComputation();
+            setInfo("Read Users");
             readUsers();
+            setInfo("Read Items");
             readItems();
+            setInfo("Read Interactions");
             readInteractions();
+            setInfo("Read Relations");
             readRelations();
 
+            setInfo("Done");
 
             this.initialized = true;
         } catch (Exception e) {

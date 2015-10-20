@@ -6,6 +6,7 @@ import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.configuration.Configurable;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.exceptions.BaseException;
 
 import java.util.*;
@@ -63,23 +64,31 @@ public abstract class Recommender extends Configurable implements RecommenderInf
     public abstract void train() throws BaseException;
 
     public RecommendationResult recommend(String userId) {
-        return recommend(userId, null);
+        return recommend(userId, new HashMap<>());
     }
 
     public RecommendationResult recommend(String userId, Map<String, String> param){
         return recommend(userId, null, param);
     }
-    public abstract RecommendationResult recommend(String userId, Context context, Map<String, String> param);
+
+    public RecommendationResult recommend(String userId, ContextProvider context){
+        return recommend(userId, context, new HashMap<>());
+    }
+    public abstract RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param);
 
     public Double predict(String userId, String itemId){
-        return predict(userId, itemId, null);
+        return predict(userId, itemId, new HashMap<>());
     }
 
     public Double predict(String userId, String itemId, Map<String, String> param){
         return predict(userId, itemId, null, param);
     }
 
-    public abstract Double predict(String userId, String itemId, Context context, Map<String, String> param);
+    public Double predict(String userId, String itemId, ContextProvider context){
+        return predict(userId, itemId, context, new HashMap<>());
+    }
+
+    public abstract Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param);
 
 
     /**
@@ -113,10 +122,9 @@ public abstract class Recommender extends Configurable implements RecommenderInf
 
         // Calculate rating predictions for all items we know
         Map<String, Double> predictions = new HashMap<>();
-        double pred = Float.NaN;
+        double pred;
         // Go through all the items
         for (Item item : getDataSet().getItems()) {
-
 
             // check if we have seen the item already
             if(!visited.containsKey(item.getId())) {

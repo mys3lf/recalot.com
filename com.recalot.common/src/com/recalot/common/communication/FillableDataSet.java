@@ -3,6 +3,8 @@ package com.recalot.common.communication;
 import com.recalot.common.exceptions.BaseException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -146,5 +148,39 @@ public class FillableDataSet implements DataSet {
     @Override
     public int getRelationCount() {
         return 0;
+    }
+
+    public static DataSet createDataSet(DataSet dataSet, Interaction[] omitInteractions) throws BaseException {
+        //create empty dataset
+        FillableDataSet temp = new FillableDataSet();
+
+        //save interaction ids that should be omitted
+        Map<String, Boolean> interactionMap = new HashMap<>();
+
+        for(Interaction i: omitInteractions) {
+            interactionMap.put(i.getId(), true);
+        }
+
+        //add all interaction except the interactions that should be omitted
+        for (Interaction i : dataSet.getInteractions()) {
+            if(!interactionMap.containsKey(i.getId())) {
+                temp.addInteraction(i);
+            }
+        }
+
+        User[] allUsers = dataSet.getUsers();
+        Item[] allItems = dataSet.getItems();
+
+        //copy all users
+        for(User user: allUsers) {
+            temp.addUser(user);
+        }
+
+        //copy all items
+        for(Item item: allItems) {
+            temp.addItem(item);
+        }
+
+        return temp;
     }
 }

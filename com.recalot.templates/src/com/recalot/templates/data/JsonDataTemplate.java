@@ -31,7 +31,7 @@ public class JsonDataTemplate extends JsonBaseTemplate implements DataTemplate {
 
     @Override
     public TemplateResult transform(DataInformation connection) {
-        String result = getSerializer().include("id", "state").exclude("*").serialize(connection);
+        String result = getSerializer().include("id", "state", "info").exclude("*").serialize(connection);
 
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
@@ -109,13 +109,12 @@ public class JsonDataTemplate extends JsonBaseTemplate implements DataTemplate {
 
     @Override
     public TemplateResult transform(DataSource source) {
-        String result = getSerializer().include("id", "dataSourceId", "dataBuilderId", "state", "usersCount", "itemsCount", "interactionsCount").exclude("*").serialize(source);
+        String result = getSerializer().include("id", "dataSourceId", "dataBuilderId", "state", "usersCount", "itemsCount", "interactionsCount", "info").exclude("*").serialize(source);
 
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
 
     @Override
     public void close() throws IOException {
-
     }
 }

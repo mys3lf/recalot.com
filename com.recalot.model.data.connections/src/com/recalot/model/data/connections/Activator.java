@@ -1,14 +1,14 @@
 package com.recalot.model.data.connections;
 
 
-import com.recalot.common.Helper;
 import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.model.data.connections.movielens.MovieLensDataSource;
+import com.recalot.model.data.connections.downloader.CiaoDataSource;
+import com.recalot.model.data.connections.downloader.movielens.MovieLensDataSource;
 import com.recalot.model.data.connections.mysql.MySQLDataSource;
-import com.recalot.model.data.connections.text.TextDataSource;
+import com.recalot.model.data.connections.reddit.RedditDataSource;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -34,17 +34,19 @@ public class Activator implements BundleActivator, Initiator {
     public void start(BundleContext context) {
         connections = new ArrayList<>();
 
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, MovieLensDataSource.class.getName(), "ml", "");
-            builder.setConfiguration(new ConfigurationItem(Helper.Keys.Dir, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
 
         try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, TextDataSource.class.getName(), "text", "");
-            builder.setConfiguration(new ConfigurationItem("file", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+            DataSourceBuilder builder = new DataSourceBuilder(this, MovieLensDataSource.class.getName(), "ml", "");
+            ConfigurationItem config = new ConfigurationItem("source", ConfigurationItem.ConfigurationItemType.Options, "ml-100k", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            List<String> options = new ArrayList<>();
+            options.add("ml-100k");
+            options.add("ml-1m");
+            options.add("ml-10m");
+            options.add("ml-20m");
+            options.add("ml-latest-small");
+            options.add("ml-latest");
+            config.setOptions(options);
+            builder.setConfiguration(config);
             connections.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -56,6 +58,20 @@ public class Activator implements BundleActivator, Initiator {
             builder.setConfiguration(new ConfigurationItem("sql-username", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             builder.setConfiguration(new ConfigurationItem("sql-password", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             builder.setConfiguration(new ConfigurationItem("sql-database", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+            connections.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            DataSourceBuilder builder = new DataSourceBuilder(this, CiaoDataSource.class.getName(), "ciao", "");
+            connections.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+        try {
+            DataSourceBuilder builder = new DataSourceBuilder(this, RedditDataSource.class.getName(), "reddit", "");
+            builder.setConfiguration(new ConfigurationItem("dir", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             connections.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();

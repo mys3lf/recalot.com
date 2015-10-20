@@ -9,11 +9,11 @@ import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.interfaces.model.experiment.RatingMetric;
+import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import org.osgi.service.log.LogService;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
@@ -23,9 +23,11 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     private final HashMap<String, Metric[]> metrics;
     private final DataSource dataSource;
     private final DataSplitter splitter;
+    private ContextProvider context;
     private Map<String, String> param;
 
-    public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics, Map<String, String> param) {
+    public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics, ContextProvider context, Map<String, String> param) {
+        this.context = context;
         this.param = param;
 
         this.id = id;
@@ -59,32 +61,29 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
                 setInfo("Started training recommenders with first split");
 
-                trainRecommender(sets[0]);
+                trainRecommenders(sets[0]);
                 setPercentage(50);
                 setInfo("Started testing of the recommenders with second split");
-                performTest(recommenders, sets[1], 1.0 * 50 /  recommenders.length );
+                performTest(recommenders, sets[1], 1.0 * 50 / recommenders.length);
 
             } else if (param.get(Helper.Keys.SplitType).equals("n-fold")) {
 
-                //steps for completion
-                //train each recommender with each data set
-                // test each trained recommender with each data set, except the one used for the training
-                double percentageSteps = 100.00 / (recommenders.length * sets.length + recommenders.length * sets.length * (sets.length - 1));
+                // steps for completion:
+                // train each recommender with each data set
+                // test each trained recommender with the data that is not in the train data set
+                double percentageSteps = 100.00 / (recommenders.length * sets.length  * 2);
 
                 //do cross validation, train one set and test it with the users
                 for (int i = 0; i < sets.length; i++) {
                     setInfo(String.format("Started training recommenders with split %s", i));
 
-                    trainRecommender(sets[i]);
+                    DataSet trainDataSet = FillableDataSet.createDataSet(dataSource.getDataSet(), sets[i].getInteractions());
+
+                    trainRecommenders(trainDataSet);
+
                     setPercentage(getPercentage() + (recommenders.length * percentageSteps));
 
-                    //iterate over all sets
-                    for (int j = 0; j < sets.length; j++) {
-                        //check if the current set is not the trained set
-                        if (i != j) {
-                            performTest(recommenders, sets[j], percentageSteps);
-                        }
-                    }
+                    performTest(recommenders, sets[i], percentageSteps);
                 }
             }
         } catch (BaseException e) {
@@ -103,7 +102,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
             try {
                 User[] users = test.getUsers();
-            DataSet t = test;
+                DataSet t = test;
                 //iterate over all users
                 // make it parallel
                 Parallel.For(Arrays.asList(users),
@@ -112,7 +111,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                             Interaction[] userInteractions = new Interaction[0];
 
                             //get the interactions of the user in the test set
-                            try{
+                            try {
                                 userInteractions = test.getInteractions(u.getId());
                             } catch (BaseException e) {
 
@@ -124,7 +123,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                 if (m instanceof RatingMetric) {
                                     for (Interaction interaction : userInteractions) {
                                         Integer value = Integer.parseInt(interaction.getValue());
-                                        Double predict = r.predict(interaction.getUserId(), interaction.getItemId());
+                                        Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
                                         if (!predict.isNaN()) {
                                             ((RatingMetric) m).addRating(value, predict);
                                         }
@@ -168,7 +167,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         }
     }
 
-    private void trainRecommender(DataSet train) {
+    private void trainRecommenders(DataSet train) {
 
         Parallel.For(Arrays.asList(recommenders), r -> {
             try {
