@@ -452,6 +452,12 @@ function _renderTableFormContent(container, form, skipLabel){
             case "string":
                 formElement.append("<input type='text' class='form-control' name='" + item.id + "' value='" + (item.value == null ? "" : item.value) + "' />");
             break;
+            case "boolean":
+                formElement.append("<input type='checkbox' class='form-control' name='" + item.id + "' value='" + (item.value == null ? "" : item.value) + "' />");
+            break;
+            case "number":
+                formElement.append("<input type='number' class='form-control' name='" + item.id + "' value='" + (item.value == null ? "" : item.value) + "' />");
+            break;
         }
 
         formElement.appendTo(container);

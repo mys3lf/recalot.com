@@ -188,6 +188,15 @@ var structure = [
                         action: "/experiments/splitters/{0}"
                     },
                     {
+                        id: "runThroughAllItems",
+                        type: "boolean",
+                        value: "false"
+                    },
+                    {
+                        id: "maxRelevantItemCount",
+                        type: "number"
+                    },
+                    {
                         id: "rec-id",
                         content: {
                             type: "idkeyconfiguration",

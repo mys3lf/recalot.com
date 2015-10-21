@@ -23,8 +23,12 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     private final HashMap<String, Metric[]> metrics;
     private final DataSource dataSource;
     private final DataSplitter splitter;
+
+    private final boolean runThroughAllItems;
+
     private ContextProvider context;
     private Map<String, String> param;
+    private int maxRelevantItemCount = Integer.MAX_VALUE;
 
     public Experiment(String id, DataSource source, DataSplitter splitter, Recommender[] recommenders, HashMap<String, Metric[]> metrics, ContextProvider context, Map<String, String> param) {
         this.context = context;
@@ -43,6 +47,15 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         this.splitter = splitter;
         this.metrics = metrics;
         this.result = new HashMap<>();
+
+        this.runThroughAllItems = param != null && param.containsKey("runThroughAllItems") && param.get("runThroughAllItems").equals("true");
+
+        if (param != null && param.containsKey("maxRelevantItemCount")) {
+            Integer result = Integer.parseInt(param.get("maxRelevantItemCount"));
+            if (result != null && result >= 1) {
+                this.maxRelevantItemCount = result;
+            }
+        }
     }
 
     @Override
@@ -71,7 +84,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 // steps for completion:
                 // train each recommender with each data set
                 // test each trained recommender with the data that is not in the train data set
-                double percentageSteps = 100.00 / (recommenders.length * sets.length  * 2);
+                double percentageSteps = 100.00 / (recommenders.length * sets.length * 2);
 
                 //do cross validation, train one set and test it with the users
                 for (int i = 0; i < sets.length; i++) {
@@ -121,7 +134,9 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                             for (Metric m : metrics.get(r.getId())) {
 
                                 if (m instanceof RatingMetric) {
+                                    //if the metric is a rating metric, run through all consumed items in the test set and predict the rating
                                     for (Interaction interaction : userInteractions) {
+
                                         Integer value = Integer.parseInt(interaction.getValue());
                                         Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
                                         if (!predict.isNaN()) {
@@ -129,20 +144,51 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                         }
                                     }
                                 } else if (m instanceof ListMetric) {
-                                    ArrayList<String> interactions = new ArrayList();
-                                    for (Interaction interaction : userInteractions) {
-                                        interactions.add(interaction.getItemId());
+                                    // There are 2 possibilities for list metrics.
+                                    // 1. Run through all items and use the subsequent items as relevant items.
+                                    // 2. Use all consumed items as relevant items.
+                                    // The relevant items can be limited in both cases.
+
+                                    if (runThroughAllItems) {
+                                        for (int i = 0; i < userInteractions.length - 1; i++) {
+                                            ArrayList<String> previous = new ArrayList();
+                                            ArrayList<String> subsequent = new ArrayList();
+
+
+                                            for (int j = 0; j < userInteractions.length; j++) {
+                                                if (i < j) {
+                                                    previous.add(userInteractions[j].getItemId());
+                                                } else {
+                                                    subsequent.add(userInteractions[j].getItemId());
+                                                }
+                                            }
+
+                                            ArrayList<String> result1 = new ArrayList();
+
+                                            RecommendationResult rr = r.recommend(u.getId(), context);
+
+                                            for (RecommendedItem item : rr.getItems()) {
+                                                result1.add(item.getItemId());
+                                            }
+
+                                            ((ListMetric) m).addList(Helper.applySubList(subsequent, maxRelevantItemCount), result1);
+                                        }
+                                    } else {
+                                        ArrayList<String> interactions = new ArrayList();
+                                        for (Interaction interaction : userInteractions) {
+                                            interactions.add(interaction.getItemId());
+                                        }
+
+                                        ArrayList<String> result1 = new ArrayList();
+
+                                        RecommendationResult rr = r.recommend(u.getId(), context);
+
+                                        for (RecommendedItem item : rr.getItems()) {
+                                            result1.add(item.getItemId());
+                                        }
+
+                                        ((ListMetric) m).addList(Helper.applySubList(interactions, maxRelevantItemCount), result1);
                                     }
-
-                                    ArrayList<String> result1 = new ArrayList();
-
-                                    RecommendationResult rr = r.recommend(u.getId());
-
-                                    for (RecommendedItem item : rr.getItems()) {
-                                        result1.add(item.getItemId());
-                                    }
-
-                                    ((ListMetric) m).addList(interactions, result1);
                                 }
                             }
                         });
