@@ -67,7 +67,7 @@ public class RedditDataSource extends DataSourceBase {
     }
 
     private void addWordInteraction(String user, String word, String id, Date date, int i) {
-        interactions.put(id, new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "", "", new HashMap<>()));
+        interactions.put(id, new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "view", "1", new HashMap<>()));
     }
 
     private List<String> splitIntoWords(String sentence) {
