@@ -73,7 +73,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
     public Experiment createExperiment(Recommender[] recommender, DataSource dataSource, DataSplitter splitter, HashMap<String, Metric[]> metrics, ContextProvider context, Map<String, String> param) throws BaseException {
 
         String id = param.get(Helper.Keys.ExperimentId);
-        if (id == null) id = UUID.randomUUID().toString();
+        if (id == null || id.isEmpty()) id = UUID.randomUUID().toString();
 
         if (threads.containsKey(id) || experiments.containsKey(id))
             throw new AlreadyExistsException("An experiment with the id %s already exists. Please first delete the experiment.", id);

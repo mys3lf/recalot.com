@@ -120,8 +120,8 @@ public class DataManagement  {
 	 */
 	public void booleanRatings() throws BaseException {
 		for (Interaction r : dataSet.getInteractions()) {
-			Integer user = userIndices.get(r.getUserId());
-			Integer item = itemIndices.get(r.getItemId());
+			Integer user = userIndices.get(r.getUserId().toLowerCase());
+			Integer item = itemIndices.get(r.getItemId().toLowerCase());
 
             try{
                 boolMatrix.setBool(user, item, true);
@@ -229,8 +229,8 @@ public class DataManagement  {
      *            Number - unmapped userID
      */
 	public void addUser(User user) {
-		userMap.put(userid, user.getId());
-		userIndices.put(user.getId(), userid);
+		userMap.put(userid, user.getId().toLowerCase());
+		userIndices.put(user.getId().toLowerCase(), userid);
 		userid++;
 	}
 
@@ -241,8 +241,8 @@ public class DataManagement  {
      *            Number - unmapped itemID
      */
 	public void addItem(Item item) {
-		itemMap.put(itemid, item.getId());
-		itemIndices.put(item.getId(), itemid);
+		itemMap.put(itemid, item.getId().toLowerCase());
+		itemIndices.put(item.getId().toLowerCase(), itemid);
 		itemid++;
 	}
 

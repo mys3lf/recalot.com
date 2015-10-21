@@ -17,8 +17,6 @@ import java.util.*;
  */
 public class SurveyRecommender extends Recommender {
 
-    private RecommendationResult result;
-
     private HashMap<String, LinkedHashMap<String, Integer>> categoryMP;
 
 
@@ -70,8 +68,6 @@ public class SurveyRecommender extends Recommender {
                 }
             }
         }
-
-        List<RecommendedItem> recommendedItems = new ArrayList<>();
 
         for (String key : categoryMP.keySet()) {
             Map<String, Integer> count = categoryMP.get(key);
