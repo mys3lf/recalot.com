@@ -1,7 +1,12 @@
 package com.recalot.demos.wallpaper;
 
 
+import com.recalot.common.builder.DataSourceBuilder;
+import com.recalot.common.builder.Initiator;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.exceptions.BaseException;
 import com.recalot.demos.wallpaper.controller.DataAccessController;
+import com.recalot.demos.wallpaper.mysql.MySQLDataSource;
 import com.recalot.demos.wallpaper.view.Servlet;
 import com.recalot.views.common.AbstractWebActivator;
 import com.recalot.views.common.GenericControllerHandler;
@@ -18,7 +23,7 @@ import java.util.Hashtable;
 /**
  * @author Matthaeus.schmedding
  */
-public class Activator extends AbstractWebActivator {
+public class Activator extends AbstractWebActivator implements Initiator {
     private DataAccessController controller;
     private ServiceTracker staticHttpTracker;
 
@@ -48,6 +53,20 @@ public class Activator extends AbstractWebActivator {
         staticHttpTracker.open();
 
         service.initialize();
+
+
+        try {
+            DataSourceBuilder builder = new DataSourceBuilder(this, MySQLDataSource.class.getName(), "wallpaper-mysql", "");
+            builder.setConfiguration(new ConfigurationItem("sql-server", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+            builder.setConfiguration(new ConfigurationItem("sql-username", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+            builder.setConfiguration(new ConfigurationItem("sql-password", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+            builder.setConfiguration(new ConfigurationItem("sql-database", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
+
+            context.registerService(DataSourceBuilder.class.getName(), builder, null);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -63,5 +82,17 @@ public class Activator extends AbstractWebActivator {
         if(staticHttpTracker != null) staticHttpTracker.close();
 
         super.stop(context);
+    }
+
+
+    @Override
+    public Object createInstance(String className) {
+        try {
+            Class c = Class.forName(className);
+            return c.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

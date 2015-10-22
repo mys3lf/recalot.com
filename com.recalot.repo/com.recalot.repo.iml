@@ -17,7 +17,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="lib" level="project" />
-    <orderEntry type="library" name="org.apache.felix.http.bundle-2.0.4" level="project" />
+    <orderEntry type="library" name="org.apache.felix.http.base-3.0.0" level="project" />
     <orderEntry type="library" name="org.apache.felix.log-1.0.1" level="project" />
+    <orderEntry type="library" name="org.apache.felix.http.api-3.0.0" level="project" />
   </component>
 </module>

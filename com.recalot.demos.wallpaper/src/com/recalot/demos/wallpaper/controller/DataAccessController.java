@@ -33,6 +33,7 @@ public class DataAccessController implements Controller, Closeable {
     private final GenericServiceListener<DataTemplate> dataTemplates;
     private final ConcurrentHashMap<String, ConcurrentHashMap<String, Category>> categories;
     private final WallpaperTemplate wallpapertemplate;
+    private Item[] allItems;
 
     public DataAccessController(BundleContext context) {
         this.context = context;
@@ -89,8 +90,6 @@ public class DataAccessController implements Controller, Closeable {
     }
 
     private TemplateResult getCategories(DataSource source, DataTemplate template, Map<String, String> param) {
-
-
         return this.wallpapertemplate.transform(categories.get(source.getId()).values());
     }
 
@@ -136,15 +135,14 @@ public class DataAccessController implements Controller, Closeable {
                 items[i++] = source.getItem(itemId);
             }
 
-            result.setItems(items);
         } else {
-            items = source.getItems();
 
-            result.setCount(items.length);
-
-            items = Helper.applyPaging(items, param);
-            result.setItems(items);
+            result.setCount(allItems.length);
+            items = allItems;
         }
+
+        items = Helper.applyPaging(items, param);
+        result.setItems(items);
 
         return this.wallpapertemplate.transform(result);
     }
@@ -153,78 +151,59 @@ public class DataAccessController implements Controller, Closeable {
         if (!this.categories.containsKey(dataSource.getId())) {
             synchronized (this.categories) {
                 if (!this.categories.containsKey(dataSource.getId())) {
-                    ConcurrentHashMap<String, Category> categoryEntries = new ConcurrentHashMap<>();
 
-                    Item[] allItems = dataSource.getItems();
-                    ArrayList<Item> items = new ArrayList<Item>(Arrays.asList(allItems));
-
-                    Collections.shuffle(items);
-
-                    for (Item item : items) {
-                        String cats = item.getValue("content");
-                        HashMap map = new JSONDeserializer<HashMap>().deserialize(cats);
-
-                        if (map.containsKey("Categories") && map.containsKey("Src")) {
-                            ArrayList categories = (ArrayList) map.get("Categories");
-                            if (categories != null) {
-
-                                boolean first = true;
-                                for (Object cat : categories) {
-                                    String catString = ((String) cat).toLowerCase().trim();
-
-                                    if (!categoryEntries.containsKey(catString)) {
-                                        categoryEntries.put(catString, new Category(catString, "" + map.get("Src")));
-                                    }
-
-                                    categoryEntries.get(catString).addItem(item.getId());
-                                }
-                            }
-                        }
-                    }
-
-                    this.categories.put(dataSource.getId(), categoryEntries);
+                    this.categories.put(dataSource.getId(), createCategoriesMap(dataSource));
                 }
             }
         }
     }
 
+
     private TemplateResult updateCategories(DataSource dataSource, DataTemplate template, Map<String, String> param) throws BaseException {
+
         if (this.categories.containsKey(dataSource.getId())) {
             synchronized (this.categories) {
                 if (this.categories.containsKey(dataSource.getId())) {
-                    ConcurrentHashMap<String, Category> categoryEntries = categories.get(dataSource.getId());
-
-                    Item[] allItems = dataSource.getItems();
-                    ArrayList<Item> items = new ArrayList<Item>(Arrays.asList(allItems));
-
-                    Collections.shuffle(items);
-                    for (Item item : items) {
-                        String cats = item.getValue("content");
-                        HashMap map = new JSONDeserializer<HashMap>().deserialize(cats);
-                        if (map.containsKey("Categories") && map.containsKey("Src")) {
-                            ArrayList categories = (ArrayList) map.get("Categories");
-                            if (categories != null) {
-
-                                for (Object cat : categories) {
-                                    String catString = ((String) cat).toLowerCase().trim();
-
-                                    if (!categoryEntries.containsKey(catString)) {
-                                        categoryEntries.put(catString, new Category(catString, "" + map.get("Src")));
-                                    }
-
-                                    categoryEntries.get(catString).addItem(item.getId());
-                                }
-                            }
-                        }
-                    }
-
-
+                    this.categories.put(dataSource.getId(), createCategoriesMap(dataSource));
                     return template.transform(new Message("Update performed", "Categories successfull updated", Message.Status.INFO));
                 }
             }
         }
 
         return template.transform(new Message("Nope", "Nope", Message.Status.INFO));
+    }
+
+    private ConcurrentHashMap<String, Category> createCategoriesMap(DataSource dataSource) throws BaseException {
+        ConcurrentHashMap<String, Category> categoryEntries = new ConcurrentHashMap<>();
+
+        Item[] allItems = dataSource.getItems();
+        ArrayList<Item> items = new ArrayList<>(Arrays.asList(allItems));
+
+        Collections.sort(items, new ItemCompare());
+        //Collections.reverse(items);
+
+        for (Item item : items) {
+            String cats = item.getValue("categories");
+
+            if (cats != null && !cats.isEmpty()) {
+
+                String[] split = cats.split(",");
+
+                for (String cat : split) {
+                    String catString = cat.toLowerCase().trim();
+
+                    if (!categoryEntries.containsKey(catString)) {
+                        categoryEntries.put(catString, new Category(catString, "" + item.getValue("src")));
+                    }
+
+                    categoryEntries.get(catString).addItem(item.getId());
+                }
+            }
+        }
+
+        this.allItems = items.toArray(new Item[items.size()]);
+
+        return categoryEntries;
     }
 
     private DataSource getDataSource(DataAccess access, String sourceId) throws BaseException {

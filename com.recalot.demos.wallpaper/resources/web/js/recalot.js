@@ -127,7 +127,15 @@ var Recalot = {
 				
 				for(var i = start; i < end; i++){
 					if(items.length > i){
-						this.self.__fetchItem(items[i].itemId, "rated", this.container); 
+					
+						if(items[i].item != null){
+							this.container.append(this.self.renderItem(items[i].item, this.container));
+							this.self.__fetchRating(data.id);
+						} else {
+							this.self.__fetchItem(items[i].itemId, "rated", this.container); 
+						}
+					
+						//this.self.__fetchItem(items[i].itemId, "rated", this.container); 
 					}
 				}
 				
@@ -155,7 +163,12 @@ var Recalot = {
 		  success: function(data, status, jqXHR) {
 			if(data != null && data.items != null && data.items.length != null) {
 				for(var i = 0; i < data.items.length; i++) {
-					this.self.__fetchItem(data.items[i].itemId, data.recommender, this.container); 
+					if(data.items[i].item != null){
+						this.container.append(this.self.renderItem(data.items[i].item, this.container));
+						this.self.__fetchRating(data.id);
+					} else {
+						this.self.__fetchItem(data.items[i].itemId, data.recommender, this.container); 
+					}
 				}
 			}
 		  }
@@ -229,7 +242,7 @@ var Recalot = {
 	__getRandomToken: function(count) {
 		// E.g. 8 * 32 = 256 bits token
 		var randomPool = new Uint8Array(count);
-		crypto.getRandomValues(randomPool);
+		window.crypto.getRandomValues(randomPool);
 		var hex = '';
 		for (var i = 0; i < randomPool.length; ++i) {
 			hex += randomPool[i].toString(16);

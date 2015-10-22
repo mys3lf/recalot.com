@@ -81,10 +81,10 @@ public class WallpaperTests {
 
     @Test
     public void checkItemsAndFillWhenEmpty() {
-     //   String host = HOST;
-        String host = "http://api.recalot.com/";
+        String host = HOST;
+//        String host = "http://api.recalot.com/";
         String sourceId = SourceId;
-  //      String sourceId = "wallpaper";
+        //      String sourceId = "wallpaper";
         WebResponse response = WebRequest.execute(host + SourcesPath + sourceId);
         assertNotNull(response);
         assertEquals(response.getContentType(), JsonMimeType);
@@ -94,7 +94,7 @@ public class WallpaperTests {
         HashMap map = new JSONDeserializer<HashMap>().deserialize(response.getBody());
 
         Integer itemsCount = (Integer) map.get("itemsCount");
-        if (itemsCount > 0 ) {
+        if (itemsCount > 0) {
 
         } else {
 
@@ -116,10 +116,10 @@ public class WallpaperTests {
                 int i = 0;
 
                 HashMap<String, String> content = new HashMap<>();
-            //    content.put("type", "dummy");
+                //    content.put("type", "dummy");
 
-            //    response = WebRequest.execute(WebRequest.HTTPMethod.PUT, HOST + Path + SourcesPath + SourceId + PathSeparator + UsersPath, content);
-            //    HashMap savedUser = new JSONDeserializer<HashMap>().deserialize(response.getBody());
+                //    response = WebRequest.execute(WebRequest.HTTPMethod.PUT, HOST + Path + SourcesPath + SourceId + PathSeparator + UsersPath, content);
+                //    HashMap savedUser = new JSONDeserializer<HashMap>().deserialize(response.getBody());
                 String userId = "1";
 
                 WebRequest.Debug = false;
@@ -130,10 +130,10 @@ public class WallpaperTests {
                     content = new HashMap<>();
                     content.put("content", result);
 
-                    String itemId = "" + ((HashMap)item).get("Id");
+                    String itemId = "" + ((HashMap) item).get("Id");
 
                     Integer itemIdInt = Integer.parseInt(itemId);
-                    if(itemIdInt != null) {
+                    if (itemIdInt != null) {
                         //wallpaperwide ids should be 100.000.000 or higher
                         itemIdInt += 100000000;
                         itemId = "" + itemIdInt;
@@ -154,37 +154,109 @@ public class WallpaperTests {
                 int id = 1;
                 start = System.currentTimeMillis();
                 i = 0;
-                if(false)
-                for (Object item : items) {
-                    String itemId = "" + id++;
+                if (false)
+                    for (Object item : items) {
+                        String itemId = "" + id++;
 
-                    String rating = (String) ((HashMap) item).get("Rating");
-                    String ratingCount = (String) ((HashMap) item).get("RatingCount");
+                        String rating = (String) ((HashMap) item).get("Rating");
+                        String ratingCount = (String) ((HashMap) item).get("RatingCount");
 
-                    if (rating != null && !rating.isEmpty() && ratingCount != null && !ratingCount.isEmpty()) {
-                        Double r = Double.parseDouble(rating);
-                        Integer count = Integer.parseInt(ratingCount.replace("(", "").replace(" vote)", "").replace(" votes)", ""));
-                        for (int j = 0; j < count; j++) {
-                            Map<String, String> params = new Hashtable<>();
-                            params.put("type", "rating");
-                            params.put("value", "" + r);
+                        if (rating != null && !rating.isEmpty() && ratingCount != null && !ratingCount.isEmpty()) {
+                            Double r = Double.parseDouble(rating);
+                            Integer count = Integer.parseInt(ratingCount.replace("(", "").replace(" vote)", "").replace(" votes)", ""));
+                            for (int j = 0; j < count; j++) {
+                                Map<String, String> params = new Hashtable<>();
+                                params.put("type", "rating");
+                                params.put("value", "" + r);
 
-                            response = WebRequest.execute(WebRequest.HTTPMethod.POST, host + TrackingPath + SourcesPath + sourceId + PathSeparator + UsersPath + userId + PathSeparator + ItemsPath + itemId, params);
+                                response = WebRequest.execute(WebRequest.HTTPMethod.POST, host + TrackingPath + SourcesPath + sourceId + PathSeparator + UsersPath + userId + PathSeparator + ItemsPath + itemId, params);
 
-                            i++;
+                                i++;
 
-                            if (i % 1000 == 0) {
-                                Long whole = System.currentTimeMillis() - start;
-                                System.out.println("Interactions so far: " + whole + "ms. Avg. per interaction: " + (1.0 * whole / i) + "ms");
+                                if (i % 1000 == 0) {
+                                    Long whole = System.currentTimeMillis() - start;
+                                    System.out.println("Interactions so far: " + whole + "ms. Avg. per interaction: " + (1.0 * whole / i) + "ms");
+                                }
                             }
                         }
                     }
-                }
 
                 System.out.println("Interactions complete: " + (System.currentTimeMillis() - start) + "ms. Avg. per interaction: " + (1.0 * (System.currentTimeMillis() - start) / i) + "ms");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+    }
+
+    @Test
+    public void putInteractions() {
+       // String host = HOST;
+              String host = "http://api.recalot.com/";
+        String sourceId = SourceId;
+        //      String sourceId = "wallpaper";
+        WebResponse response = WebRequest.execute(host + SourcesPath + sourceId);
+        assertNotNull(response);
+        assertEquals(response.getContentType(), JsonMimeType);
+        assertNotNull(response.getBody());
+        assertEquals(response.getResponseCode(), 200);
+
+        HashMap map = new JSONDeserializer<HashMap>().deserialize(response.getBody());
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader("C:\\Privat\\3_Uni\\wallpaper-data-10082015.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+
+            ArrayList items = new JSONDeserializer<ArrayList>().deserialize(everything);
+            JSONSerializer serializer = new JSONSerializer().transform(new IterableTransformer(), "Iterable.class").exclude("class", "*.class", "__type", "Id");
+
+
+            HashMap<String, String> content;
+
+            WebRequest.Debug = false;
+
+            for (Object item : items) {
+                HashMap itemMap = (HashMap) item;
+
+                boolean userExists = false;
+                try {
+
+                    response = WebRequest.execute(WebRequest.HTTPMethod.GET, host + Path + SourcesPath + SourceId + PathSeparator + UsersPath + itemMap.get("userId"));
+                    if (response != null) {
+                        userExists = true;
+                    }
+                } catch (Exception e) {
+
+                }
+
+                if(!userExists) {
+                    content = new HashMap<>();
+                    content.put("user-id", "" + itemMap.get("userId"));
+                    response = WebRequest.execute(WebRequest.HTTPMethod.PUT, host + Path + SourcesPath + SourceId + PathSeparator + UsersPath, content);
+                }
+
+                content = new HashMap<>();
+                for(Object key: itemMap.keySet()) {
+                    String k = (String)key;
+                    if(!k.equals("content")){
+                        content.put(k, "" + itemMap.get(key));
+                    }
+                }
+
+
+                response = WebRequest.execute(WebRequest.HTTPMethod.POST, host + TrackingPath + SourcesPath + SourceId + PathSeparator + UsersPath + itemMap.get("userId") + PathSeparator + ItemsPath + itemMap.get("itemId"), content);
+            }
+
+     } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

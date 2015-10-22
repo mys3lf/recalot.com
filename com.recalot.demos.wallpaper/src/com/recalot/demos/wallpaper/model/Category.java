@@ -15,12 +15,19 @@ public class Category {
         this.preview = preview;
         count = 0;
         this.name = name;
-        this.items = new ArrayList<String>();
+        this.items = new ArrayList<>();
     }
 
     public void addItem(String itemId) {
         if (!items.contains(itemId)) {
             items.add(itemId);
+            count = items.size();
+        }
+    }
+
+    public void addItem(int index, String itemId) {
+        if (!items.contains(itemId)) {
+            items.add(index, itemId);
             count = items.size();
         }
     }

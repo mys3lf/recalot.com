@@ -267,15 +267,15 @@ function renderCategory(data){
 };
 
 function renderWallpaper(data){
-	if(data != null && data.content != null && data.content.content != null) {
-		var item = JSON.parse(data.content.content);
+	if(data != null && data.content != null && data.content != null) {
 		var div = $("<div class='wallpaper-small'></div>");
-		div.append("<h4>" + (item.Title || "[[no-title]]") +  "</h4>");
+		div.append("<h4>" + (data.content.title || "[[no-title]]") +  "</h4>");
 		div.append("<a href='#' class='dismiss' title='Not relevant for me!'>x</a>");
 		var img = $("<img />");
-		img.attr("src", item.Src);
-		img.attr("title", item.Title);
-		img.attr("alt", item.Title);
+
+		img.attr("src", data.content.src);
+		img.attr("title", data.content.title);
+		img.attr("alt", data.content.title);
 		
 		div.append(img);
 		var details = "<div class='details' id='recalot-" + data.id + "'>" +
@@ -284,16 +284,16 @@ function renderWallpaper(data){
 				"</div>" +
 				"<div class='stars'>" +
 					"<form action=''>" + 
-					  "<input class='star star-5' data-star='5' id='star-5" + item.Id + "' type='radio' name='star'>" +
-					  "<label class='star star-5' data-star='5' for='star-5" + item.Id + "'></label>" +
-					  "<input class='star star-4' data-star='4' id='star-4" + item.Id + "' type='radio' name='star'>" +
-					  "<label class='star star-4' data-star='4' for='star-4" + item.Id + "'></label>" +
-					  "<input class='star star-3' data-star='3' id='star-3" + item.Id + "' type='radio' name='star'>" +
-					  "<label class='star star-3' data-star='3' for='star-3" + item.Id + "'></label>"+
-					  "<input class='star star-2' data-star='2' id='star-2" + item.Id + "' type='radio' name='star'>" +
-					  "<label class='star star-2' data-star='2' for='star-2" + item.Id + "'></label>" +
-					  "<input class='star star-1' data-star='1' id='star-1" + item.Id + "' type='radio' name='star'>" +
-					  "<label class='star star-1' data-star='1' for='star-1" + item.Id + "'></label>" +
+					  "<input class='star star-5' data-star='5' id='star-5" + data.Id + "' type='radio' name='star'>" +
+					  "<label class='star star-5' data-star='5' for='star-5" + data.Id + "'></label>" +
+					  "<input class='star star-4' data-star='4' id='star-4" + data.Id + "' type='radio' name='star'>" +
+					  "<label class='star star-4' data-star='4' for='star-4" + data.Id + "'></label>" +
+					  "<input class='star star-3' data-star='3' id='star-3" + data.Id + "' type='radio' name='star'>" +
+					  "<label class='star star-3' data-star='3' for='star-3" + data.Id + "'></label>"+
+					  "<input class='star star-2' data-star='2' id='star-2" + data.Id + "' type='radio' name='star'>" +
+					  "<label class='star star-2' data-star='2' for='star-2" + data.Id + "'></label>" +
+					  "<input class='star star-1' data-star='1' id='star-1" + data.Id + "' type='radio' name='star'>" +
+					  "<label class='star star-1' data-star='1' for='star-1" + data.Id + "'></label>" +
 					"</form>"+
 				"</div>"+
 				"<div>"+
@@ -305,7 +305,7 @@ function renderWallpaper(data){
 		
 		var download = $details.find(".download");
 
-		download.attr("href", item.Url); 
+		download.attr("href", data.content.url); 
 		download.click(data, downloadClick);
 		$details.find(".star").click(starClick);
 		div.append($details);
@@ -315,10 +315,11 @@ function renderWallpaper(data){
 		
 		var cats = $details.children("div").children("ul.tags");
 		
-		if(item.Categories != null) {
-			for(var i = 0; i < item.Categories.length; i++) {
-				var li = $("<li><a >" +  item.Categories[i] + "</a></li>");
-				li.children("a").attr("href", "cats.html?cat=" + encodeURIComponent(item.Categories[i].toLowerCase()));
+		if(data.content.categories != null) {
+			var catsSplit = data.content.categories.split(",");
+			for(var i = 0; i < catsSplit.length; i++) {
+				var li = $("<li><a >" +  catsSplit[i] + "</a></li>");
+				li.children("a").attr("href", "cats.html?cat=" + encodeURIComponent(catsSplit[i].toLowerCase()));
 				cats.append(li);
 			}
 		}
@@ -340,70 +341,8 @@ $(window).load(function(){
 
 	var $body = $("body");
 	var type = $body.attr("data-recalot-type");
-	/*
-	if(type == "experiment"){
-		Recalot.renderItem = function(data){
-			if(data != null && data.content != null && data.content.content != null) {
-				var item = JSON.parse(data.content.content);
-				
-				var div = $("<div class='wallpaper' id='recalot-" + data.id + "'></div>");
-				
-				if($(".wallpaper.shown").length > 0){
-					div.addClass("hidden");
-				} else {
-					div.addClass("shown");
-				}
-				
-				div.append("<h2>" + (item.Title || "[[no-title]]") +  "</h2>");
-				var img = $("<img />");
-				img.attr("src", item.Src);
-				img.attr("title", item.Title);
-				img.attr("alt", item.Title);
-				
-				div.append(img);
-				var details = "<div class='details' >" +
-						"<div>Categories:" +
-						"<ul class='tags'></ul>" + 
-						"</div>" +
-						"<div class='stars'>Rate it:" +
-							"<form action=''>" + 
-							  "<input class='star star-5' data-star='5' id='star-5" + item.Id + "' type='radio' name='star'>" +
-							  "<label class='star star-5' data-star='5' for='star-5" + item.Id + "'></label>" +
-							  "<input class='star star-4' data-star='4' id='star-4" + item.Id + "' type='radio' name='star'>" +
-							  "<label class='star star-4' data-star='4' for='star-4" + item.Id + "'></label>" +
-							  "<input class='star star-3' data-star='3' id='star-3" + item.Id + "' type='radio' name='star'>" +
-							  "<label class='star star-3' data-star='3' for='star-3" + item.Id + "'></label>" +
-							  "<input class='star star-2' data-star='2' id='star-2" + item.Id + "' type='radio' name='star'>" +
-							  "<label class='star star-2' data-star='2' for='star-2" + item.Id + "'></label>" +
-							  "<input class='star star-1' data-star='1' id='star-1" + item.Id + "' type='radio' name='star'>" +
-							  "<label class='star star-1' data-star='1' for='star-1" + item.Id + "'></label>" +
-							"</form>" +
-						"</div>"+
-					"</div>";
-				
-				var $details = $(details);
-				
-				$details.click(starExperimentClick);
-				div.append($details);
-				
-				var cats = $details.children("div").children("ul.tags");
-				
-				if(item.Categories != null) {
-					for(var i = 0; i < item.Categories.length; i++) {
-						var li = $("<li><a >" +  item.Categories[i] + "</a></li>");
-						li.children("a").attr("href", "cats.html?cat=" + encodeURIComponent(item.Categories[i].toLowerCase()));
-						cats.append(li);
-					}
-				}
-			
-				window.setTimeout(adjustExperiment, 100);
-				return div;
-			}
-		};
-		
-	} else {
-	*/
-		Recalot.renderItem = renderWallpaper;
+	
+	Recalot.renderItem = renderWallpaper;
 	
 	
 	Recalot.renderItemRating = function(rating){
