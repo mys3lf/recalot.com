@@ -64,7 +64,7 @@ public class MostPopularRecommender extends Recommender {
 
         for(Item item : getDataSet().getItems()) {
             if(!recommendedItems.stream().anyMatch(i -> i.getItemId().equals(item.getId()))){
-                remainingItems.add(new RecommendedItem(item.getId(), 0.0));
+                remainingItems.add(new RecommendedItem(item, 0.0));
             }
         }
 

@@ -120,7 +120,11 @@ public class SurveyRecommender extends Recommender {
         List<RecommendedItem> items = new ArrayList<>();
 
         for (String key : result) {
-            items.add(new RecommendedItem(key, 0.0));
+            try {
+                items.add(new RecommendedItem(getDataSet().getItem(key), 0.0));
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
         }
 
         int max = items.size();
@@ -134,7 +138,6 @@ public class SurveyRecommender extends Recommender {
 
             items.remove(next);
         }
-
 
         return new RecommendationResult(getId(), items);
     }

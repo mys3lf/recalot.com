@@ -6,7 +6,7 @@ Bundle-Description: Controller which delegates the computation of reco
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.recommendations
 Bundle-Name: Recalot.com Controller - Recommendations
-Bundle-Version: 1.0.0.725
+Bundle-Version: 1.0.0.727
 Bundle-Activator: com.recalot.controller.recommendations.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
@@ -17,5 +17,5 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  recalot.common.interfaces.model.rec,com.recalot.common.interfaces.mod
  el.experiment,com.recalot.common.interfaces.controller,com.recalot.co
  mmon.interfaces.template,com.recalot.common,com.recalot.common.builde
- r
+ r,com.recalot.common.context
 

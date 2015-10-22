@@ -3,9 +3,13 @@ package com.recalot.controller.recommendations;
 
 import com.recalot.common.Helper;
 import com.recalot.common.builder.RecommenderBuilder;
+import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Message;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.context.Context;
+import com.recalot.common.context.ContextProvider;
+import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.common.exceptions.NotReadyException;
@@ -21,6 +25,7 @@ import org.osgi.framework.BundleContext;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +39,7 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
     private final GenericServiceListener recommenderAccess;
     private final GenericServiceListener templates;
     private final GenericServiceListener dataAccess;
+    private final ContextProvider contextProvider;
 
 
     public RecommenderController(BundleContext context) {
@@ -41,10 +47,12 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
         this.recommenderAccess = new GenericServiceListener<RecommenderAccess>(context, RecommenderAccess.class.getName());
         this.dataAccess = new GenericServiceListener<DataAccess>(context, DataAccess.class.getName());
         this.templates = new GenericServiceListener<RecommenderTemplate>(context, RecommenderTemplate.class.getName());
+        this.contextProvider = new ContextProvider(context);
 
         this.context.addServiceListener(recommenderAccess);
         this.context.addServiceListener(dataAccess);
         this.context.addServiceListener(templates);
+        this.context.addServiceListener(this.contextProvider);
     }
 
     @Override
@@ -169,10 +177,22 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
         Recommender recommender = access.getRecommender(param.get(Helper.Keys.RecommenderId));
         if(recommender == null) throw new NotFoundException("A recommender with the id %s can not be found.",param.get(Helper.Keys.RecommenderId));
+        DataAccess dAccess = (DataAccess) dataAccess.getFirstInstance();
+        DataSource source = dAccess.getDataSource(recommender.getDataSourceId());
 
+        String userId = param.get(Helper.Keys.UserId);
 
+        if(userId != null && !userId.isEmpty()) {
 
-        return template.transform(recommender.recommend((param.get(Helper.Keys.UserId)), param));
+            for(Context c : contextProvider.getAll()) {
+                if(c instanceof UserContext) {
+                    ((UserContext)c).processContext(source.getSourceId(), userId, source, "data-source");
+                    ((UserContext)c).processContext(source.getSourceId(), userId, param, "params");
+                }
+            }
+        }
+
+        return template.transform(recommender.recommend(userId, contextProvider, param));
     }
 
     private TemplateResult createRecommender(RecommenderTemplate template, Map<String, String> param) throws BaseException {
@@ -181,7 +201,7 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
         DataSource source = getDataSource(dAccess, param.get(Helper.Keys.SourceId));
         if(source.getState() != DataInformation.DataState.READY) throw new NotReadyException("The data source %s is not ready so far. The current state is %s.", source.getId(), source.getState().toString());
-        Recommender recommender = access.createRecommender(source.getDataSet(), param);
+        Recommender recommender = access.createRecommender(source, param);
         return template.transform(recommender);
     }
 
@@ -191,7 +211,7 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
         DataSource source = getDataSource(dAccess, param.get(Helper.Keys.SourceId));
         if(source.getState() != DataInformation.DataState.READY) throw new NotReadyException("The data source %s is not ready so far. The current state is %s.", source.getId(), source.getState().toString());
-        Recommender recommender = access.updateRecommender(param.get(Helper.Keys.RecommenderId), source.getDataSet(), param);
+        Recommender recommender = access.updateRecommender(param.get(Helper.Keys.RecommenderId), source, param);
         return template.transform(recommender.recommend(param.get(Helper.Keys.UserId)));
     }
 
@@ -212,6 +232,10 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
         if (templates != null) {
             this.context.removeServiceListener(templates);
+        }
+
+        if (contextProvider != null) {
+            this.context.removeServiceListener(contextProvider);
         }
     }
 }

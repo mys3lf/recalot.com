@@ -1,4 +1,4 @@
-package com.recalot.model.rec.recommender;
+package com.recalot.model.rec;
 
 
 import com.recalot.common.builder.Initiator;
@@ -6,6 +6,8 @@ import com.recalot.common.builder.RecommenderBuilder;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.Context;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.model.rec.context.LastVisitedContext;
+import com.recalot.model.rec.context.ParamsContext;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,7 +23,6 @@ import java.util.List;
  */
 public class Activator implements BundleActivator, Initiator {
 
-
     private List<RecommenderBuilder> recommenders;
     private List<Context> contexts;
 
@@ -36,11 +37,17 @@ public class Activator implements BundleActivator, Initiator {
 
         registerRecommenders(context);
         registerContext(context);
-
     }
 
     private void registerContext(BundleContext context) {
+        contexts = new ArrayList<>();
 
+        contexts.add(new LastVisitedContext());
+        contexts.add(new ParamsContext());
+
+        for (Context c : contexts) {
+            context.registerService(Context.class.getName(), c, null);
+        }
     }
 
     private void registerRecommenders(BundleContext context) {

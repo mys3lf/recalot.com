@@ -3,6 +3,8 @@ package com.recalot.common.impl.experiment;
 import com.recalot.common.Helper;
 import com.recalot.common.Parallel;
 import com.recalot.common.communication.*;
+import com.recalot.common.context.Context;
+import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -64,7 +66,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         setPercentage(0);
         setInfo("Split data source");
 
-//TODO add total time of experiment
+        //TODO add total time of experiment
         try {
 
             DataSet[] sets = splitter.split(dataSource);
@@ -115,7 +117,6 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
             try {
                 User[] users = test.getUsers();
-                DataSet t = test;
                 //iterate over all users
                 // make it parallel
                 Parallel.For(Arrays.asList(users),
@@ -135,10 +136,20 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
                                 if (m instanceof RatingMetric) {
                                     //if the metric is a rating metric, run through all consumed items in the test set and predict the rating
+
+                                    ArrayList<String> previous = new ArrayList();
                                     for (Interaction interaction : userInteractions) {
+                                        previous.add(interaction.getItemId());
 
                                         Integer value = Integer.parseInt(interaction.getValue());
                                         Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
+
+                                        for (Context c : context.getAll()) {
+                                            if (c instanceof UserContext) {
+                                                ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
+                                            }
+                                        }
+
                                         if (!predict.isNaN()) {
                                             ((RatingMetric) m).addRating(value, predict);
                                         }
@@ -154,12 +165,17 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                             ArrayList<String> previous = new ArrayList();
                                             ArrayList<String> subsequent = new ArrayList();
 
-
                                             for (int j = 0; j < userInteractions.length; j++) {
                                                 if (i < j) {
                                                     previous.add(userInteractions[j].getItemId());
                                                 } else {
                                                     subsequent.add(userInteractions[j].getItemId());
+                                                }
+                                            }
+
+                                            for (Context c : context.getAll()) {
+                                                if (c instanceof UserContext) {
+                                                    ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
                                                 }
                                             }
 
@@ -214,7 +230,6 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     }
 
     private void trainRecommenders(DataSet train) {
-
         Parallel.For(Arrays.asList(recommenders), r -> {
             try {
                 r.setDataSet(train);

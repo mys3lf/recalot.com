@@ -4,7 +4,7 @@ Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.controller.common
 Export-Package: com.recalot.controller.common;version="1.0.0"
 Bundle-Name: Recalot.com Controller - Data Common
-Bundle-Version: 1.0.0.725
+Bundle-Version: 1.0.0.727
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc

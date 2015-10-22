@@ -10,6 +10,7 @@ import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.MissingArgumentException;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.common.communication.Message;
+import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.model.rec.RecommenderInformation;
 import org.osgi.framework.BundleContext;
@@ -82,7 +83,7 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
     }
 
     @Override
-    public Recommender createRecommender(DataSet dataSet, Map<String, String> param) throws BaseException {
+    public Recommender createRecommender(DataSource dataSource, Map<String, String> param) throws BaseException {
         String id = param.get(Helper.Keys.RecommenderBuilderId);
         String wishedId = param.get(Helper.Keys.ID);
 
@@ -104,7 +105,8 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
             public void run() {
                 try {
                     instance.setState(RecommenderInformation.RecommenderState.TRAINING);
-                    instance.setDataSet(dataSet);
+                    instance.setDataSourceId(dataSource.getSourceId());
+                    instance.setDataSet(dataSource.getDataSet());
                     instance.train();
                     instance.setState(RecommenderInformation.RecommenderState.READY);
 
@@ -123,7 +125,7 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
     }
 
     @Override
-    public Recommender updateRecommender(String id, DataSet dataSet, Map<String, String> param) throws BaseException {
+    public Recommender updateRecommender(String id, DataSource dataSource, Map<String, String> param) throws BaseException {
 
         Recommender instance = recommender.get(id);
 
@@ -139,7 +141,8 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
         Thread thread = new Thread() {
             public void run() {
                 try {
-                    newInstance.setDataSet(dataSet);
+                    newInstance.setDataSourceId(dataSource.getSourceId());
+                    newInstance.setDataSet(dataSource.getDataSet());
                     newInstance.train();
                     newInstance.setState(RecommenderInformation.RecommenderState.READY);
                     recommender.put(id, newInstance);
