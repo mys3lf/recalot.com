@@ -5,7 +5,7 @@ Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.views.common
 Export-Package: com.recalot.views.common;version="1.0.0"
 Bundle-Name: Recalot.com Views - Common
-Bundle-Version: 1.0.0.728
+Bundle-Version: 0.1.0.731
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc

@@ -15,6 +15,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  views.common
 Export-Package: com.recalot.views.experiments;version="1.0.0"
 Bundle-Name: Recalot.com Views - Experiments
-Bundle-Version: 1.0.0.728
+Bundle-Version: 0.1.0.731
 Bundle-Activator: com.recalot.views.experiments.Activator
 

@@ -5,7 +5,7 @@ Bundle-Description:  Contains several recommendation algorithms
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.rec.recommender
 Bundle-Name: Recalot.com Model - Recommender
-Bundle-Version: 1.0.0.730
+Bundle-Version: 0.1.0.733
 Bundle-Activator: com.recalot.model.rec.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
