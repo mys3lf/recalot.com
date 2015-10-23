@@ -94,11 +94,10 @@ public class DataAccessController implements Controller, Closeable {
     }
 
     private TemplateResult getData(DataSource source, DataTemplate template, Map<String, String> param) throws BaseException {
-        Item[] items = new Item[0];
+        Item[] items;
         String cat = param.get("cat");
 
         Paging result = new Paging<Item>();
-
         int page = 1;
         int pageSize = Helper.Keys.PageSize;
 
@@ -106,7 +105,6 @@ public class DataAccessController implements Controller, Closeable {
         if (Helper.isIntegerRegex(pageString)) {
             page = Integer.parseInt(pageString);
         }
-
 
         if (param.containsKey(Helper.Keys.PageSizeKey)) {
             String pageSizeString = param.get(Helper.Keys.PageSizeKey);
@@ -136,7 +134,6 @@ public class DataAccessController implements Controller, Closeable {
             }
 
         } else {
-
             result.setCount(allItems.length);
             items = allItems;
         }

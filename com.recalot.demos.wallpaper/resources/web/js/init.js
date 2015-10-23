@@ -99,7 +99,7 @@ function fillEntries(){
 		var dataType = entry.attr("data-type");
 		
 		if(controller != null && entryUrl != null){
-		
+			
 			if(localStorage.getItem(dataType) != null){
 				var data = JSON.parse(localStorage.getItem(dataType));
 								
@@ -109,8 +109,7 @@ function fillEntries(){
 						li.appendTo(entry);
 					}
 				}
-				
-				
+
 				$.ajax({
 					method: "GET",
 					url: ApiHost + "/sample/wallpaper/" + controller,
@@ -328,6 +327,30 @@ function renderWallpaper(data){
 	}
 };
 
+function initializeNewlyAdded(){
+	var container = $(".wallpaper-newlyadded");
+	if(container.length > 0){
+		$.ajax({
+		  method: "GET",
+		  url: ApiHost + "/sample/wallpaper-controller/items",
+		  cache: false,
+		  context: {self: Recalot, container: container},
+		  success: function(data, status, jqXHR) {
+			if(data != null && data.items != null && data.items.length != null) {
+				for(var i = 0; i < data.items.length; i++) {
+					if(data.items[i] != null){
+						this.container.append(this.self.renderItem(data.items[i], this.container));
+						this.self.__fetchRating(data.items[i].id);
+					} 
+				}
+			}
+		  }
+		}).fail(function( jqXHR, textStatus ) {
+			console.error( "Request failed: " + textStatus );
+		});
+	}
+}
+
 $(window).load(function(){
 	fillEntries();	
 	
@@ -360,6 +383,9 @@ $(window).load(function(){
 	}	
 	
 	Recalot.fetch();
+	
+	initializeNewlyAdded();
+	
 });
 
 

@@ -63,7 +63,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     @Override
     public void run() {
         setState(ExperimentState.RUNNING);
-        setPercentage(0);
+
+        resetPercentage();
         setInfo("Split data source");
 
         //TODO add total time of experiment
@@ -77,7 +78,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 setInfo("Started training recommenders with first split");
 
                 trainRecommenders(sets[0]);
-                setPercentage(50);
+                addPercentage(50);
                 setInfo("Started testing of the recommenders with second split");
                 performTest(recommenders, sets[1], 1.0 * 50 / recommenders.length);
 
@@ -96,7 +97,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
                     trainRecommenders(trainDataSet);
 
-                    setPercentage(getPercentage() + (recommenders.length * percentageSteps));
+                    addPercentage(recommenders.length * percentageSteps);
 
                     performTest(recommenders, sets[i], percentageSteps);
                 }
@@ -119,6 +120,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 User[] users = test.getUsers();
                 //iterate over all users
                 // make it parallel
+
+                double percentagePerUser = percentage / users.length;
                 Parallel.For(Arrays.asList(users),
                         u -> {
 
@@ -207,8 +210,9 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                     }
                                 }
                             }
+
+                            addPercentage(percentagePerUser);
                         });
-                setPercentage(getPercentage() + percentage);
             } catch (BaseException e) {
                 e.printStackTrace();
 

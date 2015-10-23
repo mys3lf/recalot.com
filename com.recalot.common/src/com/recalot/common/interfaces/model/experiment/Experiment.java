@@ -33,8 +33,13 @@ public abstract class Experiment extends Loggable {
         return percentage;
     }
 
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
+    public synchronized void addPercentage(double percentage) {
+        this.percentage += percentage;
+        if(this.percentage > 100) this.percentage = 100;
+    }
+
+    public synchronized void resetPercentage() {
+        this.percentage = 0;
     }
 
     public HashMap<String, Map<String, Double>> getResults() {
