@@ -15,11 +15,11 @@ import java.util.*;
  * @author Matthaeus.schmedding
  */
 public abstract class Recommender extends Configurable implements RecommenderInformation {
-    private String dataSourceId;
-    private String recommenderId;
-    private RecommenderState state;
-    private String key;
-    private DataSet dataSet;
+   protected String dataSourceId;
+   protected String recommenderId;
+   protected RecommenderState state;
+   protected String key;
+   protected DataSet dataSet;
 
     @Override
     public RecommenderState getState() {
@@ -57,38 +57,39 @@ public abstract class Recommender extends Configurable implements RecommenderInf
     public void setDataSet(DataSet dataSet){
         this.dataSet = dataSet;
     }
+
     public DataSet getDataSet(){
         return this.dataSet;
     }
 
     public abstract void train() throws BaseException;
 
-    public RecommendationResult recommend(String userId) {
+    public RecommendationResult recommend(String userId) throws BaseException {
         return recommend(userId, new HashMap<>());
     }
 
-    public RecommendationResult recommend(String userId, Map<String, String> param){
+    public RecommendationResult recommend(String userId, Map<String, String> param) throws BaseException{
         return recommend(userId, null, param);
     }
 
-    public RecommendationResult recommend(String userId, ContextProvider context){
+    public RecommendationResult recommend(String userId, ContextProvider context) throws BaseException{
         return recommend(userId, context, new HashMap<>());
     }
-    public abstract RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param);
+    public abstract RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException;
 
-    public Double predict(String userId, String itemId){
+    public Double predict(String userId, String itemId) throws BaseException{
         return predict(userId, itemId, new HashMap<>());
     }
 
-    public Double predict(String userId, String itemId, Map<String, String> param){
+    public Double predict(String userId, String itemId, Map<String, String> param) throws BaseException{
         return predict(userId, itemId, null, param);
     }
 
-    public Double predict(String userId, String itemId, ContextProvider context){
+    public Double predict(String userId, String itemId, ContextProvider context) throws BaseException{
         return predict(userId, itemId, context, new HashMap<>());
     }
 
-    public abstract Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param);
+    public abstract Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) throws BaseException;
 
 
     /**
@@ -97,9 +98,10 @@ public abstract class Recommender extends Configurable implements RecommenderInf
      * rating predictions or when a better heuristic is needed, which for
      * example takes the popularity of the recommendations into account.
      * @param userId the user for which a recommendation is sought
+     * @param omitVisited should visited items be omited
      * @return the ranked list of items
      */
-    public List<String> recommendItemsByRatingPrediction(String userId) throws BaseException {
+    public List<String> recommendItemsByRatingPrediction(String userId, boolean omitVisited) throws BaseException {
         List<String> result = new ArrayList<String>();
 
         // If there are no ratings for the user in the test set,
@@ -114,9 +116,11 @@ public abstract class Recommender extends Configurable implements RecommenderInf
 
         //put visited item into a map. It is faster this way
         Map<String, Boolean> visited = new HashMap<>();
-        for(Interaction interaction: interactionList) {
-            if(!visited.containsKey(interaction.getItemId())) {
-                visited.put(interaction.getItemId(), true);
+        if(omitVisited) {
+            for (Interaction interaction : interactionList) {
+                if (!visited.containsKey(interaction.getItemId())) {
+                    visited.put(interaction.getItemId(), true);
+                }
             }
         }
 

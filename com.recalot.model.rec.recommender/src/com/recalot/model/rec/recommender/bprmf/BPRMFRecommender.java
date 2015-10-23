@@ -98,7 +98,7 @@ public class BPRMFRecommender extends Recommender  {
 	 * Training of the given data
 	 * 
 	 */
-	public void train() {
+	public void train() throws BaseException{
         // Initialization of datamanagement-object
         try {
             // ascertain number of users and items
@@ -119,10 +119,10 @@ public class BPRMFRecommender extends Recommender  {
 	}
 
     @Override
-    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
+    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException {
         List<RecommendedItem> items = new ArrayList<>();
         try {
-            List<String> rec = recommendItemsByRatingPrediction(userId);
+            List<String> rec = recommendItemsByRatingPrediction(userId, true);
 
             for(String key: rec){
                 items.add(new RecommendedItem(key, 0.0));
@@ -138,8 +138,8 @@ public class BPRMFRecommender extends Recommender  {
     }
 
     @Override
-    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
-        return predictRatingBPR(userId, itemId);
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) throws BaseException {
+        return predictRatingBPR(userId.toLowerCase(), itemId.toLowerCase());
     }
 
     // =====================================================================================

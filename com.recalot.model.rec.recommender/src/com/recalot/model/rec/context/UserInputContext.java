@@ -1,23 +1,19 @@
 package com.recalot.model.rec.context;
 
 import com.recalot.common.Helper;
-import com.recalot.common.communication.Interaction;
+import com.recalot.common.communication.Item;
 import com.recalot.common.context.UserContext;
-import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.interfaces.model.data.DataSource;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class ParamsContext implements UserContext {
+public class UserInputContext implements UserContext {
 
-    private Map<String, Map<String, Object>> userContext = new HashMap<>();
+    private Map<String, Map<String, String>> userContext = new HashMap<>();
 
     @Override
     public Object getContext(String sourceId, String userId) {
@@ -38,7 +34,15 @@ public class ParamsContext implements UserContext {
 
             if (type.equals(Helper.Keys.Context.Params) && context instanceof HashMap) {
                 HashMap params = (HashMap) context;
-                userContext.get(sourceId).put(userId, params);
+                Object input = params.get("input");
+                if(input != null && input instanceof String){
+                    userContext.get(sourceId).put(userId, (String)input);
+                }
+            } else if(type.equals(Helper.Keys.Context.Item) && context instanceof Item) {
+                Item item = (Item)context;
+
+                //just take the first letter
+                userContext.get(sourceId).put(userId, item.getId().substring(0, 1));
             }
         }
     }
@@ -46,12 +50,12 @@ public class ParamsContext implements UserContext {
 
     @Override
     public String getKey() {
-        return "user-params";
+        return "user-input";
     }
 
     @Override
     public String getDescription() {
-        return "Returns the last visited items.";
+        return "Returns the current input of a user.";
     }
 
     @Override

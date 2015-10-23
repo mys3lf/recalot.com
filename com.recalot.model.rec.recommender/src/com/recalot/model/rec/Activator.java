@@ -8,6 +8,7 @@ import com.recalot.common.context.Context;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.rec.context.LastVisitedContext;
 import com.recalot.model.rec.context.ParamsContext;
+import com.recalot.model.rec.context.UserInputContext;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -44,6 +45,7 @@ public class Activator implements BundleActivator, Initiator {
 
         contexts.add(new LastVisitedContext());
         contexts.add(new ParamsContext());
+        contexts.add(new UserInputContext());
 
         for (Context c : contexts) {
             context.registerService(Context.class.getName(), c, null);
@@ -105,15 +107,28 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName(), "bprmf", "");
-            builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("learnRate", ConfigurationItem.ConfigurationItemType.Double, "0.05", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("regU", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("regI", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("regJ", ConfigurationItem.ConfigurationItemType.Double, "0.00025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("updateJ", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+            AddBPRConfiguration(builder);
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareBPRRecommender.class.getName(), "reddit-context-bprmf", "");
+
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            List<String> options = new ArrayList<>();
+
+            options.add("letter");
+            options.add("last");
+            options.add("both");
+
+            config.setOptions(options);
+            builder.setConfiguration(config);
+
+            AddBPRConfiguration(builder);
 
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -148,6 +163,18 @@ public class Activator implements BundleActivator, Initiator {
         for (RecommenderBuilder c : recommenders) {
             context.registerService(RecommenderBuilder.class.getName(), c, null);
         }
+    }
+
+    private void AddBPRConfiguration(RecommenderBuilder builder) {
+        builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("learnRate", ConfigurationItem.ConfigurationItemType.Double, "0.05", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("regU", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("regI", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("regJ", ConfigurationItem.ConfigurationItemType.Double, "0.00025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("updateJ", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
     }
 
     /**

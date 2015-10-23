@@ -18,13 +18,13 @@ import java.util.Random;
  */
 public class DataManagement  {
     // HashMaps to convert from mapped ids to real ones
-	protected HashMap<Integer, String> userMap;
-	protected HashMap<Integer, String> itemMap;
+    public HashMap<Integer, String> userMap;
+    public HashMap<Integer, String> itemMap;
 
 
     // HashMaps to convert from real ids to mapped ones
-	protected HashMap<String, Integer> userIndices;
-	protected HashMap<String, Integer> itemIndices;
+    public HashMap<String, Integer> userIndices;
+	public HashMap<String, Integer> itemIndices;
 
 	// Itembias Array
 	public double[] item_bias;

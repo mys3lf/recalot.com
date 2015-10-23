@@ -1,5 +1,6 @@
 package com.recalot.model.rec.context;
 
+import com.recalot.common.Helper;
 import com.recalot.common.communication.Interaction;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
@@ -57,10 +58,10 @@ public class LastVisitedContext implements UserContext {
                 userContext.put(sourceId, new HashMap<>());
             }
 
-            if (type.equals("last-consumed") && context instanceof ArrayList) {
+            if (type.equals(Helper.Keys.Context.LastConsumed) && context instanceof ArrayList) {
                 ArrayList lastVisited = (ArrayList) context;
                 userContext.get(sourceId).put(userId, lastVisited);
-            } else if (type.equals("data-source") && context instanceof DataSource) {
+            } else if (type.equals(Helper.Keys.Context.DataSet) && context instanceof DataSource) {
                 dataSources.put(sourceId, (DataSource) context);
             }
         }

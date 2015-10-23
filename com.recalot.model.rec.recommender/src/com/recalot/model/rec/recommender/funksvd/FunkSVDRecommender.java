@@ -106,7 +106,7 @@ public class FunkSVDRecommender extends Recommender {
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         List<RecommendedItem> items =  new ArrayList<>();
         try {
-            List<String> rec = recommendItemsByRatingPrediction(userId);
+            List<String> rec = recommendItemsByRatingPrediction(userId, true);
 
             for(String key: rec){
                 items.add(new RecommendedItem(key, 0.0));

@@ -293,5 +293,12 @@ public class Helper {
         public static final String SplitType = "split-type".intern();
 
         public static final Integer PageSize = 10;
+
+        public static class Context {
+            public static final String LastConsumed = "last-consumed".intern();
+            public static final String Params = "params".intern();
+            public static final String DataSet = "dataSet".intern();
+            public static final String Item = "item".intern();
+        }
     }
 }

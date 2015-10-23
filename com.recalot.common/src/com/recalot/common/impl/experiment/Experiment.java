@@ -125,11 +125,16 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 Parallel.For(Arrays.asList(users),
                         u -> {
 
-                            Interaction[] userInteractions = new Interaction[0];
+                            ArrayList<Interaction> userInteractions = new ArrayList<>();
 
                             //get the interactions of the user in the test set
                             try {
-                                userInteractions = test.getInteractions(u.getId());
+                                Interaction[] interactions = test.getInteractions(u.getId());
+
+                                userInteractions = new ArrayList<>(Arrays.asList(interactions));
+
+                                Collections.sort(userInteractions, (a2, a1) -> a2.getTimeStamp().compareTo(a1.getTimeStamp()));
+
                             } catch (BaseException e) {
 
                             }
@@ -142,20 +147,33 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
                                     ArrayList<String> previous = new ArrayList();
                                     for (Interaction interaction : userInteractions) {
-                                        previous.add(interaction.getItemId());
 
                                         Integer value = Integer.parseInt(interaction.getValue());
-                                        Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
 
-                                        for (Context c : context.getAll()) {
-                                            if (c instanceof UserContext) {
-                                                ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
+                                        try {
+
+                                            for (Context c : context.getAll()) {
+                                                if (c instanceof UserContext) {
+                                                    ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
+
+                                                    if (previous.size() > 0) {
+                                                        ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), test.getItem(previous.get(0)), Helper.Keys.Context.Item);
+                                                    }
+                                                }
                                             }
+
+                                            Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
+
+
+                                            if (!predict.isNaN()) {
+                                                ((RatingMetric) m).addRating(value, predict);
+                                            }
+                                        } catch (Exception e) {
+                                            this.logger.log(LogService.LOG_ERROR, e.getMessage());
                                         }
 
-                                        if (!predict.isNaN()) {
-                                            ((RatingMetric) m).addRating(value, predict);
-                                        }
+                                        previous.add(interaction.getItemId());
+
                                     }
                                 } else if (m instanceof ListMetric) {
                                     // There are 2 possibilities for list metrics.
@@ -164,22 +182,47 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                     // The relevant items can be limited in both cases.
 
                                     if (runThroughAllItems) {
-                                        for (int i = 0; i < userInteractions.length - 1; i++) {
-                                            ArrayList<String> previous = new ArrayList();
-                                            ArrayList<String> subsequent = new ArrayList();
+                                        for (int i = 0; i < userInteractions.size() - 1; i++) {
+                                            try {
+                                                ArrayList<String> previous = new ArrayList();
+                                                ArrayList<String> subsequent = new ArrayList();
 
-                                            for (int j = 0; j < userInteractions.length; j++) {
-                                                if (i < j) {
-                                                    previous.add(userInteractions[j].getItemId());
-                                                } else {
-                                                    subsequent.add(userInteractions[j].getItemId());
+                                                for (int j = 0; j < userInteractions.size(); j++) {
+                                                    if (i < j) {
+                                                        previous.add(userInteractions.get(j).getItemId());
+                                                    } else {
+                                                        subsequent.add(userInteractions.get(j).getItemId());
+                                                    }
                                                 }
+
+                                                for (Context c : context.getAll()) {
+                                                    if (c instanceof UserContext) {
+                                                        ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, Helper.Keys.Context.LastConsumed);
+
+                                                        if (subsequent.size() > 0) {
+                                                            ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), test.getItem(subsequent.get(subsequent.size() - 1)), Helper.Keys.Context.Item);
+                                                        }
+                                                    }
+                                                }
+
+                                                ArrayList<String> result1 = new ArrayList();
+
+                                                RecommendationResult rr = r.recommend(u.getId(), context);
+
+                                                for (RecommendedItem item : rr.getItems()) {
+                                                    result1.add(item.getItemId());
+                                                }
+
+                                                ((ListMetric) m).addList(Helper.applySubList(subsequent, maxRelevantItemCount), result1);
+                                            } catch (Exception e) {
+                                                this.logger.log(LogService.LOG_ERROR, e.getMessage());
                                             }
-
-                                            for (Context c : context.getAll()) {
-                                                if (c instanceof UserContext) {
-                                                    ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
-                                                }
+                                        }
+                                    } else {
+                                        try {
+                                            ArrayList<String> interactions = new ArrayList();
+                                            for (Interaction interaction : userInteractions) {
+                                                interactions.add(interaction.getItemId());
                                             }
 
                                             ArrayList<String> result1 = new ArrayList();
@@ -190,24 +233,13 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                                 result1.add(item.getItemId());
                                             }
 
-                                            ((ListMetric) m).addList(Helper.applySubList(subsequent, maxRelevantItemCount), result1);
+                                            ((ListMetric) m).addList(Helper.applySubList(interactions, maxRelevantItemCount), result1);
+
+                                        } catch (Exception e) {
+                                            this.logger.log(LogService.LOG_ERROR, e.getMessage());
                                         }
-                                    } else {
-                                        ArrayList<String> interactions = new ArrayList();
-                                        for (Interaction interaction : userInteractions) {
-                                            interactions.add(interaction.getItemId());
-                                        }
-
-                                        ArrayList<String> result1 = new ArrayList();
-
-                                        RecommendationResult rr = r.recommend(u.getId(), context);
-
-                                        for (RecommendedItem item : rr.getItems()) {
-                                            result1.add(item.getItemId());
-                                        }
-
-                                        ((ListMetric) m).addList(Helper.applySubList(interactions, maxRelevantItemCount), result1);
                                     }
+
                                 }
                             }
 
@@ -218,7 +250,6 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
                 setInfo(e.getMessage());
             }
-
 
             //copy results to output
             for (String key : metrics.keySet()) {
@@ -236,6 +267,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     private void trainRecommenders(DataSet train) {
         Parallel.For(Arrays.asList(recommenders), r -> {
             try {
+                r.setDataSourceId(this.getId() + ":" + this.getDataSourceId());
                 r.setDataSet(train);
 
                 r.train();

@@ -186,8 +186,8 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
 
             for(Context c : contextProvider.getAll()) {
                 if(c instanceof UserContext) {
-                    ((UserContext)c).processContext(source.getSourceId(), userId, source, "data-source");
-                    ((UserContext)c).processContext(source.getSourceId(), userId, param, "params");
+                    ((UserContext)c).processContext(source.getSourceId(), userId, source, Helper.Keys.Context.DataSet);
+                    ((UserContext)c).processContext(source.getSourceId(), userId, param, Helper.Keys.Context.Params);
                 }
             }
         }
