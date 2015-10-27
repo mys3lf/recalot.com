@@ -1,10 +1,3 @@
-package com.recalot.model.rec;
-
-
-import com.recalot.common.builder.Initiator;
-import com.recalot.common.builder.RecommenderBuilder;
-import com.recalot.common.configuration.ConfigurationItem;
-import com.recalot.common.context.Context;
 // Copyright (C) 2015 Matthäus Schmedding
 //
 // This file is part of recalot.com.
@@ -22,6 +15,13 @@ import com.recalot.common.context.Context;
 // You should have received a copy of the GNU General Public License
 // along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 
+
+package com.recalot.model.rec;
+
+import com.recalot.common.builder.Initiator;
+import com.recalot.common.builder.RecommenderBuilder;
+import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.context.Context;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.rec.context.LastVisitedContext;
 import com.recalot.model.rec.context.ParamsContext;
@@ -29,7 +29,6 @@ import com.recalot.model.rec.context.UserInputContext;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,8 +151,35 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
 
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareMostPopular.class.getName(), "reddit-context-mp", "");
+
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            List<String> options = new ArrayList<>();
+
+            options.add("letter");
+            options.add("last");
+            options.add("both");
+
+            config.setOptions(options);
+            builder.setConfiguration(config);
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalAverageRatingRecommender.class.getName(), "global-average-rating", "This recommender is used for comparison in experiments and provides a global average as prediction.");
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.random.RandomRecommender.class.getName(), "random", "This recommender is used for comparison in experiments and provides a random list as recommendation.");
 
             recommenders.add(builder);
         } catch (BaseException e) {

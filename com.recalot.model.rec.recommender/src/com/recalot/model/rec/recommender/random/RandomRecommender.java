@@ -15,68 +15,42 @@
 // You should have received a copy of the GNU General Public License
 // along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 
-package com.recalot.model.rec.recommender.mostpopular;
+package com.recalot.model.rec.recommender.random;
 
-import com.recalot.common.Helper;
-import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
-import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.context.ContextProvider;
+import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.rec.Recommender;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author matthaeus.schmedding
  */
-public class MostPopularRecommender extends Recommender {
+public class RandomRecommender extends Recommender {
 
-    protected RecommendationResult result;
+    protected   List<RecommendedItem> recommendedItems;
 
     @Override
     public void train() throws BaseException {
+        recommendedItems = new ArrayList<>();
 
-        Map<String, Integer> count = new LinkedHashMap<>();
-
-        for (Interaction interaction : getDataSet().getInteractions()) {
-            Helper.incrementMapValue(count, interaction.getItemId());
+        for (Item item : getDataSet().getItems()) {
+            recommendedItems.add(new RecommendedItem(item, 0));
         }
-
-        List<RecommendedItem> recommendedItems = new ArrayList<>();
-
-        count = Helper.sortByValueDescending(count);
-
-        double sum = Helper.sum(count);
-
-        for (String key : count.keySet()) {
-            recommendedItems.add(new RecommendedItem(key, 1.0 * count.get(key) / sum));
-        }
-
-        List<RecommendedItem> remainingItems = new ArrayList<>();
-
-        for(Item item : getDataSet().getItems()) {
-            if(!recommendedItems.stream().anyMatch(i -> i.getItemId().equals(item.getId()))){
-                remainingItems.add(new RecommendedItem(item.getId(), 0.0));
-            }
-        }
-
-        recommendedItems.addAll(remainingItems);
-
-        this.result = new RecommendationResult(getId(), recommendedItems);
     }
-
 
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException{
-        List<RecommendedItem> items = null;
-        if(result != null) {
-            items = result.getItems();
-        }
 
-        if(items == null) items = new ArrayList<>();
+        List<RecommendedItem> items = new ArrayList<>(recommendedItems);
+
+        Collections.shuffle(items);
 
         return new RecommendationResult(getId(), items);
     }

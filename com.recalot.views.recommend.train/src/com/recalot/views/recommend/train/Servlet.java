@@ -46,8 +46,6 @@ public class Servlet extends HttpServlet {
     }
 
     /**
-     * TODO: deactivate it later. Just for debugging
-     *
      * @param req
      * @param res
      * @throws javax.servlet.ServletException
@@ -165,7 +163,6 @@ public class Servlet extends HttpServlet {
         }
 
         if (result == null) {
-
 
             //   out.println("TODO print error");
         } else {

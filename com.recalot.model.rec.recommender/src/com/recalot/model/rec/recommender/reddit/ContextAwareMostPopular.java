@@ -24,7 +24,7 @@ import com.recalot.common.communication.RecommendedItem;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.model.rec.recommender.bprmf.BPRMFRecommender;
+import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,10 +34,10 @@ import java.util.Map;
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class ContextAwareBPRRecommender extends BPRMFRecommender {
+public class ContextAwareMostPopular extends MostPopularRecommender {
 
     private String contextType;
-    private HashMap<Integer, HashMap<Integer, Boolean>> coocurence;
+    private HashMap<String, HashMap<String, Boolean>> coocurence;
 
     @Override
     public void train() throws BaseException {
@@ -45,23 +45,21 @@ public class ContextAwareBPRRecommender extends BPRMFRecommender {
 
         coocurence = new HashMap<>();
 
-        Integer last = null;
+        String last = null;
         for (Interaction interaction : getDataSet().getInteractions()) {
 
-            if (this.data.itemIndices.containsKey(interaction.getItemId())) {
-                Integer current = this.data.itemIndices.get(interaction.getItemId().toLowerCase());
-                if (last != null) {
-                    if (!coocurence.containsKey(last)) {
-                        coocurence.put(last, new HashMap<>());
-                    }
-
-                    if (!coocurence.get(last).containsKey(current)) {
-                        coocurence.get(last).put(current, true);
-                    }
+            String current = interaction.getItemId().toLowerCase();
+            if (last != null) {
+                if (!coocurence.containsKey(last)) {
+                    coocurence.put(last, new HashMap<>());
                 }
 
-                last = current;
+                if (!coocurence.get(last).containsKey(current)) {
+                    coocurence.get(last).put(current, true);
+                }
             }
+
+            last = current;
         }
     }
 
@@ -72,16 +70,12 @@ public class ContextAwareBPRRecommender extends BPRMFRecommender {
         UserContext userLastItemContext = (UserContext) context.getInstance("user-last-visited");
 
         List<RecommendedItem> items = new ArrayList<>();
-        try {
-            List<String> rec = recommendItemsByRatingPrediction(userId, false);
 
-            for (String key : rec) {
-                items.add(new RecommendedItem(key, 0.0));
-            }
-
-        } catch (BaseException e) {
-            e.printStackTrace();
+        if (result != null) {
+            items = result.getItems();
         }
+
+        if (items == null) items = new ArrayList<>();
 
         switch (contextType) {
             case "letter":
@@ -115,21 +109,19 @@ public class ContextAwareBPRRecommender extends BPRMFRecommender {
 
             ArrayList lastItems = (ArrayList) c2;
 
-            String lastItemId = (String) lastItems.get(lastItems.size() - 1);
-            Integer intLastItemId = this.data.itemIndices.get(lastItemId.toLowerCase());
+            String lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
 
 
             for (RecommendedItem item : items) {
                 //id equals the word
-
-                Integer itemId = this.data.itemIndices.get(item.getItemId().toLowerCase());
+                String itemId = item.getItemId().toLowerCase();
 
                 int match = 0;
                 if (item.getItemId().toLowerCase().startsWith(letter)) {
                     match++;
                 }
 
-                if (coocurence.get(intLastItemId).containsKey(itemId)) {
+                if (coocurence.get(lastItemId).containsKey(itemId)) {
                     match++;
                 }
 
@@ -164,15 +156,14 @@ public class ContextAwareBPRRecommender extends BPRMFRecommender {
             ArrayList lastItems = (ArrayList) c;
             List<RecommendedItem> result = new ArrayList<>();
 
-            String lastItemId = (String) lastItems.get(lastItems.size() - 1);
-            Integer intLastItemId = this.data.itemIndices.get(lastItemId.toLowerCase());
+            String lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
 
-            if (coocurence.containsKey(intLastItemId)) {
+            if (coocurence.containsKey(lastItemId)) {
                 for (RecommendedItem item : items) {
                     //id equals the word
-                    Integer itemId = this.data.itemIndices.get(item.getItemId().toLowerCase());
+                    String itemId = item.getItemId().toLowerCase();
 
-                    if (coocurence.get(intLastItemId).containsKey(itemId)) {
+                    if (coocurence.get(lastItemId).containsKey(itemId)) {
                         result.add(item);
                     }
                 }
