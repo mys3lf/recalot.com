@@ -32,6 +32,4 @@ public class ContextProvider extends GenericServiceListener<Context> {
     public ContextProvider(BundleContext context) {
         super(context, Context.class.getName());
     }
-
-    //TODO: think about this
 }

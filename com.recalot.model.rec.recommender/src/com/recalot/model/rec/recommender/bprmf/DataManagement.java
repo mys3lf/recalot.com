@@ -114,8 +114,6 @@ public class DataManagement  {
 		for (Item item : dataSet.getItems()) {
 			this.addItem(item);
 		}
-
-		
 		
 		latentUserVector = new double[numUsers][numFeatures];
 		latentItemVector = new double[numItems][numFeatures];

@@ -12,7 +12,7 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  log,com.recalot.common.interfaces.controller,com.recalot.common.inter
  faces.template,com.recalot.common,com.recalot.views.common
 Bundle-Name: Recalot.com Test - Web Page
-Bundle-Version: 0.1.0.731
+Bundle-Version: 0.1.0.735
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.tests.data.dummypage.Activator
 

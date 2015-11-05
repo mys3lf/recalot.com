@@ -14,8 +14,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  .cm,   org.osgi.service.metatype,com.recalot.common.interfaces.contro
  ller,com.recalot.common.interfaces.template,com.recalot.common,com.re
  calot.common.log,com.recalot.views.common
-Export-Package: com.recalot.views.data.access;version="1.0.0"
+Export-Package: com.recalot.views.data.access;version="0.1.0"
 Bundle-Name: Recalot.com Views - Data Access
-Bundle-Version: 0.1.0.731
+Bundle-Version: 0.1.0.735
 Bundle-Activator: com.recalot.views.data.access.Activator
 

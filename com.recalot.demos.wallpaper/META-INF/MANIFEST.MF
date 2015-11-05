@@ -14,9 +14,9 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  calot.common.log,com.recalot.views.common, com.recalot.common.interfa
  ces.model.data,flexjson.transformer,flexjson, com.recalot.common.buil
  der,com.mysql.jdbc
-Export-Package: com.recalot.views.data.access;version="0.0.0"
+Export-Package: com.recalot.views.data.access;version="0.1.0"
 Bundle-Name: Recalot.com Demos - Wallpaper
-Bundle-Version: 0.1.0.258
+Bundle-Version: 0.1.0.262
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.demos.wallpaper.Activator
 

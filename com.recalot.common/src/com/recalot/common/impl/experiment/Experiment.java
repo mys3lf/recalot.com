@@ -138,6 +138,22 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                 //iterate over all users
                 // make it parallel
 
+
+                boolean runOverAllItems = false;
+
+                for (Metric m : metrics.get(r.getId())) {
+                    if (m instanceof RatingMetric) {
+                        runOverAllItems = true;
+                    }
+                }
+
+                if (!runOverAllItems) {
+                    runOverAllItems = runThroughAllItems;
+                }
+
+                final boolean allItems = runOverAllItems;
+
+
                 double percentagePerUser = percentage / users.length;
                 Parallel.For(Arrays.asList(users),
                         u -> {
@@ -153,74 +169,68 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                 Collections.sort(userInteractions, (a2, a1) -> a2.getTimeStamp().compareTo(a1.getTimeStamp()));
 
                             } catch (BaseException e) {
-
+                                e.printStackTrace();
+                                this.logger.log(LogService.LOG_ERROR, e.getMessage());
                             }
 
-                            //iterate over all metric for this recommender
-                            for (Metric m : metrics.get(r.getId())) {
+                            //run over all items
+                            if (allItems) {
+                                for (int i = 0; i < userInteractions.size() - 1; i++) {
 
-                                if (m instanceof RatingMetric) {
-                                    //if the metric is a rating metric, run through all consumed items in the test set and predict the rating
+                                    //TODO add relevant item filter
+                                   // if(userInteractions.get(i).getItemId().length() <= 2) continue;
 
                                     ArrayList<String> previous = new ArrayList();
-                                    for (Interaction interaction : userInteractions) {
+                                    ArrayList<String> subsequent = new ArrayList();
 
-                                        Integer value = Integer.parseInt(interaction.getValue());
-
-                                        try {
-
-                                            for (Context c : context.getAll()) {
-                                                if (c instanceof UserContext) {
-                                                    ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, "last-consumed");
-
-                                                    if (previous.size() > 0) {
-                                                        ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), test.getItem(previous.get(0)), Helper.Keys.Context.Item);
-                                                    }
-                                                }
-                                            }
-
-                                            Double predict = r.predict(interaction.getUserId(), interaction.getItemId(), context);
-
-
-                                            if (!predict.isNaN()) {
-                                                ((RatingMetric) m).addRating(value, predict);
-                                            }
-                                        } catch (Exception e) {
-                                            this.logger.log(LogService.LOG_ERROR, e.getMessage());
+                                    for (int j = 0; j < userInteractions.size(); j++) {
+                                        if (i > j) {
+                                            previous.add(userInteractions.get(j).getItemId());
+                                        } else {
+                                            subsequent.add(userInteractions.get(j).getItemId());
                                         }
-
-                                        previous.add(interaction.getItemId());
-
                                     }
-                                } else if (m instanceof ListMetric) {
-                                    // There are 2 possibilities for list metrics.
-                                    // 1. Run through all items and use the subsequent items as relevant items.
-                                    // 2. Use all consumed items as relevant items.
-                                    // The relevant items can be limited in both cases.
 
-                                    if (runThroughAllItems) {
-                                        for (int i = 0; i < userInteractions.size() - 1; i++) {
+                                    //fill context
+                                    for (Context c : context.getAll()) {
+                                        if (c instanceof UserContext) {
+                                            ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, Helper.Keys.Context.LastConsumed);
+
+                                            if (subsequent.size() > 0) {
+                                                try {
+                                                    ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), test.getItem(subsequent.get(0)), Helper.Keys.Context.Item);
+                                                } catch (BaseException e) {
+                                                    e.printStackTrace();
+                                                    this.logger.log(LogService.LOG_ERROR, e.getMessage());
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //iterate over all metric for this recommender
+                                    for (Metric m : metrics.get(r.getId())) {
+                                        //if the metric is a rating metric, run through all consumed items in the test set and predict the rating
+                                        if (m instanceof RatingMetric) {
+
+                                            Integer value = Integer.parseInt(userInteractions.get(i).getValue());
+
                                             try {
-                                                ArrayList<String> previous = new ArrayList();
-                                                ArrayList<String> subsequent = new ArrayList();
+                                                Double predict = r.predict(userInteractions.get(i).getUserId(), userInteractions.get(i).getItemId(), context);
 
-                                                for (int j = 0; j < userInteractions.size(); j++) {
-                                                    if (i < j) {
-                                                        previous.add(userInteractions.get(j).getItemId());
-                                                    } else {
-                                                        subsequent.add(userInteractions.get(j).getItemId());
-                                                    }
+                                                if (!predict.isNaN()) {
+                                                    ((RatingMetric) m).addRating(value, predict);
                                                 }
+                                            } catch (Exception e) {
+                                                this.logger.log(LogService.LOG_ERROR, e.getMessage());
+                                            }
 
-                                                for (Context c : context.getAll()) {
-                                                    if (c instanceof UserContext) {
-                                                        ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), previous, Helper.Keys.Context.LastConsumed);
-
-                                                        if (subsequent.size() > 0) {
-                                                            ((UserContext) c).processContext(this.getId() + ":" + this.getDataSourceId(), u.getId(), test.getItem(subsequent.get(subsequent.size() - 1)), Helper.Keys.Context.Item);
-                                                        }
-                                                    }
-                                                }
+                                        } else if (m instanceof ListMetric) {
+                                            // There are 2 possibilities for list metrics.
+                                            // 1. Run through all items and use the subsequent items as relevant items.
+                                            // 2. Use all consumed items as relevant items.
+                                            // The relevant items can be limited in both cases.
+                                            // This is the first case
+                                            try {
 
                                                 ArrayList<String> result1 = new ArrayList();
 
@@ -230,12 +240,25 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                                     result1.add(item.getItemId());
                                                 }
 
-                                                ((ListMetric) m).addList(Helper.applySubList(subsequent, maxRelevantItemCount), result1);
+                                                List<String> relevant = Helper.applySubList(subsequent, maxRelevantItemCount);
+                                                ((ListMetric) m).addList(relevant , result1);
+
                                             } catch (Exception e) {
                                                 this.logger.log(LogService.LOG_ERROR, e.getMessage());
+                                                e.printStackTrace();
                                             }
                                         }
-                                    } else {
+                                    }
+                                }
+                            } else if (!runThroughAllItems) {
+
+                                //iterate over all metric for this recommender
+                                for (Metric m : metrics.get(r.getId())) {
+                                    if (m instanceof ListMetric) {
+                                        // 2. possibility for list metrics.
+                                        // Use all consumed items as relevant items.
+                                        // The relevant items can be limited in both cases.
+
                                         try {
                                             ArrayList<String> interactions = new ArrayList();
                                             for (Interaction interaction : userInteractions) {
@@ -255,8 +278,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                         } catch (Exception e) {
                                             this.logger.log(LogService.LOG_ERROR, e.getMessage());
                                         }
-                                    }
 
+                                    }
                                 }
                             }
 
@@ -282,6 +305,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
     }
 
     private void trainRecommenders(DataSet train) {
+
         Parallel.For(Arrays.asList(recommenders), r -> {
             try {
                 r.setDataSourceId(this.getId() + ":" + this.getDataSourceId());

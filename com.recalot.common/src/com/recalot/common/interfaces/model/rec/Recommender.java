@@ -119,6 +119,21 @@ public abstract class Recommender extends Configurable implements RecommenderInf
      * @return the ranked list of items
      */
     public List<String> recommendItemsByRatingPrediction(String userId, boolean omitVisited) throws BaseException {
+        return recommendItemsByRatingPrediction(userId, getDataSet().getItems(), omitVisited);
+    }
+
+
+    /**
+     * A general method for ranking items according to their rating prediction.
+     * The method should be overwritten in case the recommender cannot make
+     * rating predictions or when a better heuristic is needed, which for
+     * example takes the popularity of the recommendations into account.
+     * @param userId the user for which a recommendation is sought
+     * @param items the items which a recommender should use
+     * @param omitVisited should visited items be omited
+     * @return the ranked list of items
+     */
+    public List<String> recommendItemsByRatingPrediction(String userId, Item[] items, boolean omitVisited) throws BaseException {
         List<String> result = new ArrayList<String>();
 
         // If there are no ratings for the user in the test set,
@@ -145,7 +160,7 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         Map<String, Double> predictions = new HashMap<>();
         double pred;
         // Go through all the items
-        for (Item item : getDataSet().getItems()) {
+        for (Item item : items) {
 
             // check if we have seen the item already
             if(!visited.containsKey(item.getId())) {

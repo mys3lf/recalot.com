@@ -31,6 +31,8 @@ import java.util.Date;
 
 public class LogTracker extends ServiceTracker<LogService,LogService> implements LogService {
 
+    //TODO include log4j
+
     public LogTracker(BundleContext context) {
         super(context, LogService.class, null);
 

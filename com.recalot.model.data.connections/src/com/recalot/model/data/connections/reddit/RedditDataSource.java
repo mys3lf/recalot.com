@@ -64,17 +64,17 @@ public class RedditDataSource extends DataSourceBase {
 
             while ((line = reader.readLine()) != null) {
                 int i = 0;
-                String[] split = line.split(";");
+                String[] split = line.split("00;");
 
                 if (split.length == 2) {
 
-                    Date date = DatatypeConverter.parseDateTime(split[0]).getTime();
+                    Date date = DatatypeConverter.parseDateTime(split[0] + "00").getTime();
 
                     List<String> words = splitIntoWords(split[1]);
 
                     for (String word : words) {
-                        addNewItem(word);
-                        addWordInteraction(userName, word, (interactionId++) + "", date, i++);
+                        addNewItem(word.intern());
+                        addWordInteraction(userName.intern(), word.intern(), (interactionId++) + "", date, i++);
                     }
                 }
             }
@@ -84,7 +84,7 @@ public class RedditDataSource extends DataSourceBase {
     }
 
     private void addWordInteraction(String user, String word, String id, Date date, int i) {
-        interactions.put(id, new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "view", "1", new HashMap<>()));
+        interactions.put(id, new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "view".intern(), "1".intern(), new HashMap<>()));
     }
 
     private List<String> splitIntoWords(String sentence) {
@@ -98,10 +98,10 @@ public class RedditDataSource extends DataSourceBase {
         for (String word : parts) {
             if (last != null) {
                 if (word.trim().length() == 0) { //spaces? add the last word
-                    words.add(last.trim());
+                    words.add(last.trim().toLowerCase().intern());
                     last = null;
                 } else if ((!concat && !word.equals("'") && last != null)) {  //punctuation? add the last word and set punctuation as last word
-                    words.add(last.trim());
+                    words.add(last.trim().toLowerCase().intern());
                     last = word;
                 } else if (word.equals("'")) { //quotes? concat the following words
                     concat = true;
@@ -120,21 +120,21 @@ public class RedditDataSource extends DataSourceBase {
         }
 
         if (last != null) { //a word in pipeline
-            words.add(last.trim());
+            words.add(last.trim().intern());
         }
 
         return words;
     }
 
     private void addNewItem(String word) {
-        word = word.toLowerCase();
+        word = word.intern();
         if (!items.containsKey(word)) {
             items.put(word, new Item(word));
         }
     }
 
     private String createNewUser(String name) {
-        String userName = name.substring(0, name.length() - 4);
+        String userName = name.substring(0, name.length() - 4).intern();
         if (!users.containsKey(userName)) {
             users.put(userName, new User(userName));
         }

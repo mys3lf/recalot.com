@@ -29,6 +29,7 @@ import com.recalot.model.rec.context.UserInputContext;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,6 +144,7 @@ public class Activator implements BundleActivator, Initiator {
 
             config.setOptions(options);
             builder.setConfiguration(config);
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             AddBPRConfiguration(builder);
 
@@ -164,7 +166,57 @@ public class Activator implements BundleActivator, Initiator {
 
             config.setOptions(options);
             builder.setConfiguration(config);
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareRandomRecommender.class.getName(), "reddit-context-random", "");
+
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            List<String> options = new ArrayList<>();
+
+            options.add("letter");
+            options.add("last");
+            options.add("both");
+
+            config.setOptions(options);
+            builder.setConfiguration(config);
+
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.RandomRecommender.class.getName(), "reddit-random", "");
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-mp", "");
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+            recommenders.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-bprmf", "");
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            AddBPRConfiguration(builder);
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();

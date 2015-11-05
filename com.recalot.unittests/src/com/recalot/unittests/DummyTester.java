@@ -4,7 +4,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.Test;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
@@ -65,5 +69,123 @@ public class DummyTester {
         }
 
         System.out.println(parts.length);
+    }
+
+
+    @Test
+    public void redditDataSetAnalyser() {
+
+        String path = "C:\\Privat\\3_Uni\\5_Workspaces\\data\\reddit-comments-100";
+
+
+        int users = 0;
+        int wordCount = 0;
+        int comments = 0;
+        int interactions = 0;
+
+        int minInteractionsPerUser = Integer.MAX_VALUE;
+        int maxInteractionsPerUser = 0;
+
+        int minCommentsPerUser = Integer.MAX_VALUE;
+        int maxCommentsPerUser = 0;
+
+        File dir = new File(path);
+
+
+        HashMap<String, Boolean> words = new HashMap<>();
+        for (File userFile : dir.listFiles()) {
+            if (userFile.getName().endsWith(".csv")) {
+
+                int commentsOfUser = 0;
+                int interactionsOfUser = 0;
+
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)))) {
+                    String line = null;
+
+                    while ((line = reader.readLine()) != null) {
+
+                        String[] split = line.split("00;");
+
+                        if (split.length >= 2) {
+                            List<String> wordList = splitIntoWords(split[1]);
+                            if(wordList.size() > 0) {
+                                commentsOfUser++;
+
+                                interactionsOfUser += wordList.size();
+
+                                for (String word : wordList) {
+                                    if (!words.containsKey(word)) {
+                                        words.put(word, true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException x) {
+                    x.printStackTrace();
+                }
+
+                if(commentsOfUser == 2) System.out.println(userFile.getName());
+                if(minCommentsPerUser > commentsOfUser) minCommentsPerUser = commentsOfUser;
+                if(maxCommentsPerUser < commentsOfUser) maxCommentsPerUser = commentsOfUser;
+
+                if(minInteractionsPerUser > interactionsOfUser) minInteractionsPerUser = interactionsOfUser;
+                if(maxInteractionsPerUser < interactionsOfUser) maxInteractionsPerUser = interactionsOfUser;
+
+                interactions += interactionsOfUser;
+                comments += commentsOfUser;
+                users++;
+            }
+        }
+
+        System.out.println("Users:" + users);
+        System.out.println("Words:" + words.size());
+        System.out.println("Words Usages:" + interactions);
+        System.out.println("Comments:" + comments);
+        System.out.println("Min Comments Per User:" + minCommentsPerUser);
+        System.out.println("Max Comments Per User:" + maxCommentsPerUser);
+        System.out.println("Avg. Comments Per User:" + (1.0 * comments / users));
+        System.out.println("Min Word Usages Per User:" + minInteractionsPerUser);
+        System.out.println("Max Word Usages Per User:" + maxInteractionsPerUser);
+        System.out.println("Avg. Word Usages Per User:" + (1.0 * interactions / users));
+    }
+
+    private List<String> splitIntoWords(String sentence) {
+        List<String> words = new ArrayList<>();
+        sentence = StringEscapeUtils.unescapeHtml4(sentence);
+        String[] parts = sentence.split("(?<!^)\\b");
+
+        String last = null;
+        boolean concat = false;
+
+        for (String word : parts) {
+            if (last != null) {
+                if (word.trim().length() == 0) { //spaces? add the last word
+                    words.add(last.trim().toLowerCase());
+                    last = null;
+                } else if ((!concat && !word.equals("'") && last != null)) {  //punctuation? add the last word and set punctuation as last word
+                    words.add(last.trim().toLowerCase());
+                    last = word;
+                } else if (word.equals("'")) { //quotes? concat the following words
+                    concat = true;
+                    last += word;
+                } else {
+                    if (concat) {
+                        last += word;
+                    } else {
+                        last = word;
+                    }
+                    concat = false;
+                }
+            } else {
+                last = word;
+            }
+        }
+
+        if (last != null) { //a word in pipeline
+            words.add(last.trim().toLowerCase());
+        }
+
+        return words;
     }
 }

@@ -18,12 +18,14 @@
 package com.recalot.model.rec.recommender.reddit;
 
 import com.recalot.common.Helper;
+import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.model.rec.recommender.bprmf.BPRMFRecommender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,29 +35,46 @@ import java.util.Map;
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class ContextAwareBPRRecommender extends BPRRecommender {
+public class BPRRecommender extends BPRMFRecommender {
 
-    private String contextType;
-    private HashMap<Integer, HashMap<Integer, Boolean>> coocurence;
-    private ContextHelper contextHelper;
+    protected HashMap<String, HashMap<String, Item>> uItems;
+    protected ArrayList<Item> filteredItems;
+
+    protected boolean recommendOnlyItemsTheUserAlreadyViewed = false;
 
     @Override
     public void train() throws BaseException {
         super.train();
 
-        contextHelper = new ContextHelper(getDataSourceId());
-        contextHelper.train(getDataSet());
+        uItems = new HashMap<>();
+        filteredItems = new ArrayList<>();
+
+        for(Interaction interaction: getDataSet().getInteractions()){
+            String userId = interaction.getUserId();
+            if(!uItems.containsKey(userId)) uItems.put(userId, new HashMap<>());
+
+            String itemId = interaction.getItemId();
+
+            if(!uItems.get(userId).containsKey(itemId)) {
+                uItems.get(userId).put(itemId, getDataSet().getItem(itemId));
+            }
+        }
+
+        for(Item item: getDataSet().getItems()){
+            if(item.getId().length() > 2) {
+                filteredItems.add(item);
+            }
+        }
     }
 
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException {
 
-        UserContext userInputContext = (UserContext) context.getInstance("user-input");
-        UserContext userLastItemContext = (UserContext) context.getInstance("user-last-visited");
-
         List<RecommendedItem> items = new ArrayList<>();
         try {
+
             List<String> rec;
+
             if(recommendOnlyItemsTheUserAlreadyViewed) {
                 rec = recommendItemsByRatingPrediction(userId, uItems.get(userId).values().toArray(new Item[uItems.get(userId).values().size()]), true);
             } else {
@@ -70,19 +89,6 @@ public class ContextAwareBPRRecommender extends BPRRecommender {
             e.printStackTrace();
         }
 
-        switch (contextType) {
-            case "letter":
-                items = contextHelper.applyLetterContext(items, userId, userInputContext);
-                break;
-            case "last":
-                items = contextHelper.applyLastWordsContext(items, userId, userLastItemContext);
-                break;
-            case "both":
-                items = contextHelper.applyBothContext(items, userId, userInputContext, userLastItemContext);
-                break;
-        }
-
-
         items = Helper.applySubList(items, param, 10);
 
         return new RecommendationResult(getId(), items);
@@ -94,7 +100,11 @@ public class ContextAwareBPRRecommender extends BPRRecommender {
         return super.predict(userId, itemId, context, param);
     }
 
-    public void setContextType(String contextType) {
-        this.contextType = contextType;
+    public boolean isRecommendOnlyItemsTheUserAlreadyViewed() {
+        return recommendOnlyItemsTheUserAlreadyViewed;
+    }
+
+    public void setRecommendOnlyItemsTheUserAlreadyViewed(boolean recommendOnlyItemsTheUserAlreadyViewed) {
+        this.recommendOnlyItemsTheUserAlreadyViewed = recommendOnlyItemsTheUserAlreadyViewed;
     }
 }

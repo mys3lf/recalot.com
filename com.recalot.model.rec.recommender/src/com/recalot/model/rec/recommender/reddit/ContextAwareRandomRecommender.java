@@ -18,7 +18,6 @@
 package com.recalot.model.rec.recommender.reddit;
 
 import com.recalot.common.Helper;
-import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
 import com.recalot.common.context.ContextProvider;
@@ -26,17 +25,15 @@ import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class ContextAwareBPRRecommender extends BPRRecommender {
+public class ContextAwareRandomRecommender extends RandomRecommender {
 
     private String contextType;
-    private HashMap<Integer, HashMap<Integer, Boolean>> coocurence;
     private ContextHelper contextHelper;
 
     @Override
@@ -53,22 +50,9 @@ public class ContextAwareBPRRecommender extends BPRRecommender {
         UserContext userInputContext = (UserContext) context.getInstance("user-input");
         UserContext userLastItemContext = (UserContext) context.getInstance("user-last-visited");
 
-        List<RecommendedItem> items = new ArrayList<>();
-        try {
-            List<String> rec;
-            if(recommendOnlyItemsTheUserAlreadyViewed) {
-                rec = recommendItemsByRatingPrediction(userId, uItems.get(userId).values().toArray(new Item[uItems.get(userId).values().size()]), true);
-            } else {
-                rec = recommendItemsByRatingPrediction(userId, filteredItems.toArray(new Item[filteredItems.size()]), true);
-            }
+        List<RecommendedItem> items = super.recommend(userId, context, param).getItems();
 
-            for (String key : rec) {
-                items.add(new RecommendedItem(key, 0.0));
-            }
-
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
+        if (items == null) items = new ArrayList<>();
 
         switch (contextType) {
             case "letter":
@@ -81,7 +65,6 @@ public class ContextAwareBPRRecommender extends BPRRecommender {
                 items = contextHelper.applyBothContext(items, userId, userInputContext, userLastItemContext);
                 break;
         }
-
 
         items = Helper.applySubList(items, param, 10);
 
