@@ -81,7 +81,7 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "wallpaper-mp", "");
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "shoeandu-mp", "");
             //    builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -89,7 +89,7 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "wallpaper-survey", "");
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "shoeandu-survey", "");
             // builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {

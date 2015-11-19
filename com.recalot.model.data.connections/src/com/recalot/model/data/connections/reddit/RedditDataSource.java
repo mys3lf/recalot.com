@@ -17,6 +17,7 @@
 
 package com.recalot.model.data.connections.reddit;
 
+import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.User;
 import com.recalot.common.exceptions.BaseException;
@@ -25,18 +26,17 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
- *
  * Created by matthaeus.schmedding on 11.06.2015.
  */
 public class RedditDataSource extends DataSourceBase {
     private File dir;
     private float interactionId = 0f;
+    private boolean initialized = false;
+    private List<Interaction> sortedInteractions = null;
+
     public RedditDataSource() {
         super();
     }
@@ -53,6 +53,8 @@ public class RedditDataSource extends DataSourceBase {
                     readFile(userName, userFile);
                 }
             }
+
+            initialized = true;
         }
     }
 
@@ -145,6 +147,22 @@ public class RedditDataSource extends DataSourceBase {
     public void close() throws IOException {
 
     }
+
+
+    @Override
+    public Interaction[] getInteractions() throws BaseException {
+        if (initialized) {
+            if (sortedInteractions == null) {
+                sortedInteractions = new ArrayList<>(interactions.values());
+                Collections.sort(sortedInteractions, (a2, a1) -> a2.getTimeStamp().compareTo(a1.getTimeStamp()));
+            }
+
+            return sortedInteractions.toArray(new Interaction[sortedInteractions.size()]);
+        } else {
+            return new Interaction[0];
+        }
+    }
+
 
     public void setDir(String file) {
         this.dir = new File(file);

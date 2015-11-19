@@ -67,6 +67,9 @@ public class Activator implements BundleActivator, Initiator {
 
             MetricBuilder recallBuilder = new MetricBuilder(this, Recall.class.getName(), "recall", "Recall");
             recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+
+            MetricBuilder mrrBuilder = new MetricBuilder(this, MRR.class.getName(), "mrr", "MRR");
+            mrrBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
          //   recallBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder giniBuilder = new MetricBuilder(this, Gini.class.getName(), "gini", "Gini");
@@ -84,6 +87,7 @@ public class Activator implements BundleActivator, Initiator {
             metrics.add(fscoreBuilder);
             metrics.add(precisionBuilder);
             metrics.add(recallBuilder);
+            metrics.add(mrrBuilder);
             metrics.add(giniBuilder);
             metrics.add(coverageBuilder);
 

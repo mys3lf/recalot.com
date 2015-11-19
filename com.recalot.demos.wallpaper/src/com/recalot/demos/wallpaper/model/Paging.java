@@ -17,8 +17,6 @@
 
 package com.recalot.demos.wallpaper.model;
 
-import java.util.ArrayList;
-
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */

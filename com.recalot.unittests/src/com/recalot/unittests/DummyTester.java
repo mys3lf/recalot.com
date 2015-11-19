@@ -75,7 +75,7 @@ public class DummyTester {
     @Test
     public void redditDataSetAnalyser() {
 
-        String path = "C:\\Privat\\3_Uni\\5_Workspaces\\data\\reddit-comments-100";
+        String path = "C:\\Privat\\3_Uni\\5_Workspaces\\data\\reddit-light-500";
 
 
         int users = 0;

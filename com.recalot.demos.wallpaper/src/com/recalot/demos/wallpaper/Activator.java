@@ -28,7 +28,6 @@ import com.recalot.demos.wallpaper.view.Servlet;
 import com.recalot.views.common.AbstractWebActivator;
 import com.recalot.views.common.GenericControllerHandler;
 import com.recalot.views.common.WebService;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.http.HttpService;

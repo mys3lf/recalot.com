@@ -31,7 +31,6 @@ import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.template.DataTemplate;
 import com.recalot.demos.wallpaper.model.Category;
 import com.recalot.demos.wallpaper.model.Paging;
-import flexjson.JSONDeserializer;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;

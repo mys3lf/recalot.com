@@ -53,7 +53,11 @@ public class ContextHelper {
 
             ArrayList lastItems = (ArrayList) c2;
 
-            String lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
+            String lastItemId = null;
+
+            if(lastItems.size() > 0){
+                lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
+            }
 
 
             for (RecommendedItem item : items) {
@@ -65,7 +69,7 @@ public class ContextHelper {
                     match++;
                 }
 
-                if (coocurence.get(lastItemId).containsKey(itemId)) {
+                if (lastItemId != null && coocurence.get(lastItemId).containsKey(itemId)) {
                     match++;
                 }
 
@@ -100,19 +104,22 @@ public class ContextHelper {
             ArrayList lastItems = (ArrayList) c;
             List<RecommendedItem> result = new ArrayList<>();
 
-            String lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
+            if (lastItems.size() > 0) {
+                String lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
 
-            if (coocurence.containsKey(lastItemId)) {
-                for (RecommendedItem item : items) {
-                    //id equals the word
-                    String itemId = item.getItemId().toLowerCase();
+                if (coocurence.containsKey(lastItemId)) {
+                    for (RecommendedItem item : items) {
+                        //id equals the word
+                        String itemId = item.getItemId().toLowerCase();
 
-                    if (coocurence.get(lastItemId).containsKey(itemId)) {
-                        result.add(item);
+                        if (coocurence.get(lastItemId).containsKey(itemId)) {
+                            result.add(item);
+                        }
                     }
                 }
+                return result;
             }
-            return result;
+
         }
 
         return items;
