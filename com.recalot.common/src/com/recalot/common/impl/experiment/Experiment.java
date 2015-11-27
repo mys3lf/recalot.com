@@ -70,9 +70,13 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         this.runThroughAllItems = param != null && param.containsKey("runThroughAllItems") && param.get("runThroughAllItems").equals("true");
 
         if (param != null && param.containsKey("maxRelevantItemCount")) {
-            Integer result = Integer.parseInt(param.get("maxRelevantItemCount"));
-            if (result != null && result >= 1) {
-                this.maxRelevantItemCount = result;
+            try {
+                Integer result = Integer.parseInt(param.get("maxRelevantItemCount"));
+                if (result != null && result >= 1) {
+                    this.maxRelevantItemCount = result;
+                }
+            } catch (NumberFormatException e) {
+
             }
         }
     }
@@ -178,7 +182,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                 for (int i = 0; i < userInteractions.size() - 1; i++) {
 
                                     //TODO add relevant item filter
-                                   // if(userInteractions.get(i).getItemId().length() <= 2) continue;
+                                    // if(userInteractions.get(i).getItemId().length() <= 2) continue;
 
                                     ArrayList<String> previous = new ArrayList();
                                     ArrayList<String> subsequent = new ArrayList();
@@ -241,7 +245,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
                                                 }
 
                                                 List<String> relevant = Helper.applySubList(subsequent, maxRelevantItemCount);
-                                                ((ListMetric) m).addList(relevant , result1);
+                                                ((ListMetric) m).addList(relevant, result1);
 
                                             } catch (Exception e) {
                                                 this.logger.log(LogService.LOG_ERROR, e.getMessage());
