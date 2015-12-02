@@ -23,6 +23,7 @@ import com.recalot.common.builder.RecommenderBuilder;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.Context;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.model.rec.context.LastVisitedContext;
 import com.recalot.model.rec.context.ParamsContext;
 import com.recalot.model.rec.context.UserInputContext;
@@ -30,8 +31,11 @@ import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 
 /**
@@ -52,7 +56,6 @@ public class Activator implements BundleActivator, Initiator {
      * @param context the framework context for the bundle.
      */
     public void start(BundleContext context) {
-
         registerRecommenders(context);
         registerContext(context);
     }
@@ -81,7 +84,7 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "shoeandu-mp", "");
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "wallpaper-mp", "");
             //    builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -89,7 +92,7 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "shoeandu-survey", "");
+            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "wallpaper-survey", "");
             // builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
             recommenders.add(builder);
         } catch (BaseException e) {

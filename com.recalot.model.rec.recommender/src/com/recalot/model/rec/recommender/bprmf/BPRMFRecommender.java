@@ -39,9 +39,6 @@ import java.util.*;
  *
  */
 public class BPRMFRecommender extends Recommender  {
-
-    private ArrayList<Item> iitems;
-
     public BPRMFRecommender(){
         setKey("bprmf");
     }
@@ -135,7 +132,6 @@ public class BPRMFRecommender extends Recommender  {
             e.printStackTrace();
         }
 
-        System.out.println("Relevant items " + iitems.size());
 //		System.out.println("Init done BPR");
 	}
 
@@ -143,7 +139,7 @@ public class BPRMFRecommender extends Recommender  {
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException {
         List<RecommendedItem> items = new ArrayList<>();
         try {
-            List<String> rec = recommendItemsByRatingPrediction(userId, iitems.toArray(new Item[iitems.size()]), true);
+            List<String> rec = recommendItemsByRatingPrediction(userId, true);
 
             for(String key: rec){
                 items.add(new RecommendedItem(key, 0.0));

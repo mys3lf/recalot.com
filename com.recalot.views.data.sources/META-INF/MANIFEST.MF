@@ -16,6 +16,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  calot.views.common
 Export-Package: com.recalot.views.data.sources;version="0.1.0"
 Bundle-Name: Recalot.com Views - Data Sources
-Bundle-Version: 0.1.0.735
+Bundle-Version: 0.1.0.741
 Bundle-Activator: com.recalot.views.data.sources.Activator
 

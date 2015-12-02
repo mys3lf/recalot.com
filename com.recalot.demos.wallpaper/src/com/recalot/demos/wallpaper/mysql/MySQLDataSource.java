@@ -726,8 +726,7 @@ public class MySQLDataSource extends DataSource {
             Map<String, String> contentMap = filterParams(user.getContent());
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("INSERT IGNORE INTO users (id, content) VALUES (?, ?)");
 
@@ -797,8 +796,7 @@ public class MySQLDataSource extends DataSource {
 
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("INSERT IGNORE INTO items (id, categories, src, title, tags, url, timeStamp, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -853,8 +851,7 @@ public class MySQLDataSource extends DataSource {
 
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("INSERT IGNORE INTO interactions (id, userId, itemId, timeStamp, type, value, content) VALUES (?, ?, ?, ?, ? , ? , ?)");
 
@@ -895,8 +892,7 @@ public class MySQLDataSource extends DataSource {
 
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("INSERT IGNORE INTO relations (id, fromId, toId, type, content) VALUES (?, ?, ?, ?, ?)");
 
@@ -936,8 +932,7 @@ public class MySQLDataSource extends DataSource {
 
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("UPDATE relations SET fromId=?, toId=?, type=?, content=? WHERE id=?");
 
@@ -974,8 +969,7 @@ public class MySQLDataSource extends DataSource {
 
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("UPDATE users SET content=? WHERE id=?");
 
@@ -1008,8 +1002,7 @@ public class MySQLDataSource extends DataSource {
             Map<String, String> contentMap = filterParams(item.getContent());
             String content = new JSONSerializer().serialize(contentMap);
 
-            if (connection == null || connection.isClosed()) connection = getNewConnection();
-
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
             // PreparedStatements can use variables and are more efficient
             statement = connection.prepareStatement("UPDATE items SET categories=?, src=?, title=?, tags=?, url=?, timeStamp=?, content=? WHERE id=?");
 

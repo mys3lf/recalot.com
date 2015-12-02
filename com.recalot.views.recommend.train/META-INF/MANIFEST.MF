@@ -16,6 +16,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  views.common
 Export-Package: com.recalot.views.recommend.train;version="0.1.0"
 Bundle-Name: Recalot.com Views - Recommend Train
-Bundle-Version: 0.1.0.717
+Bundle-Version: 0.1.0.723
 Bundle-Activator: com.recalot.views.recommend.train.Activator
 

@@ -59,7 +59,6 @@ public class ContextHelper {
                 lastItemId = ((String) lastItems.get(lastItems.size() - 1)).toLowerCase();
             }
 
-
             for (RecommendedItem item : items) {
                 //id equals the word
                 String itemId = item.getItemId().toLowerCase();

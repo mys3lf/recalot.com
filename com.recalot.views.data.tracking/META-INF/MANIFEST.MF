@@ -15,6 +15,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  n,com.recalot.common.log,com.recalot.views.common
 Export-Package: com.recalot.views.data.tracking;version="0.1.0"
 Bundle-Name: Recalot.com Views - Data Tracking
-Bundle-Version: 0.1.0.735
+Bundle-Version: 0.1.0.738
 Bundle-Activator: com.recalot.views.data.tracking.Activator
 
