@@ -179,6 +179,7 @@ function renderListBody(item, data){
         stopLoading();
         if(data.length > 0){
 
+            data.sort(_sortById);
             var table = $("<table class='table table-striped table-hover'><thead><tr></tr></thead><tbody></tbody></table>");
 
             table.children("thead").children("tr").append("<th>#</th>")
@@ -344,8 +345,16 @@ function _collectFormData(container, prefix) {
     return formData;
 }
 
+function _sortById(a, b) {
+    if(a.id < b.id) return -1;
+    if(a.id > b.id) return 1;
+    return 0
+}
+
 function _renderTableFormContent(container, form, skipLabel){
     var skip = skipLabel != null ? skipLabel : false;
+
+    form.sort(_sortById);
 
     for(var i in form){
         var item = form[i];
@@ -358,8 +367,10 @@ function _renderTableFormContent(container, form, skipLabel){
 
                 var $select = $("<select class='form-control' name='" + item.id + "'>");
 
+
                 if(item.enum instanceof Array) {
 
+                    item.enum.sort();
                     for(var op in item.enum ){
                         $select.append("<option>" + item.enum[op] +"</option>")
                     }
@@ -372,6 +383,9 @@ function _renderTableFormContent(container, form, skipLabel){
                         {item: item, select: $select},
                         function(context, data, type){
                              if(type == "success") {
+
+                                data.sort(_sortById);
+
                                 for(var d in data){
                                      context.select.append("<option>" + (data[d].id != null ? data[d].id : data[d].key) +"</option>")
                                 }
@@ -410,6 +424,9 @@ function _renderTableFormContent(container, form, skipLabel){
                         null,
                         {item: item, select: $select.children("select")},
                         function(context, data){
+
+                            data.sort(_sortById);
+
                             for(var d in data){
                                 context.select.append("<option value='"  + (data[d].key != null ? data[d].key : data[d].id) + "' >" + (data[d].id != null ? data[d].id : data[d].key) +"</option>")
                             }
@@ -435,6 +452,9 @@ function _renderTableFormContent(container, form, skipLabel){
                         null,
                         {item: item, select: $select},
                         function(context, data){
+
+                            data.sort(_sortById);
+
                             for(var d in data){
                                 context.select.append("<option value='"  + (data[d].key != null ? data[d].key : data[d].id) + "' >" + (data[d].id != null ? data[d].id : data[d].key) +"</option>")
                             }
@@ -645,6 +665,7 @@ function _renderFormContent(container, config, prefix){
                         case "options":
                         var $select = $("<select class='form-control' name='" + prefix + config[i].key + "'>");
 
+                        config[i].options.sort();
                         for(var op in config[i].options){
                             $select.append("<option>" +config[i].options[op] +"</option>")
                         }
