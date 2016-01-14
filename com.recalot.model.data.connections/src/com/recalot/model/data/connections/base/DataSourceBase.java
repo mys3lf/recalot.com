@@ -35,6 +35,7 @@ public abstract class DataSourceBase extends DataSource {
     public HashMap<String, User> users;
     public HashMap<String, Item> items;
     public HashMap<String, Interaction> interactions;
+    public HashMap<String, Relation> relations;
 
     private DataSet dataSet;
 
@@ -42,6 +43,7 @@ public abstract class DataSourceBase extends DataSource {
         this.users = new HashMap<>();
         this.items = new HashMap<>();
         this.interactions = new HashMap<>();
+        this.relations = new HashMap<>();
 
         this.dataSet = new DataSourceDataSet(this);
     }
@@ -139,6 +141,15 @@ public abstract class DataSourceBase extends DataSource {
         throw throwNotSupportedException("createUser");
     }
 
+    @Override
+    public Relation getRelation(String relationId) throws BaseException {
+        return relations.get(relationId);
+    }
+
+    @Override
+    public Relation[] getRelations(String fromId, String toId) throws BaseException {
+        return relations.values().stream().filter(i -> i.getFromId().equals(fromId) && i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+    }
 
     @Override
     public Relation[] getRelations() throws BaseException {
@@ -147,17 +158,7 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public int getRelationCount() {
-        return 0;
-    }
-
-    @Override
-    public Relation getRelation(String relationId) throws BaseException {
-        throw throwNotSupportedException("getRelation");
-    }
-
-    @Override
-    public Relation[] getRelations(String fromId, String toId) throws BaseException {
-        throw throwNotSupportedException("getRelations");
+        return relations.size();
     }
 
     @Override
@@ -167,7 +168,7 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public Relation createRelation(String fromId, String toId, String type, Map<String, String> content) throws BaseException {
-        throw throwNotSupportedException("    public Item createRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {\n");
+        throw throwNotSupportedException("createRelation");
     }
 
     private NotSupportedException throwNotSupportedException(String createUser) throws NotSupportedException {

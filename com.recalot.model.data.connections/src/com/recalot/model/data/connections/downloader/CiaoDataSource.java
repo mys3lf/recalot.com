@@ -44,7 +44,7 @@ public class CiaoDataSource extends BaseDownloaderDataSource{
             downloadData("book-crossing", "http://www2.informatik.uni-freiburg.de/~cziegler/BX/BX-CSV-Dump.zip");
             downloadData("ml-latestSmall", "http://files.grouplens.org/datasets/movielens/ml-latest-small.zip");
             downloadData("ml-latest", "http://files.grouplens.org/datasets/movielens/ml-latest.zip");
-
+            downloadData("douban", "http://dl.dropbox.com/u/17517913/Douban.zip");
 
 
         } catch (IOException e) {

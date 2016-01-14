@@ -22,6 +22,8 @@ import com.recalot.common.builder.Initiator;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.data.connections.downloader.CiaoDataSource;
+import com.recalot.model.data.connections.downloader.douban.DoubanDataSource;
+import com.recalot.model.data.connections.downloader.filmtrust.FilmTrustDataSource;
 import com.recalot.model.data.connections.downloader.movielens.MovieLensDataSource;
 import com.recalot.model.data.connections.mysql.MySQLDataSource;
 import com.recalot.model.data.connections.reddit.RedditDataSource;
@@ -81,10 +83,25 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSourceBuilder builder = new DataSourceBuilder(this, CiaoDataSource.class.getName(), "ciao", "");
+            //   connections.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            DataSourceBuilder builder = new DataSourceBuilder(this, FilmTrustDataSource.class.getName(), "filmtrust", "");
             connections.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
         }
+
+        try {
+            DataSourceBuilder builder = new DataSourceBuilder(this, DoubanDataSource.class.getName(), "douban", "");
+            connections.add(builder);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+
         try {
             DataSourceBuilder builder = new DataSourceBuilder(this, RedditDataSource.class.getName(), "reddit", "");
             builder.setConfiguration(new ConfigurationItem("dir", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));

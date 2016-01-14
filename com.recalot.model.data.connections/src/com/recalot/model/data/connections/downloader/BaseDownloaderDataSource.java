@@ -76,6 +76,10 @@ public abstract class BaseDownloaderDataSource  extends DataSourceBase {
 
             java.net.HttpURLConnection con = (HttpURLConnection)new URL(urlString).openConnection();
 
+            //some websites will not allow our anonymous request. So we just pretend to be a firefox browser
+            con.setRequestProperty("Connection", "keep-alive");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:16.0) Gecko/20100101 Firefox/16.0");
+
             if (con.getResponseCode() != 200) {
                 // error handle here!;
                 throw new NotFoundException("The url %s can not be accessed!", urlString);
