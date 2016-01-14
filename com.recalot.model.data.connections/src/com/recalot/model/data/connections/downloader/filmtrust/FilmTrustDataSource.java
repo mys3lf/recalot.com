@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Matthäus Schmedding
+// Copyright (C) 2016 Matthäus Schmedding
 //
 // This file is part of recalot.com.
 //
@@ -18,16 +18,17 @@
 package com.recalot.model.data.connections.downloader.filmtrust;
 
 import com.recalot.common.Helper;
-import com.recalot.common.communication.*;
+import com.recalot.common.communication.Interaction;
+import com.recalot.common.communication.Item;
+import com.recalot.common.communication.Relation;
+import com.recalot.common.communication.User;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.model.data.connections.downloader.BaseDownloaderDataSource;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Reads the MovieLens ml-100k, ml-1m, or ml-10M100k data set
