@@ -58,26 +58,26 @@ public class Activator implements BundleActivator, Initiator {
         try {
 
             MetricBuilder fscoreBuilder = new MetricBuilder(this, FScore.class.getName(), "fscore", "F-Score");
-            fscoreBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            fscoreBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            fscoreBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            fscoreBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             MetricBuilder precisionBuilder = new MetricBuilder(this, Precision.class.getName(), "precision", "Precision");
-            precisionBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            precisionBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
           //  precisionBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder recallBuilder = new MetricBuilder(this, Recall.class.getName(), "recall", "Recall");
-            recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             MetricBuilder mrrBuilder = new MetricBuilder(this, MRR.class.getName(), "mrr", "MRR");
-            mrrBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            mrrBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
          //   recallBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder giniBuilder = new MetricBuilder(this, Gini.class.getName(), "gini", "Gini");
-            giniBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            giniBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
         //    giniBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder coverageBuilder = new MetricBuilder(this, Coverage.class.getName(), "coverage", "Coverage");
-            coverageBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            coverageBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
        //     coverageBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
 
             MetricBuilder maeBuilder = new MetricBuilder(this, MAE.class.getName(), "mae", "Mean Absolute Error");

@@ -58,7 +58,8 @@ public class UserBasedCosineNearestNeighborsRecommender extends Recommender {
 
         for (Interaction interaction : getDataSet().getInteractions()) {
             String userId = interaction.getUserId();
-            String itemId = interaction.getUserId();
+            String itemId = interaction.getItemId();
+
             if (userVectors.containsKey(userId) && itemPosInVector.containsKey(itemId)) {
                 int pos = itemPosInVector.get(itemId);
 

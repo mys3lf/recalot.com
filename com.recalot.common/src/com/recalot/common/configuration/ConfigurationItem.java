@@ -28,6 +28,7 @@ public class ConfigurationItem {
     private String key;
     private ConfigurationItemType type;
     private String value;
+    private String description;
     private ConfigurationItemRequirementType requirement;
 
     public ConfigurationItem()
@@ -37,6 +38,27 @@ public class ConfigurationItem {
         value = "";
         requirement = ConfigurationItemRequirementType.Required;
         options = new ArrayList<>();
+        description = "";
+    }
+
+    public ConfigurationItem(String key, ConfigurationItemType type)
+    {
+        this.key = key;
+        this.type = type;
+        this.value = "";
+        this.requirement = ConfigurationItemRequirementType.Required;
+        this.options = new ArrayList<>();
+        this.description = "";
+    }
+
+    public ConfigurationItem(String key, ConfigurationItemType type, String value)
+    {
+        this.key = key;
+        this.type = type;
+        this.value = value;
+        this.requirement = ConfigurationItemRequirementType.Required;
+        this.options = new ArrayList<>();
+        this.description = "";
     }
 
     public ConfigurationItem(String key, ConfigurationItemType type, String value, ConfigurationItemRequirementType requirement)
@@ -46,15 +68,27 @@ public class ConfigurationItem {
         this.value = value;
         this.requirement = requirement;
         this.options = new ArrayList<>();
+        this.description = "";
     }
 
-    public ConfigurationItem(String key, ConfigurationItemType type, String value, ConfigurationItemRequirementType requirement, ArrayList<String> options)
+    public ConfigurationItem(String key, ConfigurationItemType type, String value, ConfigurationItemRequirementType requirement, String description)
+    {
+        this.key = key;
+        this.type = type;
+        this.value = value;
+        this.requirement = requirement;
+        this.options = new ArrayList<>();
+        this.description = description;
+    }
+
+    public ConfigurationItem(String key, ConfigurationItemType type, String value, ConfigurationItemRequirementType requirement, String description, ArrayList<String> options)
     {
         this.key = key;
         this.type = type;
         this.value = value;
         this.requirement = requirement;
         this.options = options;
+        this.description = description;
     }
 
     public String getKey() {
@@ -97,7 +131,15 @@ public class ConfigurationItem {
         this.options = options;
     }
 
-    public enum ConfigurationItemType{
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public enum ConfigurationItemType {
         String,
         Options,
         Boolean,

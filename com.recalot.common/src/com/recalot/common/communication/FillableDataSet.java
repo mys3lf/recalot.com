@@ -90,6 +90,14 @@ public class FillableDataSet implements DataSet {
         users.add(user);
     }
 
+    /**
+     * Add a relation to the data set
+     * @param relation
+     */
+    public void addRelation(Relation relation) {
+        relations.add(relation);
+    }
+
     @Override
     public Interaction[] getInteractions() throws BaseException {
         return interactions.toArray(new Interaction[interactions.size()]);
@@ -164,7 +172,7 @@ public class FillableDataSet implements DataSet {
 
     @Override
     public int getRelationCount() {
-        return 0;
+        return relations.size();
     }
 
     public static DataSet createDataSet(DataSet dataSet, Interaction[] omitInteractions) throws BaseException {
@@ -185,19 +193,23 @@ public class FillableDataSet implements DataSet {
             }
         }
 
-        User[] allUsers = dataSet.getUsers();
-        Item[] allItems = dataSet.getItems();
-
         //copy all users
-        for(User user: allUsers) {
+        for(User user: dataSet.getUsers()) {
             temp.addUser(user);
         }
 
         //copy all items
-        for(Item item: allItems) {
+        for(Item item: dataSet.getItems()) {
             temp.addItem(item);
+        }
+
+        //copy all relations
+        for(Relation relation: dataSet.getRelations()) {
+            temp.addRelation(relation);
         }
 
         return temp;
     }
+
+
 }

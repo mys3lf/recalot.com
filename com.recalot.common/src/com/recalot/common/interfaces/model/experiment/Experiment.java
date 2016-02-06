@@ -86,6 +86,7 @@ public abstract class Experiment extends Loggable {
     public abstract void run();
 
     public enum ExperimentState {
+        WAITING,
         RUNNING,
         FINISHED
     }

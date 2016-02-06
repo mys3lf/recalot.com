@@ -21,9 +21,9 @@ import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
-import com.recalot.model.data.connections.downloader.CiaoDataSource;
 import com.recalot.model.data.connections.downloader.douban.DoubanDataSource;
 import com.recalot.model.data.connections.downloader.filmtrust.FilmTrustDataSource;
+import com.recalot.model.data.connections.downloader.flixster.FlixsterDataSource;
 import com.recalot.model.data.connections.downloader.movielens.MovieLensDataSource;
 import com.recalot.model.data.connections.mysql.MySQLDataSource;
 import com.recalot.model.data.connections.reddit.RedditDataSource;
@@ -82,8 +82,8 @@ public class Activator implements BundleActivator, Initiator {
         }
 
         try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, CiaoDataSource.class.getName(), "ciao", "");
-            //   connections.add(builder);
+            DataSourceBuilder builder = new DataSourceBuilder(this, FlixsterDataSource.class.getName(), "flixster", "");
+         //   connections.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
         }

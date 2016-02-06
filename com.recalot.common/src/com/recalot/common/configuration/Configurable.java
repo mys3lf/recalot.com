@@ -20,6 +20,7 @@ package com.recalot.common.configuration;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.MissingArgumentException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -27,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- *
  * @author Matthäus Schmedding (info@recalot.com)
  */
 public abstract class Configurable {
@@ -81,7 +80,9 @@ public abstract class Configurable {
                 String methodName = item.getKey();
 
                 methodName = adjustMethodName(methodName);
-             //   System.out.println(methodName + ":" + item.getValue());
+                //   System.out.println(methodName + ":" + item.getValue());
+                boolean found = false;
+
                 switch (item.getType()) {
                     case Integer: {
 
@@ -89,6 +90,7 @@ public abstract class Configurable {
                         if (m == null) m = getMethod(c, methodName, int.class);
                         if (m != null) {
                             m.invoke(instance, Integer.parseInt(item.getValue()));
+                            found = true;
                         }
 
                         break;
@@ -98,6 +100,7 @@ public abstract class Configurable {
                         if (m == null) m = getMethod(c, methodName, double.class);
                         if (m != null) {
                             m.invoke(instance, Double.parseDouble(item.getValue()));
+                            found = true;
                         }
                         break;
                     }
@@ -106,6 +109,7 @@ public abstract class Configurable {
                         if (m == null) m = getMethod(c, methodName, boolean.class);
                         if (m != null) {
                             m.invoke(instance, Boolean.parseBoolean(item.getValue()));
+                            found = true;
                         }
                         break;
                     }
@@ -114,8 +118,19 @@ public abstract class Configurable {
                         Method m = getMethod(c, methodName, String.class);
                         if (m != null) {
                             m.invoke(instance, item.getValue());
+                            found = true;
                         }
                         break;
+                    }
+                }
+
+
+                if (!found) {
+                    //the instance does not handle the configuration values individually but global in one method
+                    Method m = getMethod(c, "setConfigurationValue", ConfigurationItem.class);
+
+                    if (m != null) {
+                        m.invoke(instance, item);
                     }
                 }
             }
@@ -123,7 +138,7 @@ public abstract class Configurable {
     }
 
 
-    protected static Method getMethod(Class c, String methodName, Class cl) {
+    protected static Method getMethod(Class c, String methodName, Class... cl) {
         Method m = null;
         Class tempClass = c;
         while (tempClass != null && m == null) {
@@ -135,6 +150,27 @@ public abstract class Configurable {
         }
 
         return m;
+    }
+
+    protected static Field getField(Class c, String fieldName, Class cl) {
+        Field f = null;
+        Class tempClass = c;
+        while (tempClass != null && f == null) {
+            try {
+                f = tempClass.getDeclaredField(fieldName);
+                if (!f.getType().equals(cl)) {
+                    f = null;
+                }
+
+                if (!f.isAccessible()) {
+                    f = null;
+                }
+            } catch (NoSuchFieldException e) {
+                tempClass = tempClass.getSuperclass();
+            }
+        }
+
+        return f;
     }
 
     private static String adjustMethodName(String methodName) {

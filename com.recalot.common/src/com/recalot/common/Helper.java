@@ -308,8 +308,11 @@ public class Helper {
         public static final String Key = "key".intern();
         public static final String TimeStamp = "timeStamp".intern();
         public static final String SplitType = "split-type".intern();
+        public static final String InteractionId = "interaction-id".intern();
 
         public static final Integer PageSize = 10;
+        public static final String Content = "content".intern();
+
 
         public static class Context {
             public static final String LastConsumed = "last-consumed".intern();

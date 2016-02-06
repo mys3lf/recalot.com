@@ -34,6 +34,7 @@ import org.osgi.framework.BundleContext;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by matthaeus.schmedding on 16.04.2015.
@@ -44,11 +45,13 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
 
     private final ConcurrentHashMap<String, Experiment> experiments;
     private final ConcurrentHashMap<String, Thread> threads;
+    private ConcurrentLinkedQueue<Experiment> queue;
 
     public ExperimentAccess(BundleContext context) {
         this.context = context;
         this.experiments = new ConcurrentHashMap<>();
         this.threads = new ConcurrentHashMap<>();
+        this.queue = new ConcurrentLinkedQueue<>();
     }
 
     @Override
@@ -99,20 +102,44 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
 
         Experiment experiment = new com.recalot.common.impl.experiment.Experiment(id, dataSource, splitter, recommender, metrics, context, param);
 
-        Thread thread = new Thread() {
-            public void run() {
-                experiment.run();
 
-                threads.remove(experiment.getId());
-            }
-        };
-
-        threads.put(id, thread);
-        thread.start();
+        //add to queue
+        if (threads.size() > 0) {
+            queue.add(experiment);
+        } else { // run
+            run(experiment);
+        }
 
         experiments.put(experiment.getId(), experiment);
 
         return experiment;
+    }
+
+    private void runNext() {
+        if (queue.size() > 0) {
+            Experiment experiment = queue.poll();
+            if (experiment != null) {
+                run(experiment);
+            }
+        }
+    }
+
+    private void run(Experiment experiment) {
+        if (experiment != null) {
+            Thread thread = new Thread() {
+                public void run() {
+
+                    experiment.run();
+
+                    threads.remove(experiment.getId());
+
+                    runNext();
+                }
+            };
+
+            threads.put(experiment.getId(), thread);
+            thread.start();
+        }
     }
 
     @Override

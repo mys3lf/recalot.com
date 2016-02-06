@@ -34,5 +34,5 @@ public interface ItemDataAccess {
     public Item tryGetItem(String itemId) throws BaseException;
     public Item updateItem(String itemId, Map<String, String> content) throws BaseException;
     public Item createItem(Map<String, String> content) throws BaseException;
-    //TODO add deleteItem
+    public Message deleteItem(String itemId) throws BaseException;
 }

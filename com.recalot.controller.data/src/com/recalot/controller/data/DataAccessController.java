@@ -100,6 +100,10 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
                     result = updateItem(access, template, param);
                     break;
                 }
+                case DeleteItem: {
+                    result = deleteItem(access, template, param);
+                    break;
+                }
                 case CreateItem: {
                     result = createItem(access, template, param);
                     break;
@@ -324,6 +328,15 @@ public class DataAccessController implements com.recalot.common.interfaces.contr
 
         Item item = dataSource.updateItem(param.get(Helper.Keys.ItemId), param);
         return template.transform(item);
+    }
+
+    private TemplateResult deleteItem(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {
+        DataSource dataSource = getDataSource(access, param.get(Helper.Keys.SourceId));
+        if (dataSource.getState() != DataInformation.DataState.READY)
+            throw new NotReadyException("The datasource %s is not yet ready.", dataSource.getId());
+
+        Message message = dataSource.deleteItem(param.get(Helper.Keys.ItemId));
+        return template.transform(message);
     }
 
     private TemplateResult createItem(DataAccess access, DataTemplate template, Map<String, String> param) throws BaseException {

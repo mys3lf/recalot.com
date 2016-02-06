@@ -23,11 +23,13 @@
     text-align: right;
 }
 
-#detail-buttons {
+#detail-buttons,
+#script-buttons {
   float: right;
 }
 
-#detail-buttons > a {
+#detail-buttons > a
+#script-buttons > a, {
   margin: 0 5px;
 }
 
@@ -39,4 +41,8 @@
 #table .add-button a span{
    display: inline-block;
    min-width: 100%;
+}
+
+#script {
+    display: none;
 }

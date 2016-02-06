@@ -79,6 +79,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
             }
         }
+
+        setState(ExperimentState.WAITING);
     }
 
     @Override
@@ -129,6 +131,8 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
 
         setInfo("Done");
         setState(ExperimentState.FINISHED);
+
+        this.recommenders = null;
     }
 
     private void performTest(Recommender[] recommenders, DataSet test, double percentage) {

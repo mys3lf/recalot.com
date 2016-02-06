@@ -17,6 +17,9 @@
 
 package com.recalot.common.communication;
 
+import com.recalot.common.Helper;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,41 +29,54 @@ import java.util.Map;
  */
 public class Relation {
 
-    private final String fromId;
-    private final String toId;
-    private String id;
-    private String type;
-    private Map<String, String> content;
+    private int fromId;
+    private int toId;
+    private int id;
+    private int type;
+    private Map<Integer, String> content;
 
     public Relation(String id, String fromId, String toId, String type, Map<String, String> content) {
-        this.id = id.intern();
-        this.fromId = fromId.intern();
-        this.toId = toId.intern();
-        this.type = type.intern();
-        this.content = content;
+        this.id = InnerIds.getNextId(id, Helper.Keys.RelationId);
+        this.fromId = InnerIds.getNextId(fromId, Helper.Keys.UserId);
+        this.toId = InnerIds.getNextId(toId, Helper.Keys.UserId);
+        this.type = InnerIds.getNextId(type, Helper.Keys.Type);
+
+        this.content = new HashMap<>();
+
+        for (String key : content.keySet()) {
+            int contentId = InnerIds.getNextId(key, Helper.Keys.Content);
+            this.content.put(contentId, content.get(key));
+        }
     }
 
     public String getId() {
-        return id;
+        return InnerIds.getId(id, Helper.Keys.RelationId);
     }
 
     public String getType() {
-        return type;
+        return InnerIds.getId(type, Helper.Keys.Type);
     }
 
     public Map<String, String> getContent() {
+        HashMap<String, String> content = new HashMap<>();
+
+        for (Integer key : this.content.keySet()) {
+            String contentKey = InnerIds.getId(key, Helper.Keys.Content);
+            content.put(contentKey, this.content.get(key));
+        }
+
         return content;
     }
 
     public String getValue(String key) {
-        return content.get(key);
+        return content.get(InnerIds.getId(key, Helper.Keys.Content));
     }
 
     public String getToId() {
-        return toId;
+        return InnerIds.getId(toId, Helper.Keys.ToId);
     }
 
     public String getFromId() {
-        return fromId;
+        return InnerIds.getId(fromId, Helper.Keys.UserId);
     }
 }

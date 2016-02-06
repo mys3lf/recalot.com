@@ -10,10 +10,7 @@ Bundle-Description: This bundle contains the data templates for the ou
  tput formats json, xml, csv & plain text
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.templates.data
-Bundle-Name: Recalot.com Templates - Data
-Bundle-Version: 0.1.0.740
 Bundle-ManifestVersion: 2
-Bundle-Activator: com.recalot.templates.Activator
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc
 Import-Package: org.osgi.framework,   com.recalot.common.communication
@@ -23,4 +20,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  es.model.experiment,com.recalot.common.interfaces.template,com.recalo
  t.common,flexjson,flexjson.transformer,flexjson.locators,flexjson.fac
  tories
+Export-Package: com.recalot.templates.base;version="0.1.0"
+Bundle-Name: Recalot.com Templates - Data
+Bundle-Version: 0.1.0.744
+Bundle-Activator: com.recalot.templates.Activator
 

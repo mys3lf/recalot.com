@@ -160,6 +160,7 @@ var structure = [
      {
             name:"Create Offline Experiment",
             id:"createoffline",
+            script: true,
             content: {
                  type: "form",
                  form: [
@@ -245,6 +246,22 @@ var structure = [
         content: {
              type: "list",
              action:"/experiments/?state=RUNNING",
+             method: "get",
+             autoupdate: 10,
+             buttons: [],
+             detail: {
+                 action: "/experiments/{0}",
+                 type: "json",
+                 buttons: []
+                 }
+             }
+        },
+        {
+        name:"Experiments in queue",
+        id:"queue",
+        content: {
+             type: "list",
+             action:"/experiments/?state=WAITING",
              method: "get",
              autoupdate: 10,
              buttons: [],

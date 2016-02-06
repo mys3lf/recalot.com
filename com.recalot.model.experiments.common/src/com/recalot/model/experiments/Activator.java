@@ -56,8 +56,8 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomNFoldDataSplitter.class.getName(), "random-nfold", "Random N-Fold Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             splitters.add(splitterBuilder);
 
@@ -67,8 +67,8 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomPercentageDataSplitter.class.getName(), "random-percentage", "Random Percentage Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("percentage", ConfigurationItem.ConfigurationItemType.Double, "0.7", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("percentage", ConfigurationItem.ConfigurationItemType.Double, "0.7", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             splitters.add(splitterBuilder);
 
@@ -78,7 +78,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, TimeBasedDataSplitter.class.getName(), "timebased", "Time-based Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("testPercentage", ConfigurationItem.ConfigurationItemType.Double, "0.3", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            splitterBuilder.setConfiguration(new ConfigurationItem("testPercentage", ConfigurationItem.ConfigurationItemType.Double, "0.3", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             splitters.add(splitterBuilder);
 

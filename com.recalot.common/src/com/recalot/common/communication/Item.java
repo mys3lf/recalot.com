@@ -17,6 +17,8 @@
 
 package com.recalot.common.communication;
 
+import com.recalot.common.Helper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,11 +31,12 @@ public class Item {
     /**
      * Content Map
      */
-    private final Map<String, String> content;
+    private final Map<Integer, String> content;
+
     /**
      * Id
      */
-    private final String id;
+    private int id;
 
     /**
      * Constructor with id as parameter
@@ -49,8 +52,13 @@ public class Item {
      * @param content content map
      */
     public Item(String id, Map<String, String> content) {
-        this.id = id;
-        this.content = content;
+        this.id = InnerIds.getNextId(id, Helper.Keys.ItemId);
+        this.content = new HashMap<>();
+
+        for (String key : content.keySet()) {
+            int contentId = InnerIds.getNextId(key, Helper.Keys.Content);
+            this.content.put(contentId, content.get(key));
+        }
     }
 
     /**
@@ -58,7 +66,7 @@ public class Item {
      * @return item id
      */
     public String getId() {
-        return id;
+        return  InnerIds.getId(id, Helper.Keys.ItemId);
     }
 
     /**
@@ -66,6 +74,14 @@ public class Item {
      * @return complete item content
      */
     public Map<String, String> getContent() {
+
+        HashMap<String, String> content = new HashMap<>();
+
+        for (Integer key : this.content.keySet()) {
+            String contentKey = InnerIds.getId(key, Helper.Keys.Content);
+            content.put(contentKey, this.content.get(key));
+        }
+
         return content;
     }
 
@@ -75,6 +91,6 @@ public class Item {
      * @return item content with the given key
      */
     public String getValue(String key) {
-        return content.get(key);
+        return content.get(InnerIds.getId(key, Helper.Keys.Content));
     }
 }

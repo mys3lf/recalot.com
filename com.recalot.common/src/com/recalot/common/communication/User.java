@@ -17,8 +17,9 @@
 
 package com.recalot.common.communication;
 
+import com.recalot.common.Helper;
+
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,54 +32,70 @@ public class User {
     /**
      * User ID
      */
-    private String id;
+    private int id;
 
     /**
      * User content map
      */
-    private Map<String, String> map;
+    private Map<Integer, String> map;
 
     /**
      * Constructor with id and content map as parameters
-     * @param id user id
+     *
+     * @param id  user id
      * @param map content map
      */
-    public User(String id, Map<String, String> map){
-        this.id = id;
-        this.map = map;
+    public User(String id, Map<String, String> map) {
+        this.id = InnerIds.getNextId(id, Helper.Keys.UserId);
+
+        this.map = new HashMap<>();
+
+        for (String key : map.keySet()) {
+            int contentId = InnerIds.getNextId(key, Helper.Keys.Content);
+            this.map.put(contentId, map.get(key));
+        }
     }
 
     /**
      * Constructor with id as parameter
+     *
      * @param id user id
      */
-    public User(String id){
-        this.id = id;
+    public User(String id) {
+        this.id = InnerIds.getNextId(id, Helper.Keys.UserId);
         this.map = new HashMap<>();
     }
 
     /**
-     *
      * @return user id
      */
     public String getId() {
-        return id;
+        return InnerIds.getId(id, Helper.Keys.UserId);
     }
 
     /**
      * Get all available user content
-     * @return all available user conent
+     *
+     * @return all available user content
      */
     public Map<String, String> getContent() {
-        return map;
+        HashMap<String, String> content = new HashMap<>();
+
+        for (Integer key : map.keySet()) {
+            String contentKey = InnerIds.getId(key, Helper.Keys.Content);
+            content.put(contentKey, map.get(key));
+        }
+
+        return content;
     }
 
     /**
      * Get user content for a specific key
+     *
      * @param key content key
      * @return user content for a specific key
      */
     public String getValue(String key) {
-        return map.get(key);
+        return map.get(InnerIds.getId(key, Helper.Keys.Content));
     }
 }

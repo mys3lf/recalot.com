@@ -49,6 +49,11 @@ public class TimeBasedDataSplitter extends DataSplitter {
             result[1].addItem(item);
         }
 
+        for(Relation relation: source.getRelations()) {
+            for(FillableDataSet dataSet : result) {
+                dataSet.addRelation(relation);
+            }
+        }
         for(User user : source.getUsers()){
             //add all users to both splits
             result[0].addUser(user);

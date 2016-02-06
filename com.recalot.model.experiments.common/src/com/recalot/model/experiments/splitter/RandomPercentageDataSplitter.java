@@ -58,19 +58,22 @@ public class RandomPercentageDataSplitter extends DataSplitter {
 
         }
 
-        User[] allUsers = source.getUsers();
-        Item[] allItems = source.getItems();
-
         // but every data set gets all users and items
-        for(User user: allUsers) {
+        for(User user: source.getUsers()) {
             for(FillableDataSet dataSet : result) {
                 dataSet.addUser(user);
             }
         }
 
-        for(Item item: allItems) {
+        for(Item item: source.getItems()) {
             for(FillableDataSet dataSet : result) {
                 dataSet.addItem(item);
+            }
+        }
+
+        for(Relation relation: source.getRelations()) {
+            for(FillableDataSet dataSet : result) {
+                dataSet.addRelation(relation);
             }
         }
 

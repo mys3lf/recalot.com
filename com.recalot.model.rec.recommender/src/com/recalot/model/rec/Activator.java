@@ -101,9 +101,9 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.knn.UserBasedCosineNearestNeighborsRecommender.class.getName(), "cosine-user-knn", "");
-            builder.setConfiguration(new ConfigurationItem("minOverlap", ConfigurationItem.ConfigurationItemType.Integer, "3", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("maxNeighbors", ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("minSimilarity", ConfigurationItem.ConfigurationItemType.Integer, "0.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("minOverlap", ConfigurationItem.ConfigurationItemType.Integer, "3", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            builder.setConfiguration(new ConfigurationItem("maxNeighbors", ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            builder.setConfiguration(new ConfigurationItem("minSimilarity", ConfigurationItem.ConfigurationItemType.Integer, "0.0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -111,8 +111,8 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.funksvd.FunkSVDRecommender.class.getName(), "funk-svd", "");
-            builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-            builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+            builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
             recommenders.add(builder);
         } catch (BaseException e) {
             e.printStackTrace();
@@ -138,7 +138,7 @@ public class Activator implements BundleActivator, Initiator {
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareBPRRecommender.class.getName(), "reddit-context-bprmf", "");
 
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
             List<String> options = new ArrayList<>();
 
             options.add("letter");
@@ -147,7 +147,7 @@ public class Activator implements BundleActivator, Initiator {
 
             config.setOptions(options);
             builder.setConfiguration(config);
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             AddBPRConfiguration(builder);
 
@@ -160,7 +160,7 @@ public class Activator implements BundleActivator, Initiator {
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareMostPopular.class.getName(), "reddit-context-mp", "");
 
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
             List<String> options = new ArrayList<>();
 
             options.add("letter");
@@ -169,7 +169,7 @@ public class Activator implements BundleActivator, Initiator {
 
             config.setOptions(options);
             builder.setConfiguration(config);
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -179,7 +179,7 @@ public class Activator implements BundleActivator, Initiator {
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareRandomRecommender.class.getName(), "reddit-context-random", "");
 
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required);
+            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
             List<String> options = new ArrayList<>();
 
             options.add("letter");
@@ -189,7 +189,7 @@ public class Activator implements BundleActivator, Initiator {
             config.setOptions(options);
             builder.setConfiguration(config);
 
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
 
             recommenders.add(builder);
@@ -200,7 +200,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.RandomRecommender.class.getName(), "reddit-random", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -209,7 +209,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-mp", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
 
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -218,7 +218,7 @@ public class Activator implements BundleActivator, Initiator {
 
         try {
             RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-bprmf", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
             AddBPRConfiguration(builder);
             recommenders.add(builder);
         } catch (BaseException e) {
@@ -264,15 +264,15 @@ public class Activator implements BundleActivator, Initiator {
     }
 
     private void AddBPRConfiguration(RecommenderBuilder builder) {
-        builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("learnRate", ConfigurationItem.ConfigurationItemType.Double, "0.05", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("regU", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("regI", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("regJ", ConfigurationItem.ConfigurationItemType.Double, "0.00025", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-        builder.setConfiguration(new ConfigurationItem("updateJ", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional));
+        builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("learnRate", ConfigurationItem.ConfigurationItemType.Double, "0.05", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("regU", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("regI", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("regJ", ConfigurationItem.ConfigurationItemType.Double, "0.00025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        builder.setConfiguration(new ConfigurationItem("updateJ", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
     }
 
     /**

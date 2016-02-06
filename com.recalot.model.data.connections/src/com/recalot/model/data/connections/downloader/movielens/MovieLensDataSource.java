@@ -17,6 +17,7 @@
 
 package com.recalot.model.data.connections.downloader.movielens;
 
+import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotFoundException;
@@ -241,11 +242,11 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
                     map.put(Rating, split[2].intern());
 
-                    if (!users.containsKey(userId)) {
-                        users.put(userId, new User(userId));
+                    if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
+                        users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
                     }
 
-                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
+                    interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
                 }
             }
         } catch (IOException x) {
@@ -307,7 +308,7 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                     }
                     map.put(Genres, categories);
 
-                    items.put(itemId, new com.recalot.common.communication.Item(itemId, map));
+                    items.put(InnerIds.getNextId(itemId, Helper.Keys.ItemId), new com.recalot.common.communication.Item(itemId, map));
                 }
             }
         } catch (IOException x) {
@@ -335,7 +336,7 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                     map.put(ZipCode, split[4].intern());
 
 
-                    users.put(userId, new User(userId, map));
+                    users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId, map));
                 }
             }
         } catch (IOException x) {
@@ -364,7 +365,7 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                     map.put(ZipCode, split[4].intern());
 
 
-                    users.put(userId, new com.recalot.common.communication.User(userId, map));
+                    users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new com.recalot.common.communication.User(userId, map));
                 }
             }
         } catch (IOException x) {
@@ -398,11 +399,11 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
                     map.put(Rating, split[2].intern());
 
-                    if (!users.containsKey(userId)) {
-                        users.put(userId, new User(userId));
+                    if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
+                        users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
                     }
 
-                    interactions.put(ratingId, new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
+                    interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new com.recalot.common.communication.Interaction(ratingId, userId, itemId, date, "rating".intern(), split[2].intern(), map));
                 }
             }
         } catch (IOException x) {
@@ -436,7 +437,7 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
                     map.put(Genres, split[2]);
 
-                    items.put(itemId, new com.recalot.common.communication.Item(itemId, map));
+                    items.put(InnerIds.getNextId(itemId, Helper.Keys.ItemId), new com.recalot.common.communication.Item(itemId, map));
                 }
             }
         } catch (IOException x) {

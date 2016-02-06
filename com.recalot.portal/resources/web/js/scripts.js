@@ -52,9 +52,8 @@ function getBreadcrumb(structure, currentId){
 
  function getCurrentItem(structure, currentId){
     var item = findItem(structure, currentId);
-    if(item != null && item.contentRef != null)
-    {
-    item = findItem(structure, item.contentRef);
+    if(item != null && item.contentRef != null) {
+        item = findItem(structure, item.contentRef);
     }
 
     return item;
@@ -90,6 +89,10 @@ function buildNavigationItems(nav, structure, currentId){
 
 
 function render(item){
+    if(item.script != null && item.script == true) {
+        $("#script").show();
+        $("#script").data("item", item);
+    }
     switch(item.content.type) {
         case "list":
             renderList(item);
@@ -785,6 +788,72 @@ function buttonClick(e){
     return false;
 }
 
+function scriptButtonClick(e){
+    var script = $("#script");
+    var textarea = script.find("textarea");
+
+    var text = textarea.val();
+    var message = $("#message");
+    message.empty();
+
+    try{
+        var data = JSON.parse(text);
+
+        var item = script.data("item");
+
+
+       if(data != null){
+            if(data instanceof Array) {
+                for(var i in data) {
+                   sendScriptRequest(data[i], item);
+                }
+            } else {
+                sendScriptRequest(data, item);
+            }
+        }
+    } catch(e) {
+        $("<div class='alert alert-dismissible alert-danger'><button type='button' class='close' data-dismiss='alert'>×</button><strong>The current input could not be processed</strong>" + e + "</div>").appendTo(message);
+    }
+
+    return false;
+}
+
+
+function sendScriptRequest(data, item) {
+    if(data != null && item != null && item.content != null){
+        $.ajax({
+            url: item.content.action.url,
+            method: item.content.action.method,
+            data: flatData(data),
+        }).success(function(data, status, jqXHR){
+            var message = $("#message");
+             message.empty();
+
+             $("<div class='alert alert-dismissible alert-success'><button type='button' class='close' data-dismiss='alert'>×</button><strong>Successful executed!</strong>Please reload the site.</div>").appendTo(message);
+         }).error(function(jqXHR, textStatus, errorThrown){
+             var message = $("#message");
+             message.empty();
+
+             $("<div class='alert alert-dismissible alert-danger'><button type='button' class='close' data-dismiss='alert'>×</button><strong>The current request could not be processed</strong>" + errorThrown + "</div>").appendTo(message);
+         });
+    }
+}
+
+function flatData(data) {
+    var result = {};
+
+    for(var i in data) {
+        if(data[i] instanceof Object) {
+            for(var j in data[i]) {
+                result[i + "." + j] = data[i][j];
+            }
+        } else {
+            result[i] = data[i];
+        }
+    }
+
+    return result;
+}
 
 $(window).load(function(){
     var currentId = getParameterByName("id");
@@ -798,6 +867,7 @@ $(window).load(function(){
     var currentItem = getCurrentItem(structure, currentId);
 
     render(currentItem);
+
 
     $("#table").click(tableClick);
 });

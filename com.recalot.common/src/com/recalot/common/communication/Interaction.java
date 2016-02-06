@@ -17,6 +17,9 @@
 
 package com.recalot.common.communication;
 
+import com.recalot.common.Helper;
+import com.recalot.common.exceptions.NotFoundException;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -25,34 +28,36 @@ import java.util.Map;
  */
 public class Interaction {
 
-    private String id;
-    private String userId;
-    private String itemId;
+    private int id;
+    private int userId;
+    private int itemId;
     private Date timeStamp;
-    private String type;
+    private int type;
     private Map<String, String> content;
-    private String value;
+    private int value;
 
     public Interaction(String id, String userId, String itemId, Date timeStamp, String type, String value, Map<String, String> content) {
-        this.value = value;
-        this.id = id.intern();
-        this.userId = userId.intern();
-        this.itemId = itemId.intern();
+
+        this.value = InnerIds.getNextId(value, Helper.Keys.Value);
+        this.id = InnerIds.getNextId(id, Helper.Keys.InteractionId);
+        this.userId = InnerIds.getNextId(userId, Helper.Keys.UserId);
+        this.itemId = InnerIds.getNextId(itemId, Helper.Keys.ItemId);
+        this.type = InnerIds.getNextId(type, Helper.Keys.Type);
+
         this.timeStamp = timeStamp;
-        this.type = type.intern();
         this.content = content;
     }
 
     public String getId() {
-        return id;
+        return InnerIds.getId(id, Helper.Keys.InteractionId);
     }
 
     public String getUserId() {
-        return userId;
+        return InnerIds.getId(userId, Helper.Keys.UserId);
     }
 
     public String getItemId() {
-        return itemId;
+        return InnerIds.getId(itemId, Helper.Keys.ItemId);
     }
 
     public Date getTimeStamp() {
@@ -60,7 +65,7 @@ public class Interaction {
     }
 
     public String getType() {
-        return type;
+        return InnerIds.getId(type, Helper.Keys.Type);
     }
 
     public Map<String, String> getContent() {
@@ -72,6 +77,6 @@ public class Interaction {
     }
 
     public String getValue() {
-        return value;
+        return InnerIds.getId(value, Helper.Keys.Value);
     }
 }

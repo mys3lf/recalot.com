@@ -17,6 +17,8 @@
 
 package com.recalot.model.data.connections.reddit;
 
+import com.recalot.common.Helper;
+import com.recalot.common.communication.InnerIds;
 import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.User;
@@ -86,7 +88,7 @@ public class RedditDataSource extends DataSourceBase {
     }
 
     private void addWordInteraction(String user, String word, String id, Date date, int i) {
-        interactions.put(id, new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "view".intern(), "1".intern(), new HashMap<>()));
+        interactions.put(InnerIds.getNextId(id, Helper.Keys.InteractionId), new com.recalot.common.communication.Interaction(id, user, word, new Date(date.getTime() + i), "view".intern(), "1".intern(), new HashMap<>()));
     }
 
     private List<String> splitIntoWords(String sentence) {
@@ -130,15 +132,15 @@ public class RedditDataSource extends DataSourceBase {
 
     private void addNewItem(String word) {
         word = word.intern();
-        if (!items.containsKey(word)) {
-            items.put(word, new Item(word));
+        if (!items.containsKey(InnerIds.getNextId(word, Helper.Keys.ItemId))) {
+            items.put(InnerIds.getNextId(word, Helper.Keys.ItemId), new Item(word));
         }
     }
 
     private String createNewUser(String name) {
         String userName = name.substring(0, name.length() - 4).intern();
-        if (!users.containsKey(userName)) {
-            users.put(userName, new User(userName));
+        if (!users.containsKey(InnerIds.getNextId(userName, Helper.Keys.UserId))) {
+            users.put(InnerIds.getNextId(userName, Helper.Keys.UserId), new User(userName));
         }
         return userName;
     }

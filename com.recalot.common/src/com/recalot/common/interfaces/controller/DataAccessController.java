@@ -32,6 +32,7 @@ public interface DataAccessController extends Controller {
         GetItem(6),
         UpdateItem(7),
         CreateItem(8),
+        DeleteItem(22),
         GetInteractions(9),
         GetInteraction(10),
         GetSources(11),

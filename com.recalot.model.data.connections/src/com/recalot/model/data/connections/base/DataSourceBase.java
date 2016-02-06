@@ -32,10 +32,10 @@ import java.util.Map;
  */
 public abstract class DataSourceBase extends DataSource {
 
-    public HashMap<String, User> users;
-    public HashMap<String, Item> items;
-    public HashMap<String, Interaction> interactions;
-    public HashMap<String, Relation> relations;
+    public HashMap<Integer, User> users;
+    public HashMap<Integer, Item> items;
+    public HashMap<Integer, Interaction> interactions;
+    public HashMap<Integer, Relation> relations;
 
     private DataSet dataSet;
 
@@ -132,6 +132,11 @@ public abstract class DataSourceBase extends DataSource {
     }
 
     @Override
+    public Message deleteItem(String itemId) throws BaseException {
+        throw throwNotSupportedException("deleteItem");
+    }
+
+    @Override
     public User updateUser(String userId, Map<String, String> content) throws BaseException {
         throw throwNotSupportedException("updateUser");
     }
@@ -153,7 +158,7 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public Relation[] getRelations() throws BaseException {
-        return new Relation[0];
+        return relations.values().toArray(new Relation[relations.size()]);
     }
 
     @Override

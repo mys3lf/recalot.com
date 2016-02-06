@@ -696,6 +696,18 @@ public class MySQLDataSource extends DataSource {
         //    return new Message("Item successful saved", "Item successful saved", Message.Status.INFO);
     }
 
+    @Override
+    public Message deleteItem(String itemId) throws BaseException {
+
+        if(items.containsKey(itemId)) {
+            items.remove(itemId);
+            removeItemFromSql(itemId);
+
+            return new Message("Item successful removed", "Item with id='" + itemId + "' successful deleted", Message.Status.INFO);
+        } else {
+            throw new NotFoundException("Item with id %s cannot be found.", "" + itemId);
+        }
+    }
 
     @Override
     public User[] getUsers() throws BaseException {
@@ -1047,6 +1059,36 @@ public class MySQLDataSource extends DataSource {
 
             statement.setString(2, item.getId());    //user_id
             statement.setString(1, content);    //content
+
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                statement = null;
+            }
+
+            writeLock.unlock();
+        }
+    }
+
+    private void removeItemFromSql(String itemId) {
+        PreparedStatement statement = null;
+        try {
+            writeLock.lock();
+
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
+
+            // PreparedStatements can use variables and are more efficient
+            statement = connection.prepareStatement("DELETE FROM items WHERE id=?");
+
+            statement.setString(1, itemId);    //item id
 
             statement.executeUpdate();
 

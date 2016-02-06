@@ -15,16 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 
-package com.recalot.model.data.connections.downloader;
+package com.recalot.model.data.connections.downloader.ciao;
 
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.model.data.connections.downloader.BaseDownloaderDataSource;
 
 import java.io.IOException;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class CiaoDataSource extends BaseDownloaderDataSource{
+public class CiaoDataSource extends BaseDownloaderDataSource {
 
     public CiaoDataSource(){
         super();
@@ -33,6 +34,8 @@ public class CiaoDataSource extends BaseDownloaderDataSource{
     @Override
     public void connect() throws BaseException {
         try {
+
+
             downloadData("ciao", "http://www.public.asu.edu/~jtang20/datasetcode/ciao_with_rating_timestamp_txt.zip");
             downloadData("epinions", "http://www.public.asu.edu/~jtang20/datasetcode/epinions_with_rating_timestamp_txt.zip");
             downloadData("filmtrust", "http://www.librec.net/datasets/filmtrust.zip");
@@ -45,7 +48,7 @@ public class CiaoDataSource extends BaseDownloaderDataSource{
             downloadData("ml-latestSmall", "http://files.grouplens.org/datasets/movielens/ml-latest-small.zip");
             downloadData("ml-latest", "http://files.grouplens.org/datasets/movielens/ml-latest.zip");
             downloadData("douban", "http://dl.dropbox.com/u/17517913/Douban.zip");
-
+          //
 
         } catch (IOException e) {
             e.printStackTrace();
