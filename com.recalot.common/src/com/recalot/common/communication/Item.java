@@ -19,6 +19,7 @@ package com.recalot.common.communication;
 
 import com.recalot.common.Helper;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  * Data set item
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class Item {
+public class Item implements Serializable {
 
     /**
      * Content Map

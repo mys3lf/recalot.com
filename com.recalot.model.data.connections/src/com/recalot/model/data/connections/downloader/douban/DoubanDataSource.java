@@ -25,6 +25,7 @@ import com.recalot.model.data.connections.downloader.BaseDownloaderDataSource;
 
 import java.io.*;
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  * Reads the MovieLens ml-100k, ml-1m, or ml-10M100k data set
@@ -71,6 +72,65 @@ public class DoubanDataSource extends BaseDownloaderDataSource {
     }
 
     private void readRatingsFile(File file) {
+        FileInputStream inputStream = null;
+        Scanner sc = null;
+        try {
+            inputStream = new FileInputStream(file.getAbsolutePath());
+            sc = new Scanner(inputStream, "UTF-8");
+
+            int i = 0;
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+
+                //Format of "uir.index" file:
+                //UserId ItemId Rating
+                String[] split = line.split(" ");
+
+                if (split.length == 3) {
+                    String ratingId = "" + i++;
+
+                    String userId = split[0];
+                    String itemId = split[1];
+
+                    if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
+                        users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
+                    }
+
+                    if (!items.containsKey(InnerIds.getNextId(itemId, Helper.Keys.ItemId))) {
+                        items.put(InnerIds.getNextId(itemId, Helper.Keys.ItemId), new Item(itemId));
+                    }
+
+                    interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), split[2].intern(), null));
+
+/*
+                    if(interactions.size() % 10000 == 0) {
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ObjectOutputStream oos = new ObjectOutputStream(baos);
+                        oos.writeObject(interactions);
+                        oos.close();
+                        System.out.println("interactions SIZE:" + interactions.size() + " MEMORY" + baos.size());
+                    } */
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            if (sc != null) {
+                sc.close();
+            }
+        }
+
+/*
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             String line;
             int i = 0;
@@ -95,11 +155,14 @@ public class DoubanDataSource extends BaseDownloaderDataSource {
                     }
 
                     interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), split[2].intern(), null));
+
                 }
             }
         } catch (IOException x) {
             x.printStackTrace();
         }
+
+                */
     }
 
     private void readTrustFile(File file) {
@@ -113,8 +176,8 @@ public class DoubanDataSource extends BaseDownloaderDataSource {
                 String[] split = line.split(" ");
 
                 if (split.length == 2) {
-                    String userId1 = split[0].intern();
-                    String userId2 = split[1].intern();
+                    String userId1 = split[0];
+                    String userId2 = split[1];
 
                     String id = "" + i++;
 

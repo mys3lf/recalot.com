@@ -47,6 +47,8 @@ public class UnZip {
                 folder.mkdir();
             }
 
+            folder = null;
+
             //get the zip file content
             ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
             //get the zipped file list entry
@@ -76,11 +78,16 @@ public class UnZip {
                 }
 
                 fos.close();
+                fos = null;
+
                 ze = zis.getNextEntry();
             }
 
             zis.closeEntry();
             zis.close();
+
+
+            zis = null;
 
         } catch(IOException ex){
             ex.printStackTrace();

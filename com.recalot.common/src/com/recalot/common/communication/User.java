@@ -19,6 +19,7 @@ package com.recalot.common.communication;
 
 import com.recalot.common.Helper;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import java.util.Map;
  *
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class User {
+public class User implements Serializable {
 
     /**
      * User ID

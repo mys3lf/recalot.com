@@ -19,6 +19,8 @@ package com.recalot.model.data.connections.downloader.movielens;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.model.data.connections.base.DataSourceBase;
@@ -32,6 +34,9 @@ import java.util.*;
  *
  * @author matthaeus.schmedding
  */
+
+
+@Configuration(key = "source", type = ConfigurationItem.ConfigurationItemType.Options, options = {"ml-100k", "ml-1m", "ml-10m", "ml-20m", "ml-latest-small", "ml-latest"})
 public class MovieLensDataSource extends BaseDownloaderDataSource {
 
     private final String Gender = "Gender".intern();
@@ -231,10 +236,10 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
                 if (split.length == 4) {
 
-                    String ratingId = (split[0] + split[1] + split[2]).intern();
+                    String ratingId = (split[0] + split[1] + split[2]);
 
-                    String userId = split[0].intern();
-                    String itemId = split[1].intern();
+                    String userId = split[0];
+                    String itemId = split[1];
 
                     Date date = new Date(Long.parseLong(split[3]));
 
@@ -284,11 +289,11 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                 // movie id | movie title | release date | video release date | IMDb URL | unknown | Action | Adventure | Animation | Children's | Comedy | Crime | Documentary | Drama | Fantasy | Film-Noir | Horror | Musical | Mystery | Romance | Sci-Fi | Thriller | War | Western |
                 String[] split = line.split("\\|");
                 if (split.length == 24) {
-                    String itemId = split[0].intern();
+                    String itemId = split[0];
 
                     HashMap<String, String> map = new HashMap<>();
 
-                    String title = split[1].intern();
+                    String title = split[1];
                     String year = "";
 
                     if (title.contains("(")) {
@@ -326,14 +331,14 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                 //UserID::Gender::Age::Occupation::Zip-code
                 String[] split = line.split("\\|");
                 if (split.length == 5) {
-                    String userId = split[0].intern();
+                    String userId = split[0];
 
                     HashMap<String, String> map = new HashMap<>();
 
-                    map.put(Gender, split[2].intern());
-                    map.put(Age, split[1].intern());
-                    map.put(Occupation, split[3].intern());
-                    map.put(ZipCode, split[4].intern());
+                    map.put(Gender, split[2]);
+                    map.put(Age, split[1]);
+                    map.put(Occupation, split[3]);
+                    map.put(ZipCode, split[4]);
 
 
                     users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId, map));
@@ -355,14 +360,14 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
                 //UserID::Gender::Age::Occupation::Zip-code
                 String[] split = line.split("::");
                 if (split.length == 5) {
-                    String userId = split[0].intern();
+                    String userId = split[0];
 
                     HashMap<String, String> map = new HashMap<>();
 
-                    map.put(Gender, split[1].intern());
-                    map.put(Age, split[2].intern());
-                    map.put(Occupation, split[3].intern());
-                    map.put(ZipCode, split[4].intern());
+                    map.put(Gender, split[1]);
+                    map.put(Age, split[2]);
+                    map.put(Occupation, split[3]);
+                    map.put(ZipCode, split[4]);
 
 
                     users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new com.recalot.common.communication.User(userId, map));
@@ -379,7 +384,7 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
             boolean first = true;
             while ((line = reader.readLine()) != null) {
-                if(hasHeader && first) {
+                if (hasHeader && first) {
                     first = false;
                     continue;
                 }
@@ -388,16 +393,16 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
 
                 if (split.length == 4) {
 
-                    String ratingId = (split[0] + split[1] + split[2]).intern();
+                    String ratingId = (split[0] + split[1] + split[2]);
 
-                    String userId = split[0].intern();
-                    String itemId = split[1].intern();
+                    String userId = split[0];
+                    String itemId = split[1];
 
                     Date date = new Date(Long.parseLong(split[3]));
 
                     HashMap<String, String> map = new HashMap<>();
 
-                    map.put(Rating, split[2].intern());
+                    map.put(Rating, split[2]);
 
                     if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
                         users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
@@ -416,19 +421,19 @@ public class MovieLensDataSource extends BaseDownloaderDataSource {
             String line = null;
             boolean first = true;
             while ((line = reader.readLine()) != null) {
-                if(hasHeader && first) {
+                if (hasHeader && first) {
                     first = false;
                     continue;
                 }
                 //MovieID::Title::Genres
                 String[] split = line.split(sep);
                 if (split.length == 3) {
-                    String itemId = split[0].intern();
+                    String itemId = split[0];
 
                     HashMap<String, String> map = new HashMap<>();
 
-                    String title = split[1].intern();
-                    if(title.contains("(") && title.contains(")")) {
+                    String title = split[1];
+                    if (title.contains("(") && title.contains(")")) {
                         String year = title.substring(title.lastIndexOf("(") + 1, title.lastIndexOf(")")).intern();
                         map.put(Year, year);
                     }

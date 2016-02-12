@@ -19,6 +19,7 @@ package com.recalot.model.data.connections.mysql;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.exceptions.AlreadyExistsException;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.exceptions.NotFoundException;
@@ -38,6 +39,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * @author matthaeus.schmedding
  */
+
+@Configuration(key = "sqlServer")
+@Configuration(key = "sqlUsername")
+@Configuration(key = "sqlPassword")
+@Configuration(key = "sqlDatabase")
 public class MySQLDataSource extends DataSource {
 
     private boolean initialized;
@@ -48,7 +54,7 @@ public class MySQLDataSource extends DataSource {
     private String sqlPassword;
     private String sqlDatabase;
 
-    private String connectionPlaceHolder = "jdbc:%s/%s?autoReconnect=true";
+    private String connectionPlaceHolder = "jdbc:%s/%s?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8";
     private Connection connection;
 
     public ConcurrentHashMap<String, User> users;

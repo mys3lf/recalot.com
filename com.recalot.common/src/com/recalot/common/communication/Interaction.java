@@ -20,13 +20,14 @@ package com.recalot.common.communication;
 import com.recalot.common.Helper;
 import com.recalot.common.exceptions.NotFoundException;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class Interaction {
+public class Interaction implements Serializable {
 
     private int id;
     private int userId;

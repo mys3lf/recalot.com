@@ -19,6 +19,7 @@ package com.recalot.common.communication;
 
 import com.recalot.common.Helper;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,13 +28,17 @@ import java.util.Map;
  *
  * @author Matthäus Schmedding (info@recalot.com)
  */
-public class Relation {
+public class Relation implements Serializable {
 
     private int fromId;
     private int toId;
     private int id;
     private int type;
     private Map<Integer, String> content;
+
+    public Relation(String id, String fromId, String toId, String type) {
+        this(id, fromId, toId, type, new HashMap<>());
+    }
 
     public Relation(String id, String fromId, String toId, String type, Map<String, String> content) {
         this.id = InnerIds.getNextId(id, Helper.Keys.RelationId);

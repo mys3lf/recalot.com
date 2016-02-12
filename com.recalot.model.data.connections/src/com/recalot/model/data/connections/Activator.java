@@ -19,7 +19,9 @@ package com.recalot.model.data.connections;
 
 import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.builder.Initiator;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.configuration.Configurations;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.data.connections.downloader.douban.DoubanDataSource;
 import com.recalot.model.data.connections.downloader.filmtrust.FilmTrustDataSource;
@@ -27,11 +29,11 @@ import com.recalot.model.data.connections.downloader.flixster.FlixsterDataSource
 import com.recalot.model.data.connections.downloader.movielens.MovieLensDataSource;
 import com.recalot.model.data.connections.mysql.MySQLDataSource;
 import com.recalot.model.data.connections.reddit.RedditDataSource;
+import com.recalot.model.data.connections.steam.SteamFileDataSource;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -52,62 +54,22 @@ public class Activator implements BundleActivator, Initiator {
     public void start(BundleContext context) {
         connections = new ArrayList<>();
 
+        HashMap<String, String> sources = new HashMap<>();
+        sources.put("ml",  MovieLensDataSource.class.getName());
+        sources.put("mysql",  MySQLDataSource.class.getName());
+        sources.put("filmtrust",  FilmTrustDataSource.class.getName());
+       // sources.put("flixster",  FlixsterDataSource.class.getName());
+        sources.put("douban",  DoubanDataSource.class.getName());
+        sources.put("steam",  SteamFileDataSource.class.getName());
 
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, MovieLensDataSource.class.getName(), "ml", "");
-            ConfigurationItem config = new ConfigurationItem("source", ConfigurationItem.ConfigurationItemType.Options, "ml-100k", ConfigurationItem.ConfigurationItemRequirementType.Required);
-            List<String> options = new ArrayList<>();
-            options.add("ml-100k");
-            options.add("ml-1m");
-            options.add("ml-10m");
-            options.add("ml-20m");
-            options.add("ml-latest-small");
-            options.add("ml-latest");
-            config.setOptions(options);
-            builder.setConfiguration(config);
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, MySQLDataSource.class.getName(), "mysql", "");
-            builder.setConfiguration(new ConfigurationItem("sql-server", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            builder.setConfiguration(new ConfigurationItem("sql-username", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            builder.setConfiguration(new ConfigurationItem("sql-password", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            builder.setConfiguration(new ConfigurationItem("sql-database", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, FlixsterDataSource.class.getName(), "flixster", "");
-         //   connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, FilmTrustDataSource.class.getName(), "filmtrust", "");
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, DoubanDataSource.class.getName(), "douban", "");
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            DataSourceBuilder builder = new DataSourceBuilder(this, RedditDataSource.class.getName(), "reddit", "");
-            builder.setConfiguration(new ConfigurationItem("dir", ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            connections.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
+        for(String key : sources.keySet()) {
+            try {
+                DataSourceBuilder builder = new DataSourceBuilder(this, sources.get(key), key, "");
+                builder.appendConfiguration(getConfigurationItems(sources.get(key)));
+                connections.add(builder);
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
         }
 
         for (DataSourceBuilder c : connections) {
@@ -140,5 +102,45 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ArrayList<ConfigurationItem> getConfigurationItems(String className) {
+
+        Map<String, ConfigurationItem> items = new HashMap<>();
+
+        try {
+            Class recommender = Class.forName(className);
+
+            while (recommender != null) {
+
+
+                if (recommender.isAnnotationPresent(Configuration.class)) {
+                    com.recalot.common.configuration.Configuration config = (Configuration) recommender.getAnnotation(Configuration.class);
+
+                    if (config != null && !items.containsKey(config.key())) {
+                        items.put(config.key(), new ConfigurationItem(config.key(), config.type(), config.value(), config.requirement(), config.description(), new ArrayList<>(Arrays.asList(config.options()))));
+                    }
+                }
+
+                if (recommender.isAnnotationPresent(Configurations.class)) {
+
+                    com.recalot.common.configuration.Configuration annotations[] = ((Configurations) recommender.getAnnotation(Configurations.class)).value();
+
+                    for (com.recalot.common.configuration.Configuration t : annotations) {
+                        if (!items.containsKey(t.key())) {
+                            items.put(t.key(), new ConfigurationItem(t.key(), t.type(), t.value(), t.requirement(), t.description(), new ArrayList<>(Arrays.asList(t.options()))));
+                        }
+                    }
+                }
+
+                recommender = recommender.getSuperclass();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>(items.values());
     }
 }

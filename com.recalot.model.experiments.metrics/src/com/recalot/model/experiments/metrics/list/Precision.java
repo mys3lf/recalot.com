@@ -18,6 +18,8 @@
 package com.recalot.model.experiments.metrics.list;
 
 import com.recalot.common.Helper;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.List;
  * Created by matthaeus.schmedding on 10.04.2015.
  * Precision = (|relevant items| in |retrieved items|) divided by |retrieved items|
  */
+
+@Configuration(key = "topN", value = "10", type = ConfigurationItem.ConfigurationItemType.Integer)
 public class Precision extends ListMetric {
 
     private double testRun = 0;
@@ -54,7 +58,7 @@ public class Precision extends ListMetric {
                 if (relevant.contains(item)) count++;
             }
 
-            sum += 1.0 * count / retrieved.size();
+            if (topNretrieved.size() > 0) sum += 1.0 * count / topNretrieved.size();
         }
 
         testRun++;

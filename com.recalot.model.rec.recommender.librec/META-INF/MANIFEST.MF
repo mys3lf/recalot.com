@@ -1,12 +1,11 @@
 Manifest-Version: 1
-Export-Service: com.recalot.model.rec.recommender.mostpopular.MostPopu
- larRecommender
 Bundle-Description:  Contains several recommendation algorithms
 Bundle-License: http://recalot.com/license.txt
-Bundle-SymbolicName: com.recalot.model.rec.recommender
-Bundle-Name: Recalot.com Model - Recommender
-Bundle-Version: 0.1.0.747
-Bundle-Activator: com.recalot.model.rec.Activator
+Bundle-SymbolicName: com.recalot.model.rec.recommender.librec
+Bundle-Name: Recalot.com Model - LibRec Recommender (Wraps libRec 1.4 
+ recommender)
+Bundle-Version: 0.0.0.5
+Bundle-Activator: com.recalot.model.rec.librec.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc
@@ -15,6 +14,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  recalot.common.interfaces.model.rec,com.recalot.common.interfaces.mod
  el.experiment,   com.recalot.common.exceptions,com.recalot.common,com
  .recalot.common.builder,com.recalot.common.configuration, flexjson, c
- om.recalot.common.context
-Export-Package:  com.recalot.model.rec.context
+ om.recalot.common.context, com.google.common.collect,com.google.commo
+ n.cache
 

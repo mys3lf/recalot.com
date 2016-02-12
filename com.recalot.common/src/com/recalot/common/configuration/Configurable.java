@@ -23,6 +23,7 @@ import com.recalot.common.exceptions.MissingArgumentException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,4 +187,13 @@ public abstract class Configurable {
     }
 
 
+    public void appendConfiguration(ArrayList<ConfigurationItem> items) {
+        if (items != null) {
+            if (items != null) {
+                for (ConfigurationItem item : items) {
+                    configurationMap.put(item.getKey(), item);
+                }
+            }
+        }
+    }
 }

@@ -44,7 +44,8 @@ public class DataSourceBuilder extends InstanceBuilder<DataSource> implements Da
     public DataSourceBuilder(Initiator initiator, String className, String key, String description) throws BaseException {
         super(initiator, className, key, description);
 
-        setConfiguration(new ConfigurationItem(Helper.Keys.SourceId, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required, ""));
+        setConfiguration(new ConfigurationItem(Helper.Keys.SourceId, ConfigurationItem.ConfigurationItemType.String, key, ConfigurationItem.ConfigurationItemRequirementType.Required, ""));
+        setConfiguration(new ConfigurationItem(Helper.Keys.DataBuilderId, ConfigurationItem.ConfigurationItemType.String, key, ConfigurationItem.ConfigurationItemRequirementType.Hidden));
     }
 
     /**

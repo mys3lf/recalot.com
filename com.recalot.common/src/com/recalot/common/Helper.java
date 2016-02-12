@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -39,7 +41,21 @@ public class Helper {
      * @see java.io.InputStream
      */
     public static void copy(PrintWriter out, InputStream stream) throws IOException {
-        InputStreamReader reader = new InputStreamReader(stream);
+        copy(out, stream, StandardCharsets.UTF_8);
+    }
+
+
+    /**
+     * Copies the bytes of an InputStream to a PrintWriter.
+     *
+     * @param out a PrintWriter to whom the bytes of the InputStream should be copied
+     * @param stream a InputStream that contains the bytes that should be copied
+     * @throws IOException is thrown when the InputStream can not be read
+     * @see java.io.PrintWriter
+     * @see java.io.InputStream
+     */
+    public static void copy(PrintWriter out, InputStream stream, Charset cs) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream, cs);
 
         char[] buffer = new char[1024];
 

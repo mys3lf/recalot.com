@@ -55,30 +55,13 @@ public class MostPopularRecommender extends Recommender {
             recommendedItems.add(new RecommendedItem(key, 1.0 * count.get(key) / sum));
         }
 
-        List<RecommendedItem> remainingItems = new ArrayList<>();
-
-        for(Item item : getDataSet().getItems()) {
-            if(!recommendedItems.stream().anyMatch(i -> i.getItemId().equals(item.getId()))){
-                remainingItems.add(new RecommendedItem(item.getId(), 0.0));
-            }
-        }
-
-        recommendedItems.addAll(remainingItems);
-
         this.result = new RecommendationResult(getId(), recommendedItems);
     }
 
 
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException{
-        List<RecommendedItem> items = null;
-        if(result != null) {
-            items = result.getItems();
-        }
-
-        if(items == null) items = new ArrayList<>();
-
-        return new RecommendationResult(getId(), items);
+        return this.result;
     }
 
     @Override

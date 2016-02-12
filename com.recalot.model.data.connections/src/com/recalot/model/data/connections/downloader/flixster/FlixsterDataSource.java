@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 
-package com.recalot.model.data.connections.downloader.filmtrust;
+package com.recalot.model.data.connections.downloader.flixster;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
@@ -32,28 +32,36 @@ import java.util.HashMap;
  *
  * @author matthaeus.schmedding
  */
-public class FilmTrustDataSource extends BaseDownloaderDataSource {
+public class FlixsterDataSource extends BaseDownloaderDataSource {
 
-    public FilmTrustDataSource() {
+    public FlixsterDataSource() {
         super();
     }
 
     @Override
     public void connect() throws BaseException {
-        String source = "filmtrust";
+        String source = "flixster";
         File folder = null;
         try {
-            folder = downloadData(source, "http://www.librec.net/datasets/filmtrust.zip");
+            folder = downloadData(source, "http://www.cs.ubc.ca/~jamalim/datasets/flixster.zip");
 
             File trustFile = null;
             File ratingsFile = null;
 
             String dirPath = "";
-            for (File file : folder.listFiles()) {
-                String name = file.getName().toLowerCase();
+            for (File dir : folder.listFiles()) {
+                if(dir.getName().toLowerCase().equals("flixster-dataset")) {
+                    for (File dir2 : dir.listFiles()) {
+                        if (dir2.getName().toLowerCase().equals("data")) {
+                            for (File file : dir2.listFiles()) {
+                                String name = file.getName().toLowerCase();
 
-                if (name.toLowerCase().equals("ratings.txt")) ratingsFile = file;
-                else if (name.toLowerCase().equals("trust.txt")) trustFile = file;
+                                if (name.toLowerCase().equals("nodes.csv")) ratingsFile = file;
+                                else if (name.toLowerCase().equals("edges.csv")) trustFile = file;
+                            }
+                        }
+                    }
+                }
             }
 
             if (trustFile != null && ratingsFile != null) {

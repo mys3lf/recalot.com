@@ -50,9 +50,13 @@ public abstract class Experiment extends Loggable {
         return percentage;
     }
 
+    public void setPercentage(double p) {
+        percentage = p;
+    }
+
     public synchronized void addPercentage(double percentage) {
         this.percentage += percentage;
-        if(this.percentage > 100) this.percentage = 100;
+        if (this.percentage > 100) this.percentage = 100;
     }
 
     public synchronized void resetPercentage() {
