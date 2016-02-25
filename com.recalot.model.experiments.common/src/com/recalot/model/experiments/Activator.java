@@ -20,7 +20,9 @@ package com.recalot.model.experiments;
 
 import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.Initiator;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.configuration.Configurations;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.model.experiments.access.ExperimentAccess;
 import com.recalot.model.experiments.splitter.RandomNFoldDataSplitter;
@@ -30,6 +32,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -54,37 +59,27 @@ public class Activator implements BundleActivator, Initiator {
 
         splitters = new ArrayList<>();
 
-        try {
-            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomNFoldDataSplitter.class.getName(), "random-nfold", "Random N-Fold Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("nbFolds", ConfigurationItem.ConfigurationItemType.Integer, "2", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        HashMap<String, String> map = new HashMap<>();
 
-            splitters.add(splitterBuilder);
+        map.put("random-nfold",  RandomNFoldDataSplitter.class.getName());
+        map.put("random-percentage", RandomPercentageDataSplitter.class.getName());
+        map.put("timebased",  TimeBasedDataSplitter.class.getName());
 
-        } catch (BaseException e) {
+        for(String key: map.keySet()) {
+            try {
+                DataSplitterBuilder builder = new DataSplitterBuilder(this, map.get(key), key, "");
 
+                ConfigurationItem[] items = getConfigurationItems(map.get(key));
+                for (ConfigurationItem item : items) {
+                    builder.setConfiguration(item);
+                }
+
+                splitters.add(builder);
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
         }
 
-        try {
-            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, RandomPercentageDataSplitter.class.getName(), "random-percentage", "Random Percentage Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("percentage", ConfigurationItem.ConfigurationItemType.Double, "0.7", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            splitterBuilder.setConfiguration(new ConfigurationItem("seed", ConfigurationItem.ConfigurationItemType.Integer, "1", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            splitters.add(splitterBuilder);
-
-        } catch (BaseException e) {
-
-        }
-
-        try {
-            DataSplitterBuilder splitterBuilder = new DataSplitterBuilder(this, TimeBasedDataSplitter.class.getName(), "timebased", "Time-based Data Splitter");
-            splitterBuilder.setConfiguration(new ConfigurationItem("testPercentage", ConfigurationItem.ConfigurationItemType.Double, "0.3", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            splitters.add(splitterBuilder);
-
-        } catch (BaseException e) {
-
-        }
 
         for (DataSplitterBuilder splitter : splitters) {
             context.registerService(DataSplitterBuilder.class.getName(), splitter, null);
@@ -122,5 +117,46 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static ConfigurationItem[] getConfigurationItems(String className) {
+
+        Map<String, ConfigurationItem> items = new HashMap<>();
+
+        try {
+            Class recommender = Class.forName(className);
+
+            while (recommender != null) {
+
+
+                if (recommender.isAnnotationPresent(Configuration.class)) {
+                    com.recalot.common.configuration.Configuration config = (Configuration) recommender.getAnnotation(Configuration.class);
+
+                    if (config != null && !items.containsKey(config.key())) {
+                        items.put(config.key(), new ConfigurationItem(config.key(), config.type(), config.value(), config.requirement(), config.description(), new ArrayList<>(Arrays.asList(config.options()))));
+                    }
+                }
+
+                if (recommender.isAnnotationPresent(Configurations.class)) {
+
+                    com.recalot.common.configuration.Configuration annotations[] = ((Configurations) recommender.getAnnotation(Configurations.class)).value();
+
+                    for (com.recalot.common.configuration.Configuration t : annotations) {
+                        if (!items.containsKey(t.key())) {
+                            items.put(t.key(), new ConfigurationItem(t.key(), t.type(), t.value(), t.requirement(), t.description(), new ArrayList<>(Arrays.asList(t.options()))));
+                        }
+                    }
+                }
+
+                recommender = recommender.getSuperclass();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+        }
+
+        return items.values().toArray(new ConfigurationItem[items.size()]);
     }
 }

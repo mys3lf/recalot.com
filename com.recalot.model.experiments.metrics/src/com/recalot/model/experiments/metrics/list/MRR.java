@@ -18,6 +18,8 @@
 package com.recalot.model.experiments.metrics.list;
 
 import com.recalot.common.Helper;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.List;
  * Created by matthaeus.schmedding on 10.04.2015.
  * Mean reciprocal rank = (|relevant items| in |retrieved items|) divided by |relevant items|
  */
+
+@Configuration(key = "topN", type = ConfigurationItem.ConfigurationItemType.Integer, value = "10", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class MRR extends ListMetric {
 
     private double testRun = 0;

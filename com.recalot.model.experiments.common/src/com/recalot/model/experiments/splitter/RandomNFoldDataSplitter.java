@@ -19,6 +19,8 @@ package com.recalot.model.experiments.splitter;
 
 import com.recalot.common.communication.*;
 import com.recalot.common.configuration.Configurable;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -31,6 +33,10 @@ import java.util.Random;
 /**
  * Created by matthaeus.schmedding on 16.04.2015.
  */
+
+
+@Configuration(key = "nbFolds", type = ConfigurationItem.ConfigurationItemType.Integer, value= "2", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
+@Configuration(key = "seed",   type =ConfigurationItem.ConfigurationItemType.Integer, value="1", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class RandomNFoldDataSplitter extends DataSplitter {
     private int seed = 1;
 

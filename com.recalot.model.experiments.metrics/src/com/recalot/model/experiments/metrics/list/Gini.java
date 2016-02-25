@@ -18,6 +18,7 @@
 package com.recalot.model.experiments.metrics.list;
 
 import com.recalot.common.Helper;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
@@ -33,6 +34,8 @@ import java.util.Map;
  *
  * Created by matthaeus.schmedding on 10.04.2015.
  */
+
+@Configuration(key = "topN", type = ConfigurationItem.ConfigurationItemType.Integer, value = "10", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class Gini extends ListMetric {
     private int topN;
     private HashMap<String, Integer> count = new HashMap<>();

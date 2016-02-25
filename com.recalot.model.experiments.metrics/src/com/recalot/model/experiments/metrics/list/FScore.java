@@ -17,6 +17,8 @@
 
 package com.recalot.model.experiments.metrics.list;
 
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.ListMetric;
 
@@ -26,6 +28,9 @@ import java.util.List;
  * Created by matthaeus.schmedding on 10.04.2015.
  * Precision = (|relevant items| in |retrieved items|) divided by |relevant items|
  */
+
+@Configuration(key = "topN", type = ConfigurationItem.ConfigurationItemType.Integer, value = "10", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
+@Configuration(key = "beta", type = ConfigurationItem.ConfigurationItemType.Double, value = "1.0", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class FScore extends ListMetric {
     private double beta;
     private Recall recall;

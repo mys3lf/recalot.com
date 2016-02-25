@@ -19,6 +19,8 @@ package com.recalot.model.experiments.splitter;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -33,6 +35,9 @@ import java.util.Map;
  *
  * Created by matthaeus.schmedding on 16.04.2015.
  */
+
+
+@Configuration(key = "testPercentage",   type = ConfigurationItem.ConfigurationItemType.Double, value="0.3", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class TimeBasedDataSplitter extends DataSplitter {
 
     private double testPercentage = 0.3;

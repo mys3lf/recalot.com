@@ -29,7 +29,7 @@ import java.util.List;
  * Precision = (|relevant items| in |retrieved items|) divided by |retrieved items|
  */
 
-@Configuration(key = "topN", value = "10", type = ConfigurationItem.ConfigurationItemType.Integer)
+@Configuration(key = "topN", type = ConfigurationItem.ConfigurationItemType.Integer, value = "10", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional, description = "")
 public class Precision extends ListMetric {
 
     private double testRun = 0;

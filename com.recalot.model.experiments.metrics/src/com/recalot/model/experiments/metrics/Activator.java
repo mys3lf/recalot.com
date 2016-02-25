@@ -19,9 +19,13 @@ package com.recalot.model.experiments.metrics;
 
 
 import com.recalot.common.Helper;
+import com.recalot.common.builder.DataSplitterBuilder;
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.builder.MetricBuilder;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.configuration.Configurations;
+import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.interfaces.model.experiment.MetricInformation;
 import com.recalot.model.experiments.metrics.list.*;
@@ -31,8 +35,7 @@ import com.recalot.model.experiments.metrics.rating.RMSE;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -53,53 +56,35 @@ public class Activator implements BundleActivator, Initiator {
     public void start(BundleContext context) {
 
 
-
         metrics = new ArrayList<>();
-        try {
 
-            MetricBuilder fscoreBuilder = new MetricBuilder(this, FScore.class.getName(), "fscore", "F-Score");
-            fscoreBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            fscoreBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
+        HashMap<String, String> map = new HashMap<>();
 
-            MetricBuilder precisionBuilder = new MetricBuilder(this, Precision.class.getName(), "precision", "Precision");
-            precisionBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-          //  precisionBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-
-            MetricBuilder recallBuilder = new MetricBuilder(this, Recall.class.getName(), "recall", "Recall");
-            recallBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            MetricBuilder mrrBuilder = new MetricBuilder(this, MRR.class.getName(), "mrr", "MRR");
-            mrrBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-         //   recallBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-
-            MetricBuilder giniBuilder = new MetricBuilder(this, Gini.class.getName(), "gini", "Gini");
-            giniBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        //    giniBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-
-            MetricBuilder coverageBuilder = new MetricBuilder(this, Coverage.class.getName(), "coverage", "Coverage");
-            coverageBuilder.setConfiguration(new ConfigurationItem(Helper.Keys.TopN, ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-       //     coverageBuilder.setConfiguration(new ConfigurationItem("beta", ConfigurationItem.ConfigurationItemType.Double , "1.0", ConfigurationItem.ConfigurationItemRequirementType.Optional));
-
-            MetricBuilder maeBuilder = new MetricBuilder(this, MAE.class.getName(), "mae", "Mean Absolute Error");
-            MetricBuilder mseBuilder = new MetricBuilder(this, MSE.class.getName(), "mse", "Mean Squared Error");
-            MetricBuilder rmseBuilder = new MetricBuilder(this, RMSE.class.getName(), "rmse", "Root Mean Squared Error");
-
-            metrics.add(fscoreBuilder);
-            metrics.add(precisionBuilder);
-            metrics.add(recallBuilder);
-            metrics.add(mrrBuilder);
-            metrics.add(giniBuilder);
-            metrics.add(coverageBuilder);
-
-            metrics.add(maeBuilder);
-            metrics.add(mseBuilder);
-            metrics.add(rmseBuilder);
+        map.put("fscore", FScore.class.getName());
+        map.put("precision", Precision.class.getName());
+        map.put("recall", Recall.class.getName());
+        map.put("mrr", MRR.class.getName());
+        map.put("gini", Gini.class.getName());
+        map.put("coverage", Coverage.class.getName());
+        map.put("mae", MAE.class.getName());
+        map.put("mse", MSE.class.getName());
+        map.put("rmse", RMSE.class.getName());
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String key : map.keySet()) {
+            try {
+                MetricBuilder builder = new MetricBuilder(this, map.get(key), key, "");
+
+                ConfigurationItem[] items = getConfigurationItems(map.get(key));
+                for (ConfigurationItem item : items) {
+                    builder.setConfiguration(item);
+                }
+
+                metrics.add(builder);
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
         }
-
 
         for (MetricBuilder c : metrics) {
             context.registerService(MetricBuilder.class.getName(), c, null);
@@ -128,5 +113,45 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ConfigurationItem[] getConfigurationItems(String className) {
+
+        Map<String, ConfigurationItem> items = new HashMap<>();
+
+        try {
+            Class recommender = Class.forName(className);
+
+            while (recommender != null) {
+
+
+                if (recommender.isAnnotationPresent(Configuration.class)) {
+                    com.recalot.common.configuration.Configuration config = (Configuration) recommender.getAnnotation(Configuration.class);
+
+                    if (config != null && !items.containsKey(config.key())) {
+                        items.put(config.key(), new ConfigurationItem(config.key(), config.type(), config.value(), config.requirement(), config.description(), new ArrayList<>(Arrays.asList(config.options()))));
+                    }
+                }
+
+                if (recommender.isAnnotationPresent(Configurations.class)) {
+
+                    com.recalot.common.configuration.Configuration annotations[] = ((Configurations) recommender.getAnnotation(Configurations.class)).value();
+
+                    for (com.recalot.common.configuration.Configuration t : annotations) {
+                        if (!items.containsKey(t.key())) {
+                            items.put(t.key(), new ConfigurationItem(t.key(), t.type(), t.value(), t.requirement(), t.description(), new ArrayList<>(Arrays.asList(t.options()))));
+                        }
+                    }
+                }
+
+                recommender = recommender.getSuperclass();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+        }
+
+        return items.values().toArray(new ConfigurationItem[items.size()]);
     }
 }
