@@ -93,7 +93,7 @@ public class InnerIds {
             return ids.get(rawId);
         } else {
 
-            while (!taken.containsKey(next)) {
+            while (taken.containsKey(next)) {
                 next++;
             }
 
