@@ -18,9 +18,11 @@
 package com.recalot.views.common;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.log.LogService;
 
 import javax.servlet.Servlet;
 import java.util.*;
@@ -40,6 +42,18 @@ public class HttpServiceTracker extends org.osgi.util.tracker.ServiceTracker {
     public HttpServiceTracker(BundleContext context) {
         super(context, HttpService.class.getName(), null);
         servletsAndResources = new Hashtable<>();
+
+        initialize();
+    }
+
+    /**
+     * Checks if instances of type are already registered within the OSGi container and stores them.
+     */
+    private void initialize() {
+        ServiceReference references = this.context.getServiceReference(HttpService.class.getName());
+        if (references != null) {
+            this.httpService = (HttpService) context.getService(references);
+        }
     }
 
 
@@ -83,6 +97,13 @@ public class HttpServiceTracker extends org.osgi.util.tracker.ServiceTracker {
     }
 
     public void registerServlet(String path, Servlet servlet, Dictionary dictionary, HttpContext httpContext) {
+        Map info = new Hashtable<>();
+        info.put(Servlet, servlet);
+        if(dictionary != null) info.put(Dictionary, dictionary);
+        if(httpContext != null)  info.put(HttpContext, httpContext);
+
+        servletsAndResources.put(path, info);
+
         if (httpService != null) {
             try {
                 httpService.registerServlet(path, servlet, dictionary, httpContext);
@@ -90,13 +111,6 @@ public class HttpServiceTracker extends org.osgi.util.tracker.ServiceTracker {
                 exception.printStackTrace();
             }
         }
-
-        Map info = new Hashtable<>();
-        info.put(Servlet, servlet);
-        if(dictionary != null) info.put(Dictionary, dictionary);
-        if(httpContext != null)  info.put(HttpContext, httpContext);
-
-        servletsAndResources.put(path, info);
     }
 
     public void registerResources(String path, String filePath, HttpContext httpContext) {

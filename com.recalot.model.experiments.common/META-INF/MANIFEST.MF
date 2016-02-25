@@ -4,7 +4,7 @@ Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.experiments.common
 Export-Package: com.recalot.model.experiments.access;version="0.1.0"
 Bundle-Name: Recalot.com Model - Experiment Common
-Bundle-Version: 0.1.0.725
+Bundle-Version: 0.1.0.727
 Bundle-Activator: com.recalot.model.experiments.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com

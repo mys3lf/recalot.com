@@ -15,7 +15,7 @@ Export-Package: com.recalot.common;version="0.1.0",com.recalot.common.
  ecalot.common.context;version="0.1.0",com.recalot.templates;version="
  0.1.0"
 Bundle-Name: Recalot.com Common
-Bundle-Version: 0.1.0.749
+Bundle-Version: 0.1.0.751
 Bundle-ManifestVersion: 2
 Bundle-DocURL: http://recalot.com/doc
 Import-Package: org.osgi.framework,org.osgi.service.cm,org.osgi.servic

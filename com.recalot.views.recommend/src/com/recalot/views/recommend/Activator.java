@@ -24,6 +24,7 @@ import com.recalot.views.common.WebService;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ManagedService;
 
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -45,6 +46,5 @@ public class Activator extends AbstractWebActivator {
         service = new WebService(pid, context, new Servlet(handler), config);
         context.registerService(ManagedService.class.getName(), service, config);
         service.initialize();
-
     }
 }

@@ -22,6 +22,6 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  tories
 Export-Package: com.recalot.templates.base;version="0.1.0"
 Bundle-Name: Recalot.com Templates - Data
-Bundle-Version: 0.1.0.744
+Bundle-Version: 0.1.0.746
 Bundle-Activator: com.recalot.templates.Activator
 

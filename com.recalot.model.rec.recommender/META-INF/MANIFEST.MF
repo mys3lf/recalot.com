@@ -4,9 +4,6 @@ Export-Service: com.recalot.model.rec.recommender.mostpopular.MostPopu
 Bundle-Description:  Contains several recommendation algorithms
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.rec.recommender
-Bundle-Name: Recalot.com Model - Recommender
-Bundle-Version: 0.1.0.747
-Bundle-Activator: com.recalot.model.rec.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc
@@ -16,5 +13,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  el.experiment,   com.recalot.common.exceptions,com.recalot.common,com
  .recalot.common.builder,com.recalot.common.configuration, flexjson, c
  om.recalot.common.context
-Export-Package:  com.recalot.model.rec.context
+Export-Package:  com.recalot.model.rec.context;version="0.1.0"
+Bundle-Name: Recalot.com Model - Recommender
+Bundle-Version: 0.1.0.749
+Bundle-Activator: com.recalot.model.rec.Activator
 
