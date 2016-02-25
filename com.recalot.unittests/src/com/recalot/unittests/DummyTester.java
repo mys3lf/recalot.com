@@ -1,6 +1,7 @@
 package com.recalot.unittests;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
 import javax.xml.bind.DatatypeConverter;
@@ -25,8 +26,31 @@ public class DummyTester {
 
         Date modifiedDate = new Date(date.getTime() + 10);
         System.out.println(modifiedDate.getTime());
+    }
 
+    @Test
+    public void parseIntTest() {
+        ArrayList<String> test = new ArrayList<>();
+        for(int i = 0; i < 100000; i++) {
+            test.add("asd" + i);
+        }
 
+        StopWatch sw = new StopWatch();
+
+        sw.start();
+
+        for(String t : test) {
+            try {
+                int r = Integer.parseInt(t, 10);
+
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
+        sw.stop();
+
+        System.out.println(sw.getTime());
     }
 
 
