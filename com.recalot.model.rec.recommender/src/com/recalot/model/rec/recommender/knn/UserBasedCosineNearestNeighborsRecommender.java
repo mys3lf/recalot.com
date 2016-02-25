@@ -19,6 +19,8 @@ package com.recalot.model.rec.recommender.knn;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
@@ -28,6 +30,10 @@ import java.util.*;
 /**
  * Created by Matthaeus.schmedding on 02.06.2015.
  */
+
+@Configuration(key = "minOverlap", type = ConfigurationItem.ConfigurationItemType.Integer, value = "3", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
+@Configuration(key = "maxNeighbors", type = ConfigurationItem.ConfigurationItemType.Integer, value = "10", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
+@Configuration(key = "minSimilarity", type = ConfigurationItem.ConfigurationItemType.Integer, value = "0.0", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
 public class UserBasedCosineNearestNeighborsRecommender extends Recommender {
     private Integer minOverlap = 1;
     private Integer maxNeighbors = 10;
@@ -36,9 +42,10 @@ public class UserBasedCosineNearestNeighborsRecommender extends Recommender {
     private HashMap<String, Integer> itemPosInVector;
     private LinkedHashMap<String, Map<String, Double>> similarityies;
 
-    public UserBasedCosineNearestNeighborsRecommender(){
+    public UserBasedCosineNearestNeighborsRecommender() {
         this.setKey("cosine-user-knn");
     }
+
     @Override
     public void train() throws BaseException {
         this.userVectors = new HashMap<>();
@@ -123,7 +130,7 @@ public class UserBasedCosineNearestNeighborsRecommender extends Recommender {
                         for (Interaction interaction : interactions) {
                             double value = Double.parseDouble(interaction.getValue());
 
-                            if(value >  maxValue) maxValue = value;
+                            if (value > maxValue) maxValue = value;
 
                             Helper.incrementMapValue(ratingsItems, interaction.getItemId(), value * simUser);
                             Helper.incrementMapValue(sumSim, interaction.getItemId(), simUser);

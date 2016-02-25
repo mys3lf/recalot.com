@@ -32,10 +32,10 @@ import java.util.Map;
  */
 public abstract class DataSourceBase extends DataSource {
 
-    public HashMap<Integer, User> users;
-    public HashMap<Integer, Item> items;
-    public HashMap<Integer, Interaction> interactions;
-    public HashMap<Integer, Relation> relations;
+    public Map<Integer, User> users;
+    public Map<Integer, Item> items;
+    public Map<Integer, Interaction> interactions;
+    public Map<Integer, Relation> relations;
 
     private DataSet dataSet;
 
@@ -44,6 +44,11 @@ public abstract class DataSourceBase extends DataSource {
         this.items = new HashMap<>();
         this.interactions = new HashMap<>();
         this.relations = new HashMap<>();
+
+        //this.users = HashIntObjMaps.<User>newUpdatableMap();
+        //this.items = HashIntObjMaps.<Item>newUpdatableMap();
+        //this.interactions = HashIntObjMaps.<Interaction>newUpdatableMap();
+        //this.relations = HashIntObjMaps.<Relation>newUpdatableMap();
 
         this.dataSet = new DataSourceDataSet(this);
     }
@@ -154,6 +159,11 @@ public abstract class DataSourceBase extends DataSource {
     @Override
     public Relation[] getRelations(String fromId, String toId) throws BaseException {
         return relations.values().stream().filter(i -> i.getFromId().equals(fromId) && i.getToId().equals(toId)).toArray(s -> new Relation[s]);
+    }
+
+    @Override
+    public Relation[] getRelationsFor(String fromId) throws BaseException {
+        return relations.values().stream().filter(i -> i.getFromId().equals(fromId)).toArray(s -> new Relation[s]);
     }
 
     @Override

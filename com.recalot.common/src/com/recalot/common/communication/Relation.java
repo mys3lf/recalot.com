@@ -17,8 +17,6 @@
 
 package com.recalot.common.communication;
 
-import com.recalot.common.Helper;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,32 +39,32 @@ public class Relation implements Serializable {
     }
 
     public Relation(String id, String fromId, String toId, String type, Map<String, String> content) {
-        this.id = InnerIds.getNextId(id, Helper.Keys.RelationId);
-        this.fromId = InnerIds.getNextId(fromId, Helper.Keys.UserId);
-        this.toId = InnerIds.getNextId(toId, Helper.Keys.UserId);
-        this.type = InnerIds.getNextId(type, Helper.Keys.Type);
+        this.id = InnerIds.getNextId(id);
+        this.fromId = InnerIds.getNextId(fromId);
+        this.toId = InnerIds.getNextId(toId);
+        this.type = InnerIds.getNextId(type);
 
         this.content = new HashMap<>();
 
         for (String key : content.keySet()) {
-            int contentId = InnerIds.getNextId(key, Helper.Keys.Content);
+            int contentId = InnerIds.getNextId(key);
             this.content.put(contentId, content.get(key));
         }
     }
 
     public String getId() {
-        return InnerIds.getId(id, Helper.Keys.RelationId);
+        return InnerIds.getId(id);
     }
 
     public String getType() {
-        return InnerIds.getId(type, Helper.Keys.Type);
+        return InnerIds.getId(type);
     }
 
     public Map<String, String> getContent() {
         HashMap<String, String> content = new HashMap<>();
 
         for (Integer key : this.content.keySet()) {
-            String contentKey = InnerIds.getId(key, Helper.Keys.Content);
+            String contentKey = InnerIds.getId(key);
             content.put(contentKey, this.content.get(key));
         }
 
@@ -74,14 +72,14 @@ public class Relation implements Serializable {
     }
 
     public String getValue(String key) {
-        return content.get(InnerIds.getId(key, Helper.Keys.Content));
+        return content.get(InnerIds.getId(key));
     }
 
     public String getToId() {
-        return InnerIds.getId(toId, Helper.Keys.ToId);
+        return InnerIds.getId(toId);
     }
 
     public String getFromId() {
-        return InnerIds.getId(fromId, Helper.Keys.UserId);
+        return InnerIds.getId(fromId);
     }
 }

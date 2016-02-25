@@ -17,9 +17,6 @@
 
 package com.recalot.common.communication;
 
-import com.recalot.common.Helper;
-import com.recalot.common.exceptions.NotFoundException;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
@@ -39,26 +36,26 @@ public class Interaction implements Serializable {
 
     public Interaction(String id, String userId, String itemId, Date timeStamp, String type, String value, Map<String, String> content) {
 
-        this.value = InnerIds.getNextId(value, Helper.Keys.Value);
-        this.id = InnerIds.getNextId(id, Helper.Keys.InteractionId);
-        this.userId = InnerIds.getNextId(userId, Helper.Keys.UserId);
-        this.itemId = InnerIds.getNextId(itemId, Helper.Keys.ItemId);
-        this.type = InnerIds.getNextId(type, Helper.Keys.Type);
+        this.value = InnerIds.getNextId(value);
+        this.id = InnerIds.getNextId(id);
+        this.userId = InnerIds.getNextId(userId);
+        this.itemId = InnerIds.getNextId(itemId);
+        this.type = InnerIds.getNextId(type);
 
         this.timeStamp = timeStamp;
         this.content = content;
     }
 
     public String getId() {
-        return InnerIds.getId(id, Helper.Keys.InteractionId);
+        return InnerIds.getId(id);
     }
 
     public String getUserId() {
-        return InnerIds.getId(userId, Helper.Keys.UserId);
+        return InnerIds.getId(userId);
     }
 
     public String getItemId() {
-        return InnerIds.getId(itemId, Helper.Keys.ItemId);
+        return InnerIds.getId(itemId);
     }
 
     public Date getTimeStamp() {
@@ -66,7 +63,7 @@ public class Interaction implements Serializable {
     }
 
     public String getType() {
-        return InnerIds.getId(type, Helper.Keys.Type);
+        return InnerIds.getId(type);
     }
 
     public Map<String, String> getContent() {
@@ -78,6 +75,6 @@ public class Interaction implements Serializable {
     }
 
     public String getValue() {
-        return InnerIds.getId(value, Helper.Keys.Value);
+        return InnerIds.getId(value);
     }
 }

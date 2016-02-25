@@ -20,6 +20,8 @@ package com.recalot.model.rec.recommender.reddit;
 import com.recalot.common.Helper;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
@@ -32,10 +34,11 @@ import java.util.Map;
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
+
+@Configuration(key = "contextType", type = ConfigurationItem.ConfigurationItemType.Options, value = "letter", options = {"letter", "last", "both"}, requirement = ConfigurationItem.ConfigurationItemRequirementType.Required)
 public class ContextAwareMostPopular extends MostPopularRecommender {
 
     private String contextType;
-    private HashMap<String, HashMap<String, Boolean>> coocurence;
     private ContextHelper contextHelper;
 
     @Override

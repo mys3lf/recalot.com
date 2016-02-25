@@ -20,6 +20,7 @@ package com.recalot.demos.wallpaper;
 
 import com.recalot.common.builder.DataSourceBuilder;
 import com.recalot.common.builder.Initiator;
+import com.recalot.common.builder.RecommenderBuilder;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.demos.wallpaper.controller.DataAccessController;
@@ -69,7 +70,6 @@ public class Activator extends AbstractWebActivator implements Initiator {
         staticHttpTracker.open();
 
         service.initialize();
-
 
         try {
             DataSourceBuilder builder = new DataSourceBuilder(this, MySQLDataSource.class.getName(), "wallpaper-mysql", "");

@@ -569,6 +569,11 @@ public class MySQLDataSource extends DataSource {
     }
 
     @Override
+    public Relation[] getRelationsFor(String fromId) throws BaseException {
+        return relations.values().stream().filter(i -> i.getFromId().equals(fromId)).toArray(s -> new Relation[s]);
+    }
+
+    @Override
     public Relation updateRelation(String relationId, String fromId, String toId, String type, Map<String, String> content) throws BaseException {
         if (relations.containsKey(relationId)) {
             Relation relation = new Relation(relationId, fromId, toId,  type, filterParams(content, Helper.Keys.FromId, Helper.Keys.ToId, Helper.Keys.Type));

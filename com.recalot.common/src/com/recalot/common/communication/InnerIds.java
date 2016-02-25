@@ -17,68 +17,116 @@
 
 package com.recalot.common.communication;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
 public class InnerIds {
 
-    private static final HashMap<String, HashMap<String, Integer>> ids;
-    private static final HashMap<String, HashMap<Integer, String>> revert;
+    private static final LinkedHashMap<String, Integer> ids;
+    private static final List<String> revert;
+    private static final Map<Integer, Boolean> intValues;
+    private static final Map<Integer, Boolean> taken;
+    private static int next = 0;
 
     static {
-        ids = new HashMap<>();
-        revert = new HashMap<>();
+        ids = new LinkedHashMap<>();
+        revert = new ArrayList<>();
+        intValues = new HashMap<>();
+        taken = new HashMap<>();
     }
+
 
     /**
      * @param rawId raw id as String
-     * @param type  id type
      * @return inner id as int
      */
-    public static int getId(String rawId, String type)  {
-        if (!ids.containsKey(type) || !ids.get(type).containsKey(rawId)) return -1;
-        return ids.get(type).get(rawId);
+    public static int getId(String rawId) {
+        if(rawId.length() < 10) {
+            //take the int if possible
+            try {
+                int r = Integer.parseInt(rawId, 10);
+                return r;
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
+        if (!ids.containsKey(rawId)) return -1;
+        return ids.get(rawId);
     }
 
     /**
      * @param innerId inner user id as int
-     * @param type    id type
      * @return raw id as string
      */
-    public static String getId(int innerId, String type) {
-        if (!revert.containsKey(type) || !revert.get(type).containsKey(innerId)) return null;
-        return revert.get(type).get(innerId);
+    public static String getId(int innerId) {
+        //check if the id was just parsed
+        if(intValues.containsKey(innerId)) return "" + intValues;
+
+        //check whether it was necessary to generate an id
+        if (revert.size() < innerId) return null;
+        return revert.get(innerId);
     }
 
     /**
      * @param rawId rawId user id as String
-     * @param type  id type
      * @return available inner id as int
      */
-    public static int getNextId(String rawId, String type) {
-        if (!ids.containsKey(type)) {
-            ids.put(type, new HashMap<>());
+    public static int getNextId(String rawId) {
+
+       // System.out.println(rawId + ":" + rawId.length());
+        if(rawId.length() < 10) {
+            //take the int if possible
+            try {
+                int r = Integer.parseInt(rawId, 10);
+                intValues.put(r, true);
+                taken.put(r, true);
+                return r;
+            } catch (NumberFormatException e) {
+
+            }
         }
 
-        if (!revert.containsKey(type)) {
-            revert.put(type, new HashMap<>());
+        if (ids.containsKey(rawId)) {
+            return ids.get(rawId);
+        } else {
+
+            while (!taken.containsKey(next)) {
+                next++;
+            }
+
+            int innerId = next;
+            ids.put(rawId, innerId);
+            revert.add(rawId);
+            taken.put(innerId, true);
+
+            return innerId;
         }
-
-        if (ids.get(type).containsKey(rawId)) {
-            return ids.get(type).get(rawId);
-        }
-
-        int innerId = ids.get(type).size();
-
-        ids.get(type).put(rawId, innerId);
-        revert.get(type).put(innerId, rawId);
-
-        return innerId;
     }
+
+    private static final char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+
+    public static String decToNewBase(int dec, int base) {
+        StringBuilder sb = new StringBuilder();
+
+        int num = dec;
+        int rem;
+
+        while (num > 0) {
+            rem = num % base;
+            sb.reverse().append(digits[rem]).reverse();
+
+            num = num / base;
+        }
+
+        return sb.toString();
+    }
+
+    public static String decTo36base(int dec) {
+        return decToNewBase(dec, digits.length);
+    }
+
 
 }

@@ -21,6 +21,8 @@ import java.util.*;
 
 import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
@@ -33,6 +35,9 @@ import com.recalot.model.rec.recommender.funksvd.helper.*;
  * http://sifter.org/~simon/journal/20061211.html
  * Adapted from previous Apache Mahout implementation (0.4)
  */
+
+@Configuration(key ="numFeatures",  type = ConfigurationItem.ConfigurationItemType.Integer, value = "50", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
+@Configuration(key ="initialSteps", type = ConfigurationItem.ConfigurationItemType.Integer, value = "50", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
 public class FunkSVDRecommender extends Recommender {
 
     // Default parameter settings

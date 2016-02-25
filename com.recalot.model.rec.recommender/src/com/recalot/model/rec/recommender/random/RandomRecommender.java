@@ -17,6 +17,7 @@
 
 package com.recalot.model.rec.recommender.random;
 
+import com.recalot.common.Helper;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
@@ -51,8 +52,7 @@ public class RandomRecommender extends Recommender {
         List<RecommendedItem> items = new ArrayList<>(recommendedItems);
 
         Collections.shuffle(items);
-
-        return new RecommendationResult(getId(), items);
+        return new RecommendationResult(getId(), Helper.applySubList(items, param, 50));
     }
 
     @Override

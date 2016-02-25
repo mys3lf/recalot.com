@@ -22,6 +22,8 @@ import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
@@ -35,6 +37,8 @@ import java.util.Map;
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
+
+@Configuration(key = "recommendOnlyItemsTheUserAlreadyViewed", type = ConfigurationItem.ConfigurationItemType.Boolean, value = "true", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
 public class BPRRecommender extends BPRMFRecommender {
 
     protected HashMap<String, HashMap<String, Item>> uItems;

@@ -17,15 +17,27 @@
 
 package com.recalot.model.data.connections.downloader.ciao;
 
+import com.recalot.common.Helper;
+import com.recalot.common.communication.*;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.model.data.connections.downloader.BaseDownloaderDataSource;
 
-import java.io.IOException;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
 public class CiaoDataSource extends BaseDownloaderDataSource {
+
+
+    public static String Genre = "genre".intern();
 
     public CiaoDataSource(){
         super();
@@ -33,25 +45,101 @@ public class CiaoDataSource extends BaseDownloaderDataSource {
 
     @Override
     public void connect() throws BaseException {
+        String source = "ciao";
+        File folder = null;
         try {
+            folder =  downloadData(source, "http://librec.net/datasets/CiaoDVD.zip");
 
+            File trustFile = null;
+            File ratingsFile = null;
 
-            downloadData("ciao", "http://www.public.asu.edu/~jtang20/datasetcode/ciao_with_rating_timestamp_txt.zip");
-            downloadData("epinions", "http://www.public.asu.edu/~jtang20/datasetcode/epinions_with_rating_timestamp_txt.zip");
-            downloadData("filmtrust", "http://www.librec.net/datasets/filmtrust.zip");
-            downloadData("jester_1_1", "http://eigentaste.berkeley.edu/dataset/jester_dataset_1_1.zip");
-            downloadData("jester_1_2", "http://eigentaste.berkeley.edu/dataset/jester_dataset_1_2.zip");
-            downloadData("jester_1_3", "http://eigentaste.berkeley.edu/dataset/jester_dataset_1_3.zip");
-            downloadData("jester_2", "http://eigentaste.berkeley.edu/dataset/jester_dataset_2.zip");
-            downloadData("jester_3", "http://eigentaste.berkeley.edu/dataset/jester_dataset_3.zip");
-            downloadData("book-crossing", "http://www2.informatik.uni-freiburg.de/~cziegler/BX/BX-CSV-Dump.zip");
-            downloadData("ml-latestSmall", "http://files.grouplens.org/datasets/movielens/ml-latest-small.zip");
-            downloadData("ml-latest", "http://files.grouplens.org/datasets/movielens/ml-latest.zip");
-            downloadData("douban", "http://dl.dropbox.com/u/17517913/Douban.zip");
-          //
+            String dirPath = "";
+            for (File file : folder.listFiles()) {
+                String name = file.getName().toLowerCase();
 
+                if (name.toLowerCase().equals("movie-ratings.txt")) ratingsFile = file;
+                else if (name.toLowerCase().equals("trusts.txt")) trustFile = file;
+            }
+
+            if (trustFile != null && ratingsFile != null) {
+                setInfo("Read Interactions");
+                readRatingsFile(ratingsFile);
+                setInfo("Read Trust");
+                readTrustFile(trustFile);
+            } else {
+                throw new NotFoundException("Can not find necessary files in '%s'.", dirPath);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        setInfo("Done");
     }
+
+    private void readRatingsFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            String line;
+            int i = 0;
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            while ((line = reader.readLine()) != null) {
+
+                //userID, movieID, genreID, reviewID, movieRating, date
+                String[] split = line.split(",");
+
+                if (split.length == 3) {
+                    String ratingId = "" + i++;
+
+                    String userId = split[0];
+                    String itemId = split[1];
+                    String genreId = split[2];
+                    String rating = split[4];
+                    String date = split[5];
+
+                    if (!users.containsKey(InnerIds.getNextId(userId))) {
+                        users.put(InnerIds.getNextId(userId), new User(userId));
+                    }
+
+                    if (!items.containsKey(InnerIds.getNextId(itemId))) {
+                        Map<String, String> content = new HashMap<>();
+                        content.put(Genre, genreId);
+
+                        items.put(InnerIds.getNextId(itemId), new Item(itemId, content));
+                    }
+
+                    interactions.put(InnerIds.getNextId(ratingId), new Interaction(ratingId, userId, itemId, format.parse(date), "rating".intern(), rating.intern(), null));
+                }
+            }
+        } catch (IOException x) {
+            x.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readTrustFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            int i = 0;
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                // trustorID, trusteeID, trustValue
+                String[] split = line.split(",");
+
+                if (split.length == 3) {
+                    String trustor = split[0];
+                    String trustee = split[1];
+                    String trustValue = split[2];
+
+                    HashMap<String, String> content = new HashMap<>();
+                    content.put(Helper.Keys.Value, trustValue);
+
+                    String id = "" + i++;
+                    relations.put(InnerIds.getNextId(id), new Relation(id, trustor, trustee, "trust".intern(), content));
+                }
+            }
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+    }
+
 }

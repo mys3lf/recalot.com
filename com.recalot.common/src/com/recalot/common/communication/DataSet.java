@@ -91,6 +91,14 @@ public interface DataSet {
     public Relation getRelation(String relationId) throws BaseException;
 
     /**
+     * Get relation information for a user
+     * @param fromId from id
+     * @return relation information
+     * @throws BaseException
+     * */
+    public Relation[] getRelationsFor(String fromId) throws BaseException;
+
+    /**
      * Get relation information
      * @param fromId from id
      * @param toId to id

@@ -22,6 +22,8 @@ import com.recalot.common.communication.Interaction;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.rec.Recommender;
@@ -32,9 +34,12 @@ import java.util.*;
 /**
  * @author matthaeus.schmedding
  */
+
+@Configuration(key = "omitViewedItems", type = ConfigurationItem.ConfigurationItemType.Boolean, value = "true", requirement = ConfigurationItem.ConfigurationItemRequirementType.Optional)
 public class MostPopularRecommender extends Recommender {
 
     protected RecommendationResult result;
+    private boolean omitViewedItems = true;
 
     @Override
     public void train() throws BaseException {
@@ -60,12 +65,34 @@ public class MostPopularRecommender extends Recommender {
 
 
     @Override
-    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException{
-        return this.result;
+    public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException {
+        List<RecommendedItem> recommendedItems = new ArrayList<>();
+
+        if (omitViewedItems) {
+            HashMap<String, Boolean> omitItems = new HashMap<>();
+            try {
+                Interaction[] userInteractions = getDataSet().getInteractions(userId);
+                for (Interaction i : userInteractions) {
+                    omitItems.put(i.getItemId(), true);
+                }
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
+
+            for (RecommendedItem item : result.getItems()) {
+                if (!omitItems.containsKey(item.getItemId())) {
+                    recommendedItems.add(item);
+                }
+            }
+
+            return new RecommendationResult(getId(), recommendedItems);
+        } else {
+            return this.result;
+        }
     }
 
     @Override
-    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) throws BaseException{
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) throws BaseException {
         return 0.0;
     }
 }

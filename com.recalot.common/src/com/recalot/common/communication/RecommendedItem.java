@@ -17,8 +17,6 @@
 
 package com.recalot.common.communication;
 
-import com.recalot.common.Helper;
-
 /**
  * An recommended item consists of the item id and a confidence of the recommendation.
  * So far most recommender algorithms set 0.0 as confidence.
@@ -47,7 +45,7 @@ public class RecommendedItem {
      * @param confidence confidence
      */
     public RecommendedItem(String itemId, double confidence) {
-        this.itemId = InnerIds.getId(itemId, Helper.Keys.ItemId);
+        this.itemId = InnerIds.getId(itemId);
         this.confidence = confidence;
         this.item = null;
     }
@@ -59,7 +57,7 @@ public class RecommendedItem {
      * @param confidence confidence
      */
     public RecommendedItem(Item item, double confidence) {
-        this.itemId = InnerIds.getId(item.getId(), Helper.Keys.ItemId);
+        this.itemId = InnerIds.getId(item.getId());
         this.confidence = confidence;
         this.item = item;
     }
@@ -79,7 +77,7 @@ public class RecommendedItem {
      * @return item id
      */
     public String getItemId() {
-        return InnerIds.getId(itemId, Helper.Keys.ItemId);
+        return InnerIds.getId(itemId);
     }
 
     /**

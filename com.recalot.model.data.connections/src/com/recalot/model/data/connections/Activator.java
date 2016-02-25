@@ -23,6 +23,7 @@ import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.configuration.Configurations;
 import com.recalot.common.exceptions.BaseException;
+import com.recalot.model.data.connections.downloader.ciao.CiaoDataSource;
 import com.recalot.model.data.connections.downloader.douban.DoubanDataSource;
 import com.recalot.model.data.connections.downloader.filmtrust.FilmTrustDataSource;
 import com.recalot.model.data.connections.downloader.flixster.FlixsterDataSource;
@@ -59,6 +60,7 @@ public class Activator implements BundleActivator, Initiator {
         sources.put("mysql",  MySQLDataSource.class.getName());
         sources.put("filmtrust",  FilmTrustDataSource.class.getName());
        // sources.put("flixster",  FlixsterDataSource.class.getName());
+        sources.put("ciao",  CiaoDataSource.class.getName());
         sources.put("douban",  DoubanDataSource.class.getName());
         sources.put("steam",  SteamFileDataSource.class.getName());
 

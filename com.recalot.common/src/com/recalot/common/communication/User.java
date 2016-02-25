@@ -17,8 +17,6 @@
 
 package com.recalot.common.communication;
 
-import com.recalot.common.Helper;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,12 +45,12 @@ public class User implements Serializable {
      * @param map content map
      */
     public User(String id, Map<String, String> map) {
-        this.id = InnerIds.getNextId(id, Helper.Keys.UserId);
+        this.id = InnerIds.getNextId(id);
 
         this.map = new HashMap<>();
 
         for (String key : map.keySet()) {
-            int contentId = InnerIds.getNextId(key, Helper.Keys.Content);
+            int contentId = InnerIds.getNextId(key);
             this.map.put(contentId, map.get(key));
         }
     }
@@ -63,7 +61,7 @@ public class User implements Serializable {
      * @param id user id
      */
     public User(String id) {
-        this.id = InnerIds.getNextId(id, Helper.Keys.UserId);
+        this.id = InnerIds.getNextId(id);
         this.map = new HashMap<>();
     }
 
@@ -71,7 +69,7 @@ public class User implements Serializable {
      * @return user id
      */
     public String getId() {
-        return InnerIds.getId(id, Helper.Keys.UserId);
+        return InnerIds.getId(id);
     }
 
     /**
@@ -83,7 +81,7 @@ public class User implements Serializable {
         HashMap<String, String> content = new HashMap<>();
 
         for (Integer key : map.keySet()) {
-            String contentKey = InnerIds.getId(key, Helper.Keys.Content);
+            String contentKey = InnerIds.getId(key);
             content.put(contentKey, map.get(key));
         }
 
@@ -97,6 +95,6 @@ public class User implements Serializable {
      * @return user content for a specific key
      */
     public String getValue(String key) {
-        return map.get(InnerIds.getId(key, Helper.Keys.Content));
+        return map.get(InnerIds.getId(key));
     }
 }

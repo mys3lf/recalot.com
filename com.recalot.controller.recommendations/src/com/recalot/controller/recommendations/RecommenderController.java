@@ -182,9 +182,7 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
             config.setOptions(dataSources);
 
             recommender.setConfiguration(config);
-            recommender.setConfiguration(new ConfigurationItem(Helper.Keys.ID, ConfigurationItem.ConfigurationItemType.String, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            recommender.setConfiguration(new ConfigurationItem(Helper.Keys.RecommenderBuilderId, ConfigurationItem.ConfigurationItemType.String, recommender.getKey(), ConfigurationItem.ConfigurationItemRequirementType.Hidden));
-        }
+       }
 
         return template.transform(recommender);
     }

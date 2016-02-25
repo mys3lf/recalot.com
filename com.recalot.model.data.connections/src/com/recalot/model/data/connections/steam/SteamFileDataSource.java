@@ -17,7 +17,6 @@
 
 package com.recalot.model.data.connections.steam;
 
-import com.recalot.common.Helper;
 import com.recalot.common.communication.*;
 import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
@@ -113,15 +112,15 @@ public class SteamFileDataSource extends DataSourceBase {
                     String rating = split.length > 2 ? split[2].intern() : "1";
 
 
-                    if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
-                        users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
+                    if (!users.containsKey(InnerIds.getNextId(userId))) {
+                        users.put(InnerIds.getNextId(userId), new User(userId));
                     }
 
-                    if (!items.containsKey(InnerIds.getNextId(itemId, Helper.Keys.ItemId))) {
-                        items.put(InnerIds.getNextId(itemId, Helper.Keys.ItemId), new Item(itemId));
+                    if (!items.containsKey(InnerIds.getNextId(itemId))) {
+                        items.put(InnerIds.getNextId(itemId), new Item(itemId));
                     }
 
-                    interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), rating, null));
+                    interactions.put(InnerIds.getNextId(ratingId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), rating, null));
                 }
             }
         } catch (IOException x) {
@@ -143,7 +142,7 @@ public class SteamFileDataSource extends DataSourceBase {
                     String user2 = split[1].intern();
 
                     String id = "" + i++;
-                    relations.put(InnerIds.getNextId(id, Helper.Keys.RelationId), new Relation(id, user1, user2, "friendship".intern()));
+                    relations.put(InnerIds.getNextId(id), new Relation(id, user1, user2, "friendship".intern()));
                 }
             }
         } catch (IOException x) {
@@ -156,7 +155,7 @@ public class SteamFileDataSource extends DataSourceBase {
             int i = 0;
             String line;
             while ((line = reader.readLine()) != null) {
-                    items.put(InnerIds.getNextId(line, Helper.Keys.ItemId), new Item(line));
+                    items.put(InnerIds.getNextId(line), new Item(line));
             }
         } catch (IOException x) {
             x.printStackTrace();
@@ -168,7 +167,7 @@ public class SteamFileDataSource extends DataSourceBase {
             int i = 0;
             String line;
             while ((line = reader.readLine()) != null) {
-                    users.put(InnerIds.getNextId(line, Helper.Keys.UserId), new User(line));
+                    users.put(InnerIds.getNextId(line), new User(line));
             }
         } catch (IOException x) {
             x.printStackTrace();

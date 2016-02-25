@@ -21,6 +21,8 @@
     <orderEntry type="library" name="flexjson" level="project" />
     <orderEntry type="library" name="commons-lang3-3.4" level="project" />
     <orderEntry type="library" name="com.springsource.com.mysql.jdbc-5.1.6" level="project" />
+    <orderEntry type="library" name="net.openhft:koloboke-api-jdk8:0.6.8" level="project" />
+    <orderEntry type="library" name="net.openhft:koloboke-impl-jdk8:0.6.8" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

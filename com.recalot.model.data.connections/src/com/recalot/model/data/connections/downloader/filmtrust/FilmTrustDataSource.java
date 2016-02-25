@@ -86,15 +86,15 @@ public class FilmTrustDataSource extends BaseDownloaderDataSource {
                     String userId = split[0];
                     String itemId = split[1];
 
-                    if (!users.containsKey(InnerIds.getNextId(userId, Helper.Keys.UserId))) {
-                        users.put(InnerIds.getNextId(userId, Helper.Keys.UserId), new User(userId));
+                    if (!users.containsKey(InnerIds.getNextId(userId))) {
+                        users.put(InnerIds.getNextId(userId), new User(userId));
                     }
 
-                    if (!items.containsKey(InnerIds.getNextId(itemId, Helper.Keys.ItemId))) {
-                        items.put(InnerIds.getNextId(itemId, Helper.Keys.ItemId), new Item(itemId));
+                    if (!items.containsKey(InnerIds.getNextId(itemId))) {
+                        items.put(InnerIds.getNextId(itemId), new Item(itemId));
                     }
 
-                    interactions.put(InnerIds.getNextId(ratingId, Helper.Keys.InteractionId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), split[2].intern(), null));
+                    interactions.put(InnerIds.getNextId(ratingId), new Interaction(ratingId, userId, itemId, new Date(), "rating".intern(), split[2].intern(), null));
                 }
             }
         } catch (IOException x) {
@@ -120,7 +120,7 @@ public class FilmTrustDataSource extends BaseDownloaderDataSource {
                     content.put(Helper.Keys.Value, trustValue);
 
                     String id = "" + i++;
-                    relations.put(InnerIds.getNextId(id, Helper.Keys.RelationId), new Relation(id, trustor, trustee, "trust".intern(), content));
+                    relations.put(InnerIds.getNextId(id), new Relation(id, trustor, trustee, "trust".intern(), content));
                 }
             }
         } catch (IOException x) {

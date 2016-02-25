@@ -18,6 +18,7 @@
 package com.recalot.common.builder;
 
 import com.recalot.common.Helper;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.model.rec.RecommenderInformation;
@@ -38,6 +39,9 @@ public class RecommenderBuilder extends InstanceBuilder<Recommender> implements 
      */
     public RecommenderBuilder(Initiator initiator, String className, String key, String description) throws BaseException {
         super(initiator, className, key, description);
+
+        setConfiguration(new ConfigurationItem(Helper.Keys.ID, ConfigurationItem.ConfigurationItemType.String, key, ConfigurationItem.ConfigurationItemRequirementType.Required));
+        setConfiguration(new ConfigurationItem(Helper.Keys.RecommenderBuilderId, ConfigurationItem.ConfigurationItemType.String, getKey(), ConfigurationItem.ConfigurationItemRequirementType.Hidden));
     }
 
     /**

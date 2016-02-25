@@ -518,6 +518,11 @@ public class MySQLDataSource extends DataSource {
     }
 
     @Override
+    public Relation[] getRelationsFor(String fromId) throws BaseException {
+        return relations.values().stream().filter(i -> i.getFromId().equals(fromId)).toArray(s -> new Relation[s]);
+    }
+
+    @Override
     public Relation getRelation(String relationId) throws BaseException {
         return relations.get(relationId);
     }
@@ -647,6 +652,50 @@ public class MySQLDataSource extends DataSource {
         putToSql(item);
         return item;
     }
+
+    @Override
+    public Message deleteItem(String itemId) throws BaseException {
+
+        if(items.containsKey(itemId)) {
+            items.remove(itemId);
+            removeItemFromSql(itemId);
+
+            return new Message("Item successful removed", "Item with id='" + itemId + "' successful deleted", Message.Status.INFO);
+        } else {
+            throw new NotFoundException("Item with id %s cannot be found.", "" + itemId);
+        }
+    }
+
+    private void removeItemFromSql(String itemId) {
+        PreparedStatement statement = null;
+        try {
+            writeLock.lock();
+
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) connection = getNewConnection();
+
+            // PreparedStatements can use variables and are more efficient
+            statement = connection.prepareStatement("DELETE FROM items WHERE id=?");
+
+            statement.setString(1, itemId);    //item id
+
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                statement = null;
+            }
+
+            writeLock.unlock();
+        }
+    }
+
 
     @Override
     public User[] getUsers() throws BaseException {

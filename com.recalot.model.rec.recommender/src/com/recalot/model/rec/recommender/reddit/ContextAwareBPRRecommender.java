@@ -21,6 +21,8 @@ import com.recalot.common.Helper;
 import com.recalot.common.communication.Item;
 import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.communication.RecommendedItem;
+import com.recalot.common.configuration.Configuration;
+import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.ContextProvider;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.BaseException;
@@ -30,13 +32,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+//TODO
 /**
  * @author Matthäus Schmedding (info@recalot.com)
  */
+
+@Configuration(key = "contextType", type = ConfigurationItem.ConfigurationItemType.Options, value = "letter", options = {"letter", "last", "both"}, requirement = ConfigurationItem.ConfigurationItemRequirementType.Required)
 public class ContextAwareBPRRecommender extends BPRRecommender {
 
     private String contextType;
-    private HashMap<Integer, HashMap<Integer, Boolean>> coocurence;
     private ContextHelper contextHelper;
 
     @Override
@@ -81,7 +86,6 @@ public class ContextAwareBPRRecommender extends BPRRecommender {
                 items = contextHelper.applyBothContext(items, userId, userInputContext, userLastItemContext);
                 break;
         }
-
 
         items = Helper.applySubList(items, param, 10);
 

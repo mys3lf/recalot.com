@@ -20,7 +20,9 @@ package com.recalot.model.rec;
 
 import com.recalot.common.builder.Initiator;
 import com.recalot.common.builder.RecommenderBuilder;
+import com.recalot.common.configuration.Configuration;
 import com.recalot.common.configuration.ConfigurationItem;
+import com.recalot.common.configuration.Configurations;
 import com.recalot.common.context.Context;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.rec.Recommender;
@@ -28,14 +30,12 @@ import com.recalot.model.rec.context.LastVisitedContext;
 import com.recalot.model.rec.context.ParamsContext;
 import com.recalot.model.rec.context.UserInputContext;
 import com.recalot.model.rec.recommender.mostpopular.MostPopularRecommender;
+import com.recalot.model.rec.recommender.social.SocialMostPopularRecommender;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.*;
 
 
 /**
@@ -75,205 +75,49 @@ public class Activator implements BundleActivator, Initiator {
     private void registerRecommenders(BundleContext context) {
         recommenders = new ArrayList<>();
 
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, MostPopularRecommender.class.getName(), "mp", "");
-            //     builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
+
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("mp", MostPopularRecommender.class.getName());
+        map.put("social-mp", SocialMostPopularRecommender.class.getName());
+        map.put("wallpaper-survey", com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName());
+        map.put("cosine-user-knn",  com.recalot.model.rec.recommender.knn.UserBasedCosineNearestNeighborsRecommender.class.getName());
+        map.put("slopeone", com.recalot.model.rec.recommender.slopeone.SlopeOneRecommender.class.getName());
+        map.put("bprmf",com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName());
+
+        map.put("random",com.recalot.model.rec.recommender.random.RandomRecommender.class.getName());
+        map.put("item-average-rating",com.recalot.model.rec.recommender.experiments.GlobalItemAverageRatingRecommender.class.getName());
+        map.put("user-average-rating",com.recalot.model.rec.recommender.experiments.GlobalUserAverageRatingRecommender.class.getName());
+        map.put("global-average-rating", com.recalot.model.rec.recommender.experiments.GlobalAverageRatingRecommender.class.getName());
+
+        map.put("reddit-bprmf",com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName());
+        map.put("reddit-context-bprmf",com.recalot.model.rec.recommender.reddit.ContextAwareBPRRecommender.class.getName());
+        map.put("reddit-context-mp", com.recalot.model.rec.recommender.reddit.ContextAwareMostPopular.class.getName());
+        map.put("reddit-context-random",  com.recalot.model.rec.recommender.reddit.ContextAwareRandomRecommender.class.getName());
+        map.put("reddit-random", com.recalot.model.rec.recommender.reddit.RandomRecommender.class.getName());
+        map.put("reddit-mp", com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName());
+
+        for(String key: map.keySet()) {
+            try {
+                RecommenderBuilder builder = new RecommenderBuilder(this, map.get(key), key, "");
+
+                ConfigurationItem[] items = getConfigurationItems(map.get(key));
+                for (ConfigurationItem item : items) {
+                    builder.setConfiguration(item);
+                }
+
+                recommenders.add(builder);
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
         }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName(), "wallpaper-mp", "");
-            //    builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName(), "wallpaper-survey", "");
-            // builder.setConfiguration(new ConfigurationItem("topN", ConfigurationItem.ConfigurationItemType.Integer, "", ConfigurationItem.ConfigurationItemRequirementType.Required));
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.knn.UserBasedCosineNearestNeighborsRecommender.class.getName(), "cosine-user-knn", "");
-            builder.setConfiguration(new ConfigurationItem("minOverlap", ConfigurationItem.ConfigurationItemType.Integer, "3", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            builder.setConfiguration(new ConfigurationItem("maxNeighbors", ConfigurationItem.ConfigurationItemType.Integer, "10", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            builder.setConfiguration(new ConfigurationItem("minSimilarity", ConfigurationItem.ConfigurationItemType.Integer, "0.0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.funksvd.FunkSVDRecommender.class.getName(), "funk-svd", "");
-            builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "50", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.slopeone.SlopeOneRecommender.class.getName(), "slopeone", "");
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName(), "bprmf", "");
-
-            AddBPRConfiguration(builder);
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareBPRRecommender.class.getName(), "reddit-context-bprmf", "");
-
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
-            List<String> options = new ArrayList<>();
-
-            options.add("letter");
-            options.add("last");
-            options.add("both");
-
-            config.setOptions(options);
-            builder.setConfiguration(config);
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            AddBPRConfiguration(builder);
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareMostPopular.class.getName(), "reddit-context-mp", "");
-
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
-            List<String> options = new ArrayList<>();
-
-            options.add("letter");
-            options.add("last");
-            options.add("both");
-
-            config.setOptions(options);
-            builder.setConfiguration(config);
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.ContextAwareRandomRecommender.class.getName(), "reddit-context-random", "");
-
-            ConfigurationItem config = new ConfigurationItem("contextType", ConfigurationItem.ConfigurationItemType.Options, "both", ConfigurationItem.ConfigurationItemRequirementType.Required, "");
-            List<String> options = new ArrayList<>();
-
-            options.add("letter");
-            options.add("last");
-            options.add("both");
-
-            config.setOptions(options);
-            builder.setConfiguration(config);
-
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.RandomRecommender.class.getName(), "reddit-random", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-mp", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.reddit.MostPopularRecommender.class.getName(), "reddit-bprmf", "");
-            builder.setConfiguration(new ConfigurationItem("recommendOnlyItemsTheUserAlreadyViewed", ConfigurationItem.ConfigurationItemType.Boolean, "false", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-            AddBPRConfiguration(builder);
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalAverageRatingRecommender.class.getName(), "global-average-rating", "This recommender is used for comparison in experiments and provides a global average as prediction.");
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.random.RandomRecommender.class.getName(), "random", "This recommender is used for comparison in experiments and provides a random list as recommendation.");
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalItemAverageRatingRecommender.class.getName(), "item-average-rating", "This recommender is used for comparison in experiments and provides a item average as prediction.");
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RecommenderBuilder builder = new RecommenderBuilder(this, com.recalot.model.rec.recommender.experiments.GlobalUserAverageRatingRecommender.class.getName(), "user-average-rating", "This recommender is used for comparison in experiments and provides a user average as prediction.");
-
-            recommenders.add(builder);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-
 
         for (RecommenderBuilder c : recommenders) {
             context.registerService(RecommenderBuilder.class.getName(), c, null);
         }
     }
 
-    private void AddBPRConfiguration(RecommenderBuilder builder) {
-        builder.setConfiguration(new ConfigurationItem("uniformUserSampling", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("biasReg", ConfigurationItem.ConfigurationItemType.Double, "0", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("numFeatures", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("initialSteps", ConfigurationItem.ConfigurationItemType.Integer, "100", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("learnRate", ConfigurationItem.ConfigurationItemType.Double, "0.05", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("regU", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("regI", ConfigurationItem.ConfigurationItemType.Double, "0.0025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("regJ", ConfigurationItem.ConfigurationItemType.Double, "0.00025", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-        builder.setConfiguration(new ConfigurationItem("updateJ", ConfigurationItem.ConfigurationItemType.Boolean, "true", ConfigurationItem.ConfigurationItemRequirementType.Optional, ""));
-    }
+
 
     /**
      * Implements BundleActivator.stop(). Prints
@@ -308,5 +152,46 @@ public class Activator implements BundleActivator, Initiator {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static ConfigurationItem[] getConfigurationItems(String className) {
+
+        Map<String, ConfigurationItem> items = new HashMap<>();
+
+        try {
+            Class recommender = Class.forName(className);
+
+            while (recommender != null) {
+
+
+                if (recommender.isAnnotationPresent(Configuration.class)) {
+                    com.recalot.common.configuration.Configuration config = (Configuration) recommender.getAnnotation(Configuration.class);
+
+                    if (config != null && !items.containsKey(config.key())) {
+                        items.put(config.key(), new ConfigurationItem(config.key(), config.type(), config.value(), config.requirement(), config.description(), new ArrayList<>(Arrays.asList(config.options()))));
+                    }
+                }
+
+                if (recommender.isAnnotationPresent(Configurations.class)) {
+
+                    com.recalot.common.configuration.Configuration annotations[] = ((Configurations) recommender.getAnnotation(Configurations.class)).value();
+
+                    for (com.recalot.common.configuration.Configuration t : annotations) {
+                        if (!items.containsKey(t.key())) {
+                            items.put(t.key(), new ConfigurationItem(t.key(), t.type(), t.value(), t.requirement(), t.description(), new ArrayList<>(Arrays.asList(t.options()))));
+                        }
+                    }
+                }
+
+                recommender = recommender.getSuperclass();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+        }
+
+        return items.values().toArray(new ConfigurationItem[items.size()]);
     }
 }

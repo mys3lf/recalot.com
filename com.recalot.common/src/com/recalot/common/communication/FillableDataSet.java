@@ -131,6 +131,11 @@ public class FillableDataSet implements DataSet {
     }
 
     @Override
+    public Relation[] getRelationsFor(String fromId) throws BaseException {
+        return relations.stream().filter(i -> i.getFromId().equals(fromId)).toArray(s -> new Relation[s]);
+    }
+
+    @Override
     public Relation[] getRelations(String fromId, String toId) throws BaseException {
         if(fromId != null && toId == null) {
             return relations.stream().filter(i -> i.getFromId().equals(fromId) ).toArray(s -> new Relation[s]);

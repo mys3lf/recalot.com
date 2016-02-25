@@ -79,6 +79,11 @@ public class DataSourceDataSet implements DataSet {
     }
 
     @Override
+    public Relation[] getRelationsFor(String fromId) throws BaseException {
+        return  dataSource.getRelationsFor(fromId);
+    }
+
+    @Override
     public Relation[] getRelations(String fromId, String toId) throws BaseException {
         return dataSource.getRelations(fromId, toId);
     }
