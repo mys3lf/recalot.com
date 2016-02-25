@@ -4,7 +4,7 @@ Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.rec.recommender.librec
 Bundle-Name: Recalot.com Model - LibRec Recommender (Wraps libRec 1.4 
  recommender)
-Bundle-Version: 0.0.0.5
+Bundle-Version: 0.0.0.7
 Bundle-Activator: com.recalot.model.rec.librec.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
