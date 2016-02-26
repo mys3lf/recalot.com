@@ -86,7 +86,7 @@ public class CiaoDataSource extends BaseDownloaderDataSource {
                 //userID, movieID, genreID, reviewID, movieRating, date
                 String[] split = line.split(",");
 
-                if (split.length == 3) {
+                if (split.length == 6) {
                     String ratingId = "" + i++;
 
                     String userId = split[0];
@@ -105,7 +105,6 @@ public class CiaoDataSource extends BaseDownloaderDataSource {
 
                         items.put(InnerIds.getNextId(itemId), new Item(itemId, content));
                     }
-
                     interactions.put(InnerIds.getNextId(ratingId), new Interaction(ratingId, userId, itemId, format.parse(date), "rating".intern(), rating.intern(), null));
                 }
             }
