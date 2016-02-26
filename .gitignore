@@ -4,3 +4,7 @@ de.oforge.osgi.repobuilder
 .idea
 out
 com.recalot.model.rec.recommender.librec
+lib
+libs
+data
+flexjson
