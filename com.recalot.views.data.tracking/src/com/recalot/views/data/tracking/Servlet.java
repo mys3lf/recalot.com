@@ -56,6 +56,7 @@ public class Servlet extends HttpServlet {
     }
     protected void processRequest(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Headers", "*");
         String pathInfo = req.getPathInfo();
         TemplateResult result = null;
 
@@ -88,7 +89,7 @@ public class Servlet extends HttpServlet {
                 if (split[0].toLowerCase().equals("sources") && split[2].toLowerCase().equals("users") && split[4].toLowerCase().equals("items")) {
                     String sourceId = split[1];
                     String userId = split[3];
-                    String itemId =split[5];
+                    String itemId = split[5];
 
                     if (userId != null && !userId.trim().equals("")
                             && itemId != null && !itemId.trim().equals("")

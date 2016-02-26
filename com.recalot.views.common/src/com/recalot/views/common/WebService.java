@@ -72,5 +72,6 @@ public class WebService extends ConfigurationService implements Closeable {
         // "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS"
         res.setHeader("Allow", allow) ;
         res.setHeader("Access-Control-Allow-Methods", allow) ;
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     }
 }
