@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Parallel {
-    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors() - 2;
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors()  > 2 ? Runtime.getRuntime().availableProcessors()- 2 : 1;
 
     private static final ExecutorService forPool = Executors.newFixedThreadPool(NUM_CORES * 2, new NamedThreadFactory("Parallel.For"));
 
