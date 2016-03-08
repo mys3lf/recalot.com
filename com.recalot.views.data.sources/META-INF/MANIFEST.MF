@@ -14,8 +14,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  xceptions,com.recalot.common.interfaces.controller,com.recalot.common
  .interfaces.template,com.recalot.common,com.recalot.common.log,com.re
  calot.views.common
-Export-Package: com.recalot.views.data.sources;version="0.1.0"
+Export-Package: com.recalot.views.data.sources;version="0.1.1"
 Bundle-Name: Recalot.com Views - Data Sources
-Bundle-Version: 0.1.0.747
+Bundle-Version: 0.1.1.748
 Bundle-Activator: com.recalot.views.data.sources.Activator
 

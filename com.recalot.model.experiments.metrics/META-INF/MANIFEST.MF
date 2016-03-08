@@ -8,7 +8,7 @@ Bundle-Description:  Contains several evaluation metrics
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.experiments.metrics
 Bundle-Name: Recalot.com Model - Experiment Metrics
-Bundle-Version: 0.1.0.726
+Bundle-Version: 0.1.1.727
 Bundle-Activator: com.recalot.model.experiments.metrics.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com

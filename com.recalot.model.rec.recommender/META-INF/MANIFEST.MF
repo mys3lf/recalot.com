@@ -13,8 +13,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  el.experiment,   com.recalot.common.exceptions,com.recalot.common,com
  .recalot.common.builder,com.recalot.common.configuration, flexjson, c
  om.recalot.common.context
-Export-Package:  com.recalot.model.rec.context;version="0.1.0"
+Export-Package:  com.recalot.model.rec.context;version="0.1.1"
 Bundle-Name: Recalot.com Model - Recommender
-Bundle-Version: 0.1.0.749
+Bundle-Version: 0.1.1.750
 Bundle-Activator: com.recalot.model.rec.Activator
 

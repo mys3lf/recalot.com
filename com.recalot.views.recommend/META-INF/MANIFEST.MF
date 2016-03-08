@@ -14,8 +14,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  api,com.recalot.common.interfaces.controller,com.recalot.common.inter
  faces.template,com.recalot.common,com.recalot.common.log,com.recalot.
  views.common
-Export-Package: com.recalot.views.recommend;version="0.1.0"
+Export-Package: com.recalot.views.recommend;version="0.1.1"
 Bundle-Name: Recalot.com Views - Recommend
-Bundle-Version: 0.1.0.747
+Bundle-Version: 0.1.1.748
 Bundle-Activator: com.recalot.views.recommend.Activator
 
