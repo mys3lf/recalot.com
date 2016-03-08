@@ -136,6 +136,9 @@ public class Servlet extends HttpServlet {
                                 case GET:
                                     result = handler.process(DataAccessController.DataAccessRequestAction.GetItems, templateKey, params);
                                     break;
+                                case DELETE:
+                                    result = handler.process(DataAccessController.DataAccessRequestAction.DeleteItem, templateKey, params);
+                                    break;
                             }
                         } else if (split[2].toLowerCase().equals("interactions")) {
                             switch (method) {
