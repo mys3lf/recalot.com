@@ -80,10 +80,12 @@ public class Activator implements BundleActivator, Initiator {
 
         map.put("mp", MostPopularRecommender.class.getName());
         map.put("social-mp", SocialMostPopularRecommender.class.getName());
-        map.put("wallpaper-survey", com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName());
+        map.put("wallpaper-survey", com.recalot.model.rec.recommender.wallpaper.survey.SurveyRecommender.class.getName());
+        map.put("wallpaper-mp", com.recalot.model.rec.recommender.wallpaper.mostpopular.MostPopularRecommender.class.getName());
         map.put("cosine-user-knn",  com.recalot.model.rec.recommender.knn.UserBasedCosineNearestNeighborsRecommender.class.getName());
         map.put("slopeone", com.recalot.model.rec.recommender.slopeone.SlopeOneRecommender.class.getName());
         map.put("bprmf",com.recalot.model.rec.recommender.bprmf.BPRMFRecommender.class.getName());
+        map.put("live-user-knn",com.recalot.model.rec.recommender.memory.userKNN.LiveUserCosKNN.class.getName());
 
         map.put("random",com.recalot.model.rec.recommender.random.RandomRecommender.class.getName());
         map.put("item-average-rating",com.recalot.model.rec.recommender.experiments.GlobalItemAverageRatingRecommender.class.getName());

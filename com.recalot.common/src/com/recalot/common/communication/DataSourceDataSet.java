@@ -59,6 +59,11 @@ public class DataSourceDataSet implements DataSet {
     }
 
     @Override
+    public Item tryGetItem(String itemId) {
+        return dataSource.tryGetItem(itemId);
+    }
+
+    @Override
     public Item[] getItems() throws BaseException {
         return dataSource.getItems();
     }
@@ -105,5 +110,10 @@ public class DataSourceDataSet implements DataSet {
     @Override
     public int getRelationCount() {
         return dataSource.getRelationCount();
+    }
+
+    @Override
+    public boolean hasItem(String itemId) {
+        return dataSource.tryGetItem(itemId) != null;
     }
 }

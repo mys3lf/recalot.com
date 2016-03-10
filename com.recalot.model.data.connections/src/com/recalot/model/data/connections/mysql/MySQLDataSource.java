@@ -656,7 +656,7 @@ public class MySQLDataSource extends DataSource {
     }
 
     @Override
-    public Item tryGetItem(String itemId) throws BaseException {
+    public Item tryGetItem(String itemId) {
         return items.get(itemId);
     }
 

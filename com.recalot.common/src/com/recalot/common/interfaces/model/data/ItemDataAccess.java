@@ -31,7 +31,7 @@ public interface ItemDataAccess {
     public int getItemsCount();
 
     public Item getItem(String itemId) throws BaseException;
-    public Item tryGetItem(String itemId) throws BaseException;
+    public Item tryGetItem(String itemId);
     public Item updateItem(String itemId, Map<String, String> content) throws BaseException;
     public Item createItem(Map<String, String> content) throws BaseException;
     public Message deleteItem(String itemId) throws BaseException;

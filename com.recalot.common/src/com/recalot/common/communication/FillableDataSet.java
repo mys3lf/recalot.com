@@ -53,7 +53,7 @@ public class FillableDataSet implements DataSet {
 
     /**
      * Default constructor
-     *
+     * <p>
      * Initializes the lists
      */
     public FillableDataSet() {
@@ -65,6 +65,7 @@ public class FillableDataSet implements DataSet {
 
     /**
      * Add interaction to the data set
+     *
      * @param interaction interaction that should be added
      * @throws BaseException
      */
@@ -74,6 +75,7 @@ public class FillableDataSet implements DataSet {
 
     /**
      * Add item to the data set
+     *
      * @param item item that should be added
      * @throws BaseException
      */
@@ -83,6 +85,7 @@ public class FillableDataSet implements DataSet {
 
     /**
      * Add user to the data set
+     *
      * @param user user that should be added
      * @throws BaseException
      */
@@ -92,6 +95,7 @@ public class FillableDataSet implements DataSet {
 
     /**
      * Add a relation to the data set
+     *
      * @param relation
      */
     public void addRelation(Relation relation) {
@@ -105,7 +109,7 @@ public class FillableDataSet implements DataSet {
 
     @Override
     public Interaction[] getInteractions(String userId) throws BaseException {
-        return interactions.stream().filter( i -> i.getUserId().equals(userId)).toArray(Interaction[]::new);
+        return interactions.stream().filter(i -> i.getUserId().equals(userId)).toArray(Interaction[]::new);
     }
 
     @Override
@@ -137,9 +141,9 @@ public class FillableDataSet implements DataSet {
 
     @Override
     public Relation[] getRelations(String fromId, String toId) throws BaseException {
-        if(fromId != null && toId == null) {
-            return relations.stream().filter(i -> i.getFromId().equals(fromId) ).toArray(s -> new Relation[s]);
-        } else if(fromId == null && toId != null){
+        if (fromId != null && toId == null) {
+            return relations.stream().filter(i -> i.getFromId().equals(fromId)).toArray(s -> new Relation[s]);
+        } else if (fromId == null && toId != null) {
             return relations.stream().filter(i -> i.getToId().equals(toId)).toArray(s -> new Relation[s]);
         } else {
             return relations.stream().filter(i -> i.getFromId().equals(fromId) && i.getToId().equals(toId)).toArray(s -> new Relation[s]);
@@ -151,6 +155,15 @@ public class FillableDataSet implements DataSet {
         Optional<Item> item = items.stream().filter(i -> i.getId().equals(itemId)).findFirst();
 
         return item.isPresent() ? item.get() : null;
+    }
+
+    @Override
+    public Item tryGetItem(String itemId) {
+        try {
+            return getItem(itemId);
+        } catch (BaseException e) {
+            return null;
+        }
     }
 
     @Override
@@ -180,6 +193,13 @@ public class FillableDataSet implements DataSet {
         return relations.size();
     }
 
+    @Override
+    public boolean hasItem(String itemId) {
+        Optional<Item> item = items.stream().filter(i -> i.getId().equals(itemId)).findFirst();
+
+        return item.isPresent();
+    }
+
     public static DataSet createDataSet(DataSet dataSet, Interaction[] omitInteractions) throws BaseException {
         //create empty dataset
         FillableDataSet temp = new FillableDataSet();
@@ -187,29 +207,29 @@ public class FillableDataSet implements DataSet {
         //save interaction ids that should be omitted
         Map<String, Boolean> interactionMap = new HashMap<>();
 
-        for(Interaction i: omitInteractions) {
+        for (Interaction i : omitInteractions) {
             interactionMap.put(i.getId(), true);
         }
 
         //add all interaction except the interactions that should be omitted
         for (Interaction i : dataSet.getInteractions()) {
-            if(!interactionMap.containsKey(i.getId())) {
+            if (!interactionMap.containsKey(i.getId())) {
                 temp.addInteraction(i);
             }
         }
 
         //copy all users
-        for(User user: dataSet.getUsers()) {
+        for (User user : dataSet.getUsers()) {
             temp.addUser(user);
         }
 
         //copy all items
-        for(Item item: dataSet.getItems()) {
+        for (Item item : dataSet.getItems()) {
             temp.addItem(item);
         }
 
         //copy all relations
-        for(Relation relation: dataSet.getRelations()) {
+        for (Relation relation : dataSet.getRelations()) {
             temp.addRelation(relation);
         }
 

@@ -62,6 +62,13 @@ public interface DataSet {
     public Item getItem(String itemId) throws BaseException;
 
     /**
+     * Get item information or null if the item do not exist
+     * @param itemId item id
+     * @return item information
+     */
+    public Item tryGetItem(String itemId);
+
+    /**
      * Get all items
      * @return all available items in the data set
      * @throws BaseException
@@ -131,4 +138,11 @@ public interface DataSet {
      * @return relation count
      */
     public int getRelationCount();
+
+    /**
+     * Check whether an item exists in the data set
+     * @param itemId item id
+     * @return true if the item exist otherwise false
+     */
+    public boolean hasItem(String itemId);
 }

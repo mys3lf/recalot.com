@@ -95,6 +95,10 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
                     result = createExperiment(template, param);
                     break;
                 }
+                case CreateOnlineExperiment: {
+                    result = createOnlineExperiment(template, param);
+                    break;
+                }
                 case DeleteExperiment: {
                     result = deleteExperiment(template, param);
                     break;
@@ -129,6 +133,10 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
         }
 
         return result;
+    }
+
+    private TemplateResult createOnlineExperiment(ExperimentTemplate template, Map<String, String> param) {
+        return null;
     }
 
     private TemplateResult getExperiments(ExperimentTemplate template, Map<String, String> param) throws BaseException {

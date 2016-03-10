@@ -42,25 +42,25 @@ public class MostPopularRecommender extends Recommender {
         Map<String, Integer> count = new LinkedHashMap<>();
 
         for (Interaction interaction : getDataSet().getInteractions()) {
-            if(interaction.getType().toLowerCase().equals("rating")) {
+            if (interaction.getType().toLowerCase().equals("rating")) {
                 Helper.incrementMapValue(count, interaction.getItemId(), Integer.parseInt(interaction.getValue()));
             }
         }
 
-        for(Item item : getDataSet().getItems()) {
+        for (Item item : getDataSet().getItems()) {
             String content = item.getValue("content");
-            if(content != null && !content.isEmpty()){
-                try{
+            if (content != null && !content.isEmpty()) {
+                try {
                     HashMap itemContent = new JSONDeserializer<HashMap>().deserialize(content);
                     String rating = (String) itemContent.get("Rating");
-                    String ratingCount = (String)itemContent.get("RatingCount");
+                    String ratingCount = (String) itemContent.get("RatingCount");
 
                     if (rating != null && !rating.isEmpty() && ratingCount != null && !ratingCount.isEmpty()) {
                         Double r = Double.parseDouble(rating);
                         Integer c = Integer.parseInt(ratingCount.replace("(", "").replace(" vote)", "").replace(" votes)", ""));
-                        Helper.incrementMapValue(count, item.getId(), (int)Math.round(r * c));
+                        Helper.incrementMapValue(count, item.getId(), (int) Math.round(r * c));
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -74,13 +74,15 @@ public class MostPopularRecommender extends Recommender {
         double sum = Helper.sum(count);
 
         for (String key : count.keySet()) {
-            recommendedItems.add(new RecommendedItem(getDataSet().getItem(key), 1.0 * count.get(key) / sum));
+            if (getDataSet().hasItem(key)) {
+                recommendedItems.add(new RecommendedItem(getDataSet().getItem(key), 1.0 * count.get(key) / sum));
+            }
         }
 
         List<RecommendedItem> remainingItems = new ArrayList<>();
 
-        for(Item item : getDataSet().getItems()) {
-            if(!recommendedItems.stream().anyMatch(i -> i.getItemId().equals(item.getId()))){
+        for (Item item : getDataSet().getItems()) {
+            if (!recommendedItems.stream().anyMatch(i -> i.getItemId().equals(item.getId()))) {
                 remainingItems.add(new RecommendedItem(item, 0.0));
             }
         }
@@ -94,11 +96,11 @@ public class MostPopularRecommender extends Recommender {
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         List<RecommendedItem> items = null;
-        if(result != null) {
+        if (result != null) {
             items = result.getItems();
         }
 
-        if(items == null) items = new ArrayList<>();
+        if (items == null) items = new ArrayList<>();
 
         return new RecommendationResult(getId(), items);
     }

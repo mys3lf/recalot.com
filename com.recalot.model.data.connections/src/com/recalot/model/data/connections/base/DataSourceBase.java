@@ -95,13 +95,13 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public Item getItem(String itemId) throws BaseException {
-        if (!items.containsKey(itemId)) throw new NotFoundException("Item with id %s cannot be found.", "" + itemId);
-        return items.get(itemId);
+        if (!items.containsKey(InnerIds.getId(itemId))) throw new NotFoundException("Item with id %s cannot be found.", "" + itemId);
+        return items.get(InnerIds.getId(itemId));
     }
 
     @Override
-    public Item tryGetItem(String itemId) throws BaseException {
-        return items.get(itemId);
+    public Item tryGetItem(String itemId){
+        return items.get(InnerIds.getId(itemId));
     }
 
     @Override
@@ -116,14 +116,13 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public User getUser(String userId) throws BaseException {
-        if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
-        return users.get(userId);
+        if (!users.containsKey(InnerIds.getId(userId))) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
+        return users.get(InnerIds.getId(userId));
     }
 
     @Override
     public User tryGetUser(String userId) throws BaseException {
-        if (!users.containsKey(userId)) throw new NotFoundException("User with id %s cannot be found.", "" + userId);
-        return users.get(userId);
+        return users.get(InnerIds.getId(userId));
     }
 
     @Override
@@ -153,7 +152,7 @@ public abstract class DataSourceBase extends DataSource {
 
     @Override
     public Relation getRelation(String relationId) throws BaseException {
-        return relations.get(relationId);
+        return relations.get(InnerIds.getId(relationId));
     }
 
     @Override
