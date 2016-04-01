@@ -1,0 +1,51 @@
+{
+  "navigation": [
+    {
+      "headline": "recalot.com",
+      "items": [
+        {
+          "label": "About",
+          "link": "http://recalot.com/about"
+        },
+        {
+          "label": "License",
+          "link": "http://recalot.com/license"
+        }
+      ]
+    },
+    {
+      "headline": "Documentation",
+      "items": [
+        {
+          "label": "Rest API overview",
+          "link": "http://recalot.com/documentation/rest-api-overview/"
+        },
+        {
+          "label": "Getting started",
+          "link": "http://recalot.com/documentation/getting-started/"
+        },
+        {
+          "label": "Development",
+          "link": "http://recalot.com/documentation/development/"
+        },
+        {
+          "label": "Integrate",
+          "link": "http://recalot.com/documentation/integrate/"
+        }
+      ]
+    },
+    {
+      "headline": "Examples",
+      "items": [
+        {
+          "label": "Datasets",
+          "link": "http://recalot.com/examples/datasets/"
+        },
+        {
+          "label": "Ranking Predictions",
+          "link": "http://recalot.com/examples/ranking-predictions/"
+        }
+      ]
+    }
+  ]
+}

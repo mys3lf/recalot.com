@@ -30,7 +30,9 @@ public interface ExperimentsController extends Controller {
         GetMetric (5),
         GetSplitters (6),
         GetSplitter (7),
-        GetExperimentConfiguration(8);
+        GetExperimentConfiguration(8),
+        CreateOnlineExperiment(9),
+        GetOnlineExperiment(10), DeleteOnlineExperiment(11), GetOnlineExperiments(12), GetRecommendationForOnlineExperiment(13);
 
         private final int value;
 

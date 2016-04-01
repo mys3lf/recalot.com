@@ -17,18 +17,24 @@
 
 package com.recalot.model.experiments.access;
 
+import com.recalot.common.GenericServiceListener;
 import com.recalot.common.Helper;
-import com.recalot.common.exceptions.AlreadyExistsException;
-import com.recalot.common.exceptions.BaseException;
-import com.recalot.common.exceptions.MissingArgumentException;
-import com.recalot.common.exceptions.NotFoundException;
+import com.recalot.common.builder.RecommenderBuilder;
+import com.recalot.common.communication.RecommendationResult;
+import com.recalot.common.context.Context;
+import com.recalot.common.context.UserContext;
+import com.recalot.common.exceptions.*;
 import com.recalot.common.communication.Message;
+import com.recalot.common.interfaces.model.data.DataAccess;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
 import com.recalot.common.interfaces.model.experiment.Experiment;
 import com.recalot.common.interfaces.model.experiment.Metric;
 import com.recalot.common.context.ContextProvider;
+import com.recalot.common.interfaces.model.experiment.OnlineExperiment;
 import com.recalot.common.interfaces.model.rec.Recommender;
+import com.recalot.common.interfaces.model.rec.RecommenderAccess;
+import com.recalot.common.interfaces.model.rec.RecommenderInformation;
 import org.osgi.framework.BundleContext;
 
 import java.io.IOException;
@@ -44,14 +50,22 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
     private final BundleContext context;
 
     private final ConcurrentHashMap<String, Experiment> experiments;
+    private final ConcurrentHashMap<String, OnlineExperiment> onlineExperiments;
     private final ConcurrentHashMap<String, Thread> threads;
+    private final GenericServiceListener<RecommenderBuilder> recommenderListener;
+    private final GenericServiceListener<RecommenderAccess> recommenderAccess;
+    private final Random random;
     private ConcurrentLinkedQueue<Experiment> queue;
 
     public ExperimentAccess(BundleContext context) {
         this.context = context;
+        this.recommenderListener = new GenericServiceListener<>(context, RecommenderBuilder.class.getName());
+        this.recommenderAccess = new GenericServiceListener<>(context, RecommenderAccess.class.getName());
         this.experiments = new ConcurrentHashMap<>();
         this.threads = new ConcurrentHashMap<>();
         this.queue = new ConcurrentLinkedQueue<>();
+        this.onlineExperiments = new ConcurrentHashMap<>();
+        this.random = new Random();
     }
 
     @Override
@@ -63,7 +77,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
             }
         }
 
-        throw new NotFoundException(String.format("Experiment with id %s not found.", id));
+        throw new NotFoundException("Experiment with id %s not found.", id);
     }
 
     @Override
@@ -81,12 +95,89 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
             }
         }
 
-        throw new NotFoundException(String.format("Experiment with id %s not found.", id));
+        throw new NotFoundException("Experiment with id %s not found.", id);
+    }
+
+    @Override
+    public boolean containsExperiment(String experimentId) {
+        synchronized (experiments) {
+            return experiments.containsKey(experimentId);
+        }
     }
 
     @Override
     public List<Experiment> getExperiments() throws BaseException {
         return new ArrayList<>(experiments.values());
+    }
+
+    @Override
+    public OnlineExperiment createOnlineExperiment(DataSource dataSource, Map<String, String> param) throws BaseException {
+        String experimentId = param.get(Helper.Keys.ExperimentId);
+        String recommenderIds = param.get(Helper.Keys.RecommenderId);
+
+
+        OnlineExperiment experiment = new OnlineExperiment();
+        experiment.setDataSourceId(dataSource.getSourceId());
+        experiment.setId(experimentId);
+
+        Map<String, String> keyIds = Helper.splitIdKeyConfig(recommenderIds);
+
+        //check if the percentage configuration is available
+        for (String key : keyIds.keySet()) {
+            if (!param.containsKey(keyIds.get(key) + "." + Helper.Keys.Percentage))
+                throw new MissingArgumentException("The argument %s is missing. ", keyIds.get(key) + "." + Helper.Keys.Percentage);
+
+            boolean nanOrWrongFormat;
+            try {
+                Double number = Double.parseDouble(param.get(keyIds.get(key) + "." + Helper.Keys.Percentage));
+
+                nanOrWrongFormat = number.isNaN();
+
+                if (!number.isNaN() && number <= 0.0) {
+                    nanOrWrongFormat = false;
+                }
+            } catch (NumberFormatException e) {
+                nanOrWrongFormat = true;
+            }
+
+            if (nanOrWrongFormat) {
+                throw new WrongFormatException("The value %s for the key %s should be a double and greater than 0.", param.get(keyIds.get(key) + "." + Helper.Keys.Percentage), keyIds.get(key) + "." + Helper.Keys.Percentage);
+            }
+        }
+
+        HashMap<String, Double> recommender = new HashMap<>();
+
+        //initialize the recommenders
+        for (String key : keyIds.keySet()) {
+            if (recommenderIds != null) {
+                Map<String, String> recommenderKeyIds = Helper.splitIdKeyConfig(recommenderIds);
+
+                for (String recKey : recommenderKeyIds.keySet()) {
+                    param.put(recommenderKeyIds.get(recKey) + "." + Helper.Keys.ID, recommenderKeyIds.get(recKey));
+                    param.put(recommenderKeyIds.get(recKey) + "." + Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+
+
+                    Double number = Double.parseDouble(param.get(keyIds.get(key) + "." + Helper.Keys.Percentage));
+
+                    Recommender rec = recommenderAccess.getFirstInstance().createRecommender(dataSource, recommenderKeyIds.get(recKey), param);
+                    recommender.put(rec.getId(), number);
+                }
+            }
+        }
+
+        //normalize the recommender percentage
+        Double sum = 0.0;
+        for (String recId : recommender.keySet()) {
+            sum += recommender.get(recId);
+        }
+
+        for (String recId : recommender.keySet()) {
+            recommender.put(recId, recommender.get(recId) / sum);
+        }
+
+        experiment.setRecommender(recommender);
+
+        return experiment;
     }
 
     @Override
@@ -141,6 +232,67 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
             thread.start();
         }
     }
+
+
+    @Override
+    public OnlineExperiment getOnlineExperiment(String id) throws BaseException {
+        // Lock list and return data source object.
+        synchronized (onlineExperiments) {
+            if (onlineExperiments.containsKey(id)) {
+                return onlineExperiments.get(id);
+            }
+        }
+
+        throw new NotFoundException("Online experiment with id %s not found.", id);
+    }
+
+    @Override
+    public String getNextRecommenderForOnlineExperiment(String experimentId, Map<String, String> param) throws BaseException {
+        OnlineExperiment experiment = getOnlineExperiment(experimentId);
+
+        Double r = random.nextDouble();
+        String recommenderId = null;
+        Map<String, Double> bounds =      experiment.getRecommenderBounds();
+        for(String recId : bounds.keySet()) {
+            if(r < bounds.get(recId)){
+                recommenderId = recId;
+                break;
+            }
+        }
+
+        if(recommenderId != null && !recommenderId.isEmpty()) {
+            return recommenderId;
+        }
+
+        throw new NotFoundException("Online experiment with id %s not found.", experimentId);
+    }
+
+    @Override
+    public Message deleteOnlineExperiment(String id) throws BaseException {
+        // Lock list and add data source object.
+        synchronized (onlineExperiments) {
+            if (onlineExperiments.containsKey(id)) {
+                onlineExperiments.remove(id);
+
+                return new Message("Delete successful", String.format("Online experiment with id %s successful deleted.", id), Message.Status.INFO);
+            }
+        }
+
+        throw new NotFoundException("Online experiment with id %s not found.", id);
+    }
+
+    @Override
+    public boolean containsOnlineExperiment(String experimentId) {
+        synchronized (onlineExperiments) {
+            return onlineExperiments.containsKey(experimentId);
+        }
+    }
+
+    @Override
+    public List<OnlineExperiment> getOnlineExperiments() throws BaseException {
+        return new ArrayList<>(onlineExperiments.values());
+    }
+
 
     @Override
     public String getKey() {

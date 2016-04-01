@@ -36,7 +36,7 @@ public class Activator extends AbstractWebActivator {
     public void start(BundleContext context) {
         handler = new GenericControllerHandler<ExperimentsController>(context, ExperimentsController.class.getName());
 
-        String pid = "com.recalot.views.recommend.experiments";
+        String pid = "com.recalot.views.experiments";
 
         Dictionary config = new Hashtable();
         config.put(pid + ".path", new String("/experiments"));

@@ -1,0 +1,75 @@
+{
+  "label": "recalot.com",
+  "link" : "/",
+  "items": [
+    {
+      "label": "Data",
+      "link": "data",
+      "items": [
+        {
+          "label": "Datasources",
+          "link": "data/ready"
+        },
+        {
+          "label": "Datasources (currently connecting)",
+          "link": "data/connecting"
+        },
+        {
+          "label": "Available Datasources",
+          "link": "data/available"
+        }
+      ]
+    },
+    {
+      "label": "Recommender",
+      "link": "recommender",
+      "items": [
+        {
+          "label": "Trained Recommender",
+          "link": "recommender/ready"
+        },
+        {
+          "label": "Recommender in Training",
+          "link": "recommender/training"
+        },
+        {
+          "label": "Available Recommender",
+          "link": "recommender/available"
+        }
+      ]
+    },
+    {
+      "label": "Experiments",
+      "link": "experiments",
+      "items": [
+        {
+          "label": "Finished Experiments",
+          "link": "experiments/finished"
+        },
+        {
+          "label": "Running Experiments",
+          "link": "experiments/running"
+        },
+        {
+          "label": "Experiments in queue",
+          "link": "experiments/queue"
+        }
+      ]
+    },
+    {
+      "label": "Online Experiments",
+      "link": "onlineexperiments/running",
+      "items": [
+        {
+          "label": "Running Online Experiments",
+          "link": "onlineexperiments/running"
+        },
+        {
+          "label": "Online Experiments in Training",
+          "link": "onlineexperiments/training"
+        }
+      ]
+    }
+  ]
+}
+

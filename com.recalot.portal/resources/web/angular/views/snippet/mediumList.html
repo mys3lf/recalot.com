@@ -1,0 +1,33 @@
+<div class="col-sm-{{columns}}">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{label}}</h3>
+        </div>
+        <div class="panel-body">
+            <table data-ng-if="items != null && items.length > 0">
+                <thead>
+                    <tr>
+                        <th data-ng-repeat="(key, value) in items[0]">
+                            {{key}}
+                        </th>
+                        <th class="controls">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="item in items">
+                        <td data-ng-repeat="value in item">
+                            {{value}}
+                        </td>
+                        <td>
+                            todo: controls
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+</div>

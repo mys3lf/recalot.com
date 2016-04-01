@@ -98,9 +98,13 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
     public RecommenderBuilder getRecommenderBuilder(String id) throws BaseException {
         return recommenderListener.getInstance(id);
     }
-
     @Override
     public Recommender createRecommender(DataSource dataSource, Map<String, String> param) throws BaseException {
+        return createRecommender(dataSource, "", param);
+    }
+
+    @Override
+    public Recommender createRecommender(DataSource dataSource, String configPrefix, Map<String, String> param) throws BaseException {
         String id = param.get(Helper.Keys.RecommenderBuilderId);
         String wishedId = param.get(Helper.Keys.ID);
 
@@ -114,7 +118,7 @@ public class RecommenderAccess implements com.recalot.common.interfaces.model.re
 
         RecommenderBuilder builder = recommenderListener.getInstance(id);
 
-        Recommender instance = builder.createInstance(wishedId, param);
+        Recommender instance = builder.createInstance(wishedId, configPrefix, param);
 
         instance.setId(wishedId);
 

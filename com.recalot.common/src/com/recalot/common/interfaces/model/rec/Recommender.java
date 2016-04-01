@@ -32,20 +32,23 @@ import java.util.*;
  * @author Matthaeus.schmedding
  */
 public abstract class Recommender extends Configurable implements RecommenderInformation {
-   protected String dataSourceId;
-   protected String recommenderId;
-   protected RecommenderState state;
-   protected String key;
-   protected DataSet dataSet;
+    protected String dataSourceId;
+    protected String recommenderId;
+
+    protected String experimentId;
+    protected RecommenderState state;
+    protected String key;
+    protected DataSet dataSet;
 
     @Override
     public RecommenderState getState() {
         return state;
     }
 
-    public void setState(RecommenderState state){
+    public void setState(RecommenderState state) {
         this.state = state;
     }
+
     @Override
     public String getId() {
         return recommenderId;
@@ -63,6 +66,14 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         this.key = key;
     }
 
+    public String getExperimentId() {
+        return experimentId;
+    }
+
+    public void setExperimentId(String experimentId) {
+        this.experimentId = experimentId;
+    }
+
     public String getDataSourceId() {
         return dataSourceId;
     }
@@ -71,11 +82,11 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         this.dataSourceId = dataSourceId;
     }
 
-    public void setDataSet(DataSet dataSet){
+    public void setDataSet(DataSet dataSet) {
         this.dataSet = dataSet;
     }
 
-    public DataSet getDataSet(){
+    public DataSet getDataSet() {
         return this.dataSet;
     }
 
@@ -85,24 +96,25 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         return recommend(userId, new HashMap<>());
     }
 
-    public RecommendationResult recommend(String userId, Map<String, String> param) throws BaseException{
+    public RecommendationResult recommend(String userId, Map<String, String> param) throws BaseException {
         return recommend(userId, null, param);
     }
 
-    public RecommendationResult recommend(String userId, ContextProvider context) throws BaseException{
+    public RecommendationResult recommend(String userId, ContextProvider context) throws BaseException {
         return recommend(userId, context, new HashMap<>());
     }
+
     public abstract RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) throws BaseException;
 
-    public Double predict(String userId, String itemId) throws BaseException{
+    public Double predict(String userId, String itemId) throws BaseException {
         return predict(userId, itemId, new HashMap<>());
     }
 
-    public Double predict(String userId, String itemId, Map<String, String> param) throws BaseException{
+    public Double predict(String userId, String itemId, Map<String, String> param) throws BaseException {
         return predict(userId, itemId, null, param);
     }
 
-    public Double predict(String userId, String itemId, ContextProvider context) throws BaseException{
+    public Double predict(String userId, String itemId, ContextProvider context) throws BaseException {
         return predict(userId, itemId, context, new HashMap<>());
     }
 
@@ -114,7 +126,8 @@ public abstract class Recommender extends Configurable implements RecommenderInf
      * The method should be overwritten in case the recommender cannot make
      * rating predictions or when a better heuristic is needed, which for
      * example takes the popularity of the recommendations into account.
-     * @param userId the user for which a recommendation is sought
+     *
+     * @param userId      the user for which a recommendation is sought
      * @param omitVisited should visited items be omited
      * @return the ranked list of items
      */
@@ -128,8 +141,9 @@ public abstract class Recommender extends Configurable implements RecommenderInf
      * The method should be overwritten in case the recommender cannot make
      * rating predictions or when a better heuristic is needed, which for
      * example takes the popularity of the recommendations into account.
-     * @param userId the user for which a recommendation is sought
-     * @param items the items which a recommender should use
+     *
+     * @param userId      the user for which a recommendation is sought
+     * @param items       the items which a recommender should use
      * @param omitVisited should visited items be omited
      * @return the ranked list of items
      */
@@ -148,7 +162,7 @@ public abstract class Recommender extends Configurable implements RecommenderInf
 
         //put visited item into a map. It is faster this way
         Map<String, Boolean> visited = new HashMap<>();
-        if(omitVisited) {
+        if (omitVisited) {
             for (Interaction interaction : interactionList) {
                 if (!visited.containsKey(interaction.getItemId())) {
                     visited.put(interaction.getItemId(), true);
@@ -163,7 +177,7 @@ public abstract class Recommender extends Configurable implements RecommenderInf
         for (Item item : items) {
 
             // check if we have seen the item already
-            if(!visited.containsKey(item.getId())) {
+            if (!visited.containsKey(item.getId())) {
                 // make a prediction and remember it in case the recommender
                 // could make one
 

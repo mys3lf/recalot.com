@@ -28,7 +28,7 @@ public class RecommendedItem {
     /**
      * Item content
      */
-    private final Item item;
+    private Item item;
     /**
      * Item id
      */
@@ -88,4 +88,13 @@ public class RecommendedItem {
     public Item getItem() {
         return item;
     }
+
+    /**
+     * set the item
+     * @param item
+     */
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
 }

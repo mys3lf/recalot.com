@@ -248,3 +248,7 @@ h2 {
   font-weight: bold;
   color: #08b;
 }
+
+.swagger-section  .container{
+	width: auto !important;
+}

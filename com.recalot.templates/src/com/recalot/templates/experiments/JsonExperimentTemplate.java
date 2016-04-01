@@ -22,6 +22,7 @@ import com.recalot.common.builder.MetricBuilder;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.model.experiment.Experiment;
+import com.recalot.common.interfaces.model.experiment.OnlineExperiment;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import com.recalot.templates.base.JsonBaseTemplate;
 
@@ -57,7 +58,7 @@ public class JsonExperimentTemplate extends JsonBaseTemplate implements Experime
     }
 
     @Override
-        public TemplateResult transformSplitters(List<DataSplitterBuilder> splitters) throws BaseException {
+    public TemplateResult transformSplitters(List<DataSplitterBuilder> splitters) throws BaseException {
         String result = getSerializer().serialize(splitters);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
@@ -66,6 +67,18 @@ public class JsonExperimentTemplate extends JsonBaseTemplate implements Experime
     public TemplateResult transform(DataSplitterBuilder splitter) throws BaseException {
 
         String result = getSerializer().include("configuration").serialize(splitter);
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transform(OnlineExperiment onlineExperiment) {
+        String result = getSerializer().serialize(onlineExperiment);
+        return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
+    }
+
+    @Override
+    public TemplateResult transformOnlineExperiments(List<OnlineExperiment> experiments) {
+        String result = getSerializer().serialize(experiments);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
 }

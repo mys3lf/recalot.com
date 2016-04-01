@@ -34,9 +34,14 @@ public class RecommendationResult {
     private String recommenderKey;
 
     /**
+     * Experiment Id
+     */
+    private String experimentId;
+    /**
      * Recommended items
      */
     private List<RecommendedItem> items;
+    private String resultId;
 
     /**
      * Constructor with the recommender id and the recommended items as parameters
@@ -47,7 +52,18 @@ public class RecommendationResult {
     public RecommendationResult(String recommender, List<RecommendedItem> items) {
         this.recommenderKey = recommender;
         this.items = items;
+    }
 
+    /**
+     * Constructor with the recommender id, the recommended items and the experiment id as parameters
+     *
+     * @param recommender Recommender ID
+     * @param items Recommended items
+     */
+    public RecommendationResult(String recommender, String experimentId, List<RecommendedItem> items) {
+        this.recommenderKey = recommender;
+        this.experimentId = experimentId;
+        this.items = items;
     }
 
     /**
@@ -64,5 +80,36 @@ public class RecommendationResult {
      */
     public List<RecommendedItem> getItems() {
         return items;
+    }
+
+    /**
+     * Returns the experiment id (can be null)
+     * @return experiment id
+     */
+    public String getExperimentId() {
+        return experimentId;
+    }
+
+    /**
+     * Sets the experiment id
+     */
+    public void setExperimentId(String experimentId) {
+        this.experimentId = experimentId;
+    }
+
+    /**
+     * Sets the result id
+     * @param resultId result id
+     */
+    public void setResultId(String resultId) {
+        this.resultId = resultId;
+    }
+
+    /**
+     * Return the result id
+     * @return  resultId result id
+     */
+    public String getResultId() {
+        return resultId;
     }
 }

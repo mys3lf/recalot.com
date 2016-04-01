@@ -3,7 +3,7 @@
     "info": {
         "title": "recalot.com API",
         "description": "RESTful Recommendation Engine",
-        "version": "0.0.1"
+        "version": "0.1.1"
     },
     "host": "api.recalot.com",
     "schemes": [
@@ -367,6 +367,51 @@
                         "description": "Requested information.",
                         "schema": {
                             "$ref": "#/definitions/Item"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete item",
+                "description": "Deletes the item with the ID {item-id} in the data source with the Id {source-id}",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "name": "source-id",
+                        "in": "path",
+                        "description": "ID of the data source",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "item-id",
+                        "in": "path",
+                        "description": "ID of the item",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "output",
+                        "in": "query",
+                        "description": "json or xml",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Data"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item successful deleted.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Message"
+                            }
                         }
                     }
                 }
@@ -1110,6 +1155,36 @@
                 }
             }
         },
+        "/rec/{recommender-id}": {
+            "get": {
+                "summary": "Compute recommendation with the given recommender",
+                "description": "Compute recommendation and return the result",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "tags": [
+                    "Recommendations"
+                ],
+                "parameters": [
+                    {
+                        "name": "recommender-id",
+                        "in": "path",
+                        "description": "ID of the recommender",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested information",
+                        "schema": {
+                            "$ref": "#/definitions/RecommendationResult"
+                        }
+                    }
+                }
+            }
+        },
         "/experiments": {
             "get": {
                 "summary": "List experiments",
@@ -1364,9 +1439,71 @@
                     }
                 }
             }
+        },
+        "/onlineexperiments": {
+            "get": {
+                "summary": "List online experiments",
+                "description": "List all online experiments",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "tags": [
+                    "Online Experiment"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested experiment",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OnlineExperiment"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "OnlineExperiment": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The ID of the current experiment"
+                },
+                "dataSourceId": {
+                    "type": "string",
+                    "description": "The ID of the experiment data source"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "The current state of the experiment. READY = online experiment is ready, TRAINING = one of the recommender is still training",
+                    "enum": [
+                        "TRAIN",
+                        "READY"
+                    ]
+                },
+                "recommender": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OnlineRecommender"
+                    }
+                }
+            }
+        },
+        "OnlineRecommender": {
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "The ID of the recommender."
+                },
+                "value": {
+                    "type": "number",
+                    "description": "The probability value of the recommender"
+                }
+            }
+        },
         "DataSourceShortInformation": {
             "properties": {
                 "id": {
@@ -1381,6 +1518,44 @@
                         "TRAINING",
                         "AVAILABLE"
                     ]
+                }
+            }
+        },
+        "RecommendationResult": {
+            "properties": {
+                "recommender": {
+                    "type": "string",
+                    "description": "The ID of recommender"
+                },
+                "experimentId": {
+                    "type": "string",
+                    "description": "The ID of current experiment (optional)"
+                },
+                "resultId": {
+                    "type": "string",
+                    "description": "The ID of result (optional)"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RecommendationItem"
+                    }
+                }
+            }
+        },
+        "RecommendationItem": {
+            "properties": {
+                "itemId": {
+                    "type": "string",
+                    "description": "The ID of item"
+                },
+                "confidence": {
+                    "type": "number",
+                    "description": "Probability of the item"
+                },
+                "item": {
+                    "type": "object",
+                    "description": "Item content that can vary."
                 }
             }
         },
@@ -1546,9 +1721,10 @@
                 },
                 "state": {
                     "type": "string",
-                    "description": "RUNNING or FINISHED",
+                    "description": "RUNNING, WAITING or FINISHED",
                     "enum": [
                         "RUNNING",
+                        "WAITING",
                         "FINISHED"
                     ]
                 },
@@ -1619,8 +1795,8 @@
                     "type": "string",
                     "description": "DEBUG, INFO, WARN, ERROR, or FATAL",
                     "enum": [
-                        "DEBUG",
                         "INFO",
+                        "DEBUG",
                         "WARN",
                         "ERROR",
                         "FATAL"

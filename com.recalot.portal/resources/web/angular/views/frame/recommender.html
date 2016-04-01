@@ -1,0 +1,12 @@
+<div id="mostpopular-men" class="has-items">
+    <h2>{{title}}</h2>
+    <a href="#{{target}}" class="item-all">Alle ansehen</a>
+    <div class="items recalot-recs">
+        <a class='item' href="#/item/{{item.item.id}}" data-ng-repeat="item in recommended.items" data-on-last-repeat>
+            <div class='image text-center'>
+                <img ng-attr-src='{{item.item.content.img1}}' />
+            </div>
+            <h3 class='text-center brand'>{{item.item.content.title}}</h3>
+        </a>
+    </div>
+</div>

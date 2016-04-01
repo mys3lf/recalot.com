@@ -1,0 +1,17 @@
+<footer>
+    <div class="container">
+        <div class="col-md-12 headline" ng-if="footer.logo != null">
+            <h3><img ng-attr-src="{{footer.logo.src}}" /><span>{{footer.logo.claim}}</span></h3>
+        </div>
+        <div class="row page-header">
+            <div class="col-md-4 " data-ng-repeat="item in footer.navigation">
+                <h3>{{item.headline}}</h3>
+                <ul>
+                    <li data-ng-repeat="subitem in item.items">
+                        <a ng-attr-href="{{subitem.link.indexOf('http') > -1 ? subitem.link : '#' + subitem.link}}" target="{{subitem.link.indexOf('http') > -1 ? '_blank': _self}}">{{subitem.label}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>

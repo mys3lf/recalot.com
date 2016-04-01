@@ -20,9 +20,7 @@ package com.recalot.controller.recommendations;
 
 import com.recalot.common.Helper;
 import com.recalot.common.builder.RecommenderBuilder;
-import com.recalot.common.communication.Interaction;
-import com.recalot.common.communication.Message;
-import com.recalot.common.communication.TemplateResult;
+import com.recalot.common.communication.*;
 import com.recalot.common.configuration.ConfigurationItem;
 import com.recalot.common.context.Context;
 import com.recalot.common.context.ContextProvider;
@@ -39,12 +37,8 @@ import com.recalot.common.interfaces.template.RecommenderTemplate;
 import com.recalot.common.GenericServiceListener;
 import org.osgi.framework.BundleContext;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -57,7 +51,6 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
     private final GenericServiceListener templates;
     private final GenericServiceListener dataAccess;
     private final ContextProvider contextProvider;
-
 
     public RecommenderController(BundleContext context) {
         this.context = context;
@@ -207,16 +200,58 @@ public class RecommenderController implements com.recalot.common.interfaces.cont
             }
         }
 
-        return template.transform(recommender.recommend(userId, contextProvider, param));
+        RecommendationResult result = recommender.recommend(userId, contextProvider, param);
+
+        if(result != null && recommender.getExperimentId() != null) {
+            result.setExperimentId(recommender.getExperimentId());
+            result.setResultId(UUID.randomUUID().toString());
+
+            saveExperimentResult(result);
+        }
+
+        return template.transform(result);
+    }
+
+    /**
+     * Save all entries of the recommendation result
+     * @param result
+     */
+    private void saveExperimentResult(RecommendationResult result) {
+        File dir = Helper.createOrGetDir("experiments");
+        File experimentFolder = Helper.createOrGetDir(dir.getAbsolutePath() + System.getProperty("file.separator") + result.getExperimentId());
+
+        File resultFile = new File(experimentFolder.getAbsolutePath() + System.getProperty("file.separator") + result.getResultId());
+
+        try (Writer writer = new BufferedWriter(new FileWriter(resultFile))) {
+            writer.write(result.getResultId() + "\n");
+            writer.write(result.getExperimentId() + "\n");
+            writer.write(result.getRecommender() + "\n");
+            for(RecommendedItem item : result.getItems()) {
+                writer.write(item.getItemId() + ":" + item.getConfidence() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private TemplateResult createRecommender(RecommenderTemplate template, Map<String, String> param) throws BaseException {
+        //get the recommender and data access
         RecommenderAccess access = (RecommenderAccess) recommenderAccess.getFirstInstance();
         DataAccess dAccess = (DataAccess) dataAccess.getFirstInstance();
 
+        //check if the data source is there and ready
         DataSource source = getDataSource(dAccess, param.get(Helper.Keys.SourceId));
         if(source.getState() != DataInformation.DataState.READY) throw new NotReadyException("The data source %s is not ready so far. The current state is %s.", source.getId(), source.getState().toString());
+
+        //Build recommender
         Recommender recommender = access.createRecommender(source, param);
+
+
+        //set the experiment id when available
+        if(param.containsKey(Helper.Keys.ExperimentId)) {
+            recommender.setExperimentId(param.get(Helper.Keys.ExperimentId));
+        }
+
         return template.transform(recommender);
     }
 

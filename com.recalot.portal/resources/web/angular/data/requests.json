@@ -1,0 +1,31 @@
+{
+  "host": "http://api.recalot.com/",
+
+  "data": {
+    "get": {
+      "ready": "sources?state=READY",
+      "connecting": "sources?state=CONNECTING",
+      "available": "sources?state=AVAILABLE"
+    }
+  },
+  "recommender": {
+    "get":{
+      "ready": "train?state=READY",
+      "training": "train?state=TRAINING",
+      "available": "train?state=AVAILABLE"
+    }
+  },
+  "experiments": {
+    "get":{
+      "finished": "experiments?state=FINISHED",
+      "running": "experiments?state=RUNNING",
+      "waiting": "experiments?state=WAITING"
+    }
+  },
+  "onlineexperiments": {
+    "get":{
+      "running": "onlineexperiments?state=RUNNING"
+    }
+  }
+}
+

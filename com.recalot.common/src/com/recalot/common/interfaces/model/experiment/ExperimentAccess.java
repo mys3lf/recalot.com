@@ -18,6 +18,7 @@
 package com.recalot.common.interfaces.model.experiment;
 
 import com.recalot.common.communication.Message;
+import com.recalot.common.communication.RecommendationResult;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.communication.Service;
 import com.recalot.common.interfaces.model.data.DataSource;
@@ -32,8 +33,23 @@ import java.util.Map;
  * @author matthaeus.schmedding
  */
 public interface ExperimentAccess extends Service {
+
+    /*
+     *   Offline Experiments
+     */
     public Experiment getExperiment(String id) throws BaseException;
     public Message deleteExperiment(String id)  throws BaseException;
+    public boolean containsExperiment(String experimentId);
     public List<Experiment> getExperiments()  throws BaseException;
     public Experiment createExperiment(Recommender[] recommender, DataSource source, DataSplitter splitter, HashMap<String, Metric[]> metrics, ContextProvider context, Map<String, String> param) throws BaseException;
+
+    /*
+     *   Online Experiments
+     */
+    public OnlineExperiment createOnlineExperiment(DataSource source, Map<String, String> param) throws BaseException;
+    public OnlineExperiment getOnlineExperiment(String experimentId)  throws BaseException;
+    public String getNextRecommenderForOnlineExperiment(String experimentId, Map<String, String> params)  throws BaseException;
+    public Message deleteOnlineExperiment(String id)  throws BaseException;
+    public boolean containsOnlineExperiment(String experimentId);
+    public List<OnlineExperiment> getOnlineExperiments()  throws BaseException;
 }

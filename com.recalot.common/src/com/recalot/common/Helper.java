@@ -19,10 +19,7 @@ package com.recalot.common;
 
 import com.recalot.common.communication.RecommendedItem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -34,7 +31,7 @@ public class Helper {
     /**
      * Copies the bytes of an InputStream to a PrintWriter.
      *
-     * @param out a PrintWriter to whom the bytes of the InputStream should be copied
+     * @param out    a PrintWriter to whom the bytes of the InputStream should be copied
      * @param stream a InputStream that contains the bytes that should be copied
      * @throws IOException is thrown when the InputStream can not be read
      * @see java.io.PrintWriter
@@ -104,12 +101,12 @@ public class Helper {
             for (Map.Entry<String, Double> inner : e.getValue().entrySet()) {
                 counterinner += 1;
                 System.out.println("... " + inner.getKey() + ": " + inner.getValue());
-                if (counterinner >= innercap){
+                if (counterinner >= innercap) {
                     counterinner = 0;
                     break;
                 }
             }
-            if (counterouter >= outercap){
+            if (counterouter >= outercap) {
                 counterouter = 0;
                 break;
             }
@@ -126,9 +123,9 @@ public class Helper {
     }
 
 
-
     /**
      * Swap key/values of a Map
+     *
      * @param map a map that should be swapped.
      * @return a swapped map
      */
@@ -178,8 +175,8 @@ public class Helper {
      * A method that increments the counter value in a map. If no value exists,
      * it sets the given value. Otherwise we increment the existing value by the given value
      *
-     * @param map the container map
-     * @param key the key for the entry that should be increment
+     * @param map   the container map
+     * @param key   the key for the entry that should be increment
      * @param value the value that should be added
      */
     public static <K> void incrementMapValue(Map<K, Integer> map, K key, Integer value) {
@@ -195,8 +192,8 @@ public class Helper {
      * A method that increments the counter value in a map. If no value exists,
      * it sets the given value. Otherwise we increment the existing value by the given value
      *
-     * @param map the container map
-     * @param key the key for the entry that should be increment
+     * @param map   the container map
+     * @param key   the key for the entry that should be increment
      * @param value the value that should be added
      */
     public static <K> void incrementMapValue(Map<K, Double> map, K key, Double value) {
@@ -223,7 +220,7 @@ public class Helper {
         return sum;
     }
 
-    /***
+    /**
      * Computes the Cosine similarity between two vectors.
      *
      * @param v1 the first integer vector
@@ -251,7 +248,7 @@ public class Helper {
     }
 
 
-    /***
+    /**
      * Computes the Pearson similarity between two vectors.
      *
      * @param v1 the first integer vector
@@ -292,7 +289,7 @@ public class Helper {
         return result;
     }
 
-    /***
+    /**
      * Computes the Adjusted Cosine similarity between two vectors.
      *
      * @param v1 the first integer vector
@@ -316,12 +313,12 @@ public class Helper {
             mean1 = sumv1 / size;
             mean2 = sumv2 / size;
 
-            result =  computeAdjustedCosineSimilarity(v1, v2, mean1, mean2);
+            result = computeAdjustedCosineSimilarity(v1, v2, mean1, mean2);
         }
         return result;
     }
 
-    /***
+    /**
      * Computes the Adjusted Cosine similarity between two vectors.
      *
      * @param v1 the first integer vector
@@ -345,21 +342,21 @@ public class Helper {
             mean1 = sumv1 / size;
             mean2 = sumv2 / size;
 
-            result =  computeAdjustedCosineSimilarityDoubles(v1, v2, mean1, mean2);
+            result = computeAdjustedCosineSimilarityDoubles(v1, v2, mean1, mean2);
         }
         return result;
     }
 
-    /***
+    /**
      * Computes the Adjusted Cosine similarity between two vectors.
      *
-     * @param v1 the first integer vector
-     * @param v2 the second integer vector
+     * @param v1     the first integer vector
+     * @param v2     the second integer vector
      * @param v1mean the mean of the first integer vector for adjustment
      * @param v2mean the mean of the second integer vector for adjustment
      * @return adjusted cosine similarity between the two given vectors using given means for adjustment. Returns 0 if the length of the vector is not equal.
      */
-    public static Double computeAdjustedCosineSimilarity(List<Integer> v1, List<Integer> v2, Double v1mean, Double v2mean){
+    public static Double computeAdjustedCosineSimilarity(List<Integer> v1, List<Integer> v2, Double v1mean, Double v2mean) {
         Double result = 0.0;
         int size = v1.size();
 
@@ -383,16 +380,16 @@ public class Helper {
         return result;
     }
 
-    /***
+    /**
      * Computes the Adjusted Cosine similarity between two vectors.
      *
-     * @param v1 the first integer vector
-     * @param v2 the second integer vector
+     * @param v1     the first integer vector
+     * @param v2     the second integer vector
      * @param v1mean the mean of the first integer vector for adjustment
      * @param v2mean the mean of the second integer vector for adjustment
      * @return adjusted cosine similarity between the two given vectors using given means for adjustment. Returns 0 if the length of the vector is not equal.
      */
-    public static Double computeAdjustedCosineSimilarityDoubles(List<Double> v1, List<Double> v2, Double v1mean, Double v2mean){
+    public static Double computeAdjustedCosineSimilarityDoubles(List<Double> v1, List<Double> v2, Double v1mean, Double v2mean) {
         Double result = 0.0;
         int size = v1.size();
 
@@ -416,17 +413,17 @@ public class Helper {
         return result;
     }
 
-    /***
+    /**
      * Computes the Adjusted Cosine similarity between two vectors.
      *
-     * @param v1 the first integer vector
-     * @param v2 the second integer vector
+     * @param v1       the first integer vector
+     * @param v2       the second integer vector
      * @param adjusted the flag indication if values are already adjusted. If false, adjustment is calculated with means of vectors
      * @return adjusted cosine similarity between the two given vectors using given means for adjustment. Returns 0 if the length of the vector is not equal.
      */
-    public static Double computeAdjustedCosineSimilarity(List<Double> v1, List<Double> v2, boolean adjusted){
+    public static Double computeAdjustedCosineSimilarity(List<Double> v1, List<Double> v2, boolean adjusted) {
         Double result = 0.0;
-        if (!adjusted){
+        if (!adjusted) {
             // for user based adjusted cosine, adjustment value can be calculated with mean of v1 and v2
             result = computeAdjustedCosineSimilarityDoubles(v1, v2);
         } else {
@@ -461,7 +458,7 @@ public class Helper {
      *
      * @param array the array where the paging should be applied.
      * @param param a map with parameters.
-     * @param <T> Type of the array
+     * @param <T>   Type of the array
      * @return the array with an apply paging.
      */
     public static <T> T[] applyPaging(T[] array, Map<String, String> param) {
@@ -505,17 +502,16 @@ public class Helper {
      *
      * @param items a list that should be trimmed.
      * @param param a map with parameter that may contain a count parameter
-     * @param topN the fallback if no count parameter is given.
-     * @param <T> Type of the items containing in the list
-     *
+     * @param topN  the fallback if no count parameter is given.
+     * @param <T>   Type of the items containing in the list
      * @return the trimmed list.
      */
     public static <T> List<T> applySubList(List<T> items, Map<String, String> param, int topN) {
-        if(param != null && param.containsKey(Keys.Count)) {
+        if (param != null && param.containsKey(Keys.Count)) {
             int count = Integer.parseInt(param.get("count"));
-            if(items.size() > count) items = items.subList(0, count);
+            if (items.size() > count) items = items.subList(0, count);
         } else {
-            if(items.size() > topN) items = items.subList(0, topN);
+            if (items.size() > topN) items = items.subList(0, topN);
         }
 
         return items;
@@ -525,13 +521,12 @@ public class Helper {
      * Trims a list if its size exceeds the topN.
      *
      * @param items a list that should be trimmed.
-     * @param topN the fallback if no count parameter is given.
-     * @param <T> Type of the items containing in the list
-     *
+     * @param topN  the fallback if no count parameter is given.
+     * @param <T>   Type of the items containing in the list
      * @return the trimmed list.
      */
     public static <T> List<T> applySubList(List<T> items, int topN) {
-        if(items.size() > topN) items = items.subList(0, topN);
+        if (items.size() > topN) items = items.subList(0, topN);
 
         return items;
     }
@@ -544,6 +539,58 @@ public class Helper {
      */
     public static boolean isIntegerRegex(String str) {
         return str != null && str.matches("^[0-9]+$");
+    }
+
+    /**
+     * return directory of path and create it if necessary
+     *
+     * @param path path of the directory
+     * @return directory
+     */
+    public static File createOrGetDir(String path) {
+        File dir = new File(path);
+
+// if the directory does not exist, create it
+        if (!dir.exists()) {
+            try {
+                dir.mkdir();
+            } catch (SecurityException se) {
+
+            }
+        }
+
+        return dir;
+    }
+
+    /**
+     * split a keyid string into a map
+     * @param config
+     * @return
+     */
+    public static Map<String, String> splitIdKeyConfig(String config) {
+        //example confing: mp@rec-mp,blub,test-rec@test-rec-key
+
+
+        //key , id pair
+        HashMap<String, String> result = new HashMap<>();
+        String[] split = config.split(",");
+
+        for (String s : split) {
+            //id should be something like mp@mp-test -> id@display-name
+            if (s != null && !s.isEmpty()) {
+                if (s.contains("@")) {
+                    String[] idSplit = s.split("@");
+                    if (idSplit.length > 1) {
+                        result.put(idSplit[0], idSplit[1]);
+                    }
+                } else {
+                    //if no @ is available the key equals the id
+                    result.put(s, s);
+                }
+            }
+        }
+
+        return result;
     }
 
 
@@ -579,6 +626,7 @@ public class Helper {
         public static final String SplitType = "split-type".intern();
 
         public static final Integer PageSize = 10;
+        public static final String Percentage = "percentage";
 
         public static class Context {
             public static final String LastConsumed = "last-consumed".intern();
