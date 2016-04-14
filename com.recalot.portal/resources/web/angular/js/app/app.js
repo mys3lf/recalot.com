@@ -82,6 +82,26 @@
                   controller: "smallListCtrl"
           }
     })
+    .directive("detailWindow", function () {
+                  return {
+                          restrict: "E",
+                          replace: true,
+                          scope: {
+                              type: "@",
+                              state: "@"
+                          },
+                          templateUrl: "views/snippet/detailWindow.html",
+                          controller: "detailWindowCtrl"
+                  };
+              })
+    .directive("experimentsTable", function () {
+          return {
+                  restrict: "E",
+                  replace: true,
+                  templateUrl: "views/snippet/experimentsTable.html",
+                  controller: "experimentsTableCtrl"
+          }
+    })
 
    /***********************
     *     CONTROLLER
@@ -95,11 +115,19 @@
           $rootScope.setActiveById($routeParams.prefixId);
 
         })
-      .controller("smallListCtrl", function ($rootScope, $scope, $http) {
+      .controller("smallListCtrl", function ($rootScope, $scope, $http, $location, $routeParams) {
+
+        $scope.$routeParams = $routeParams;
         if($scope.type != null && $scope.state != null) {
             if($rootScope.requests != null && $rootScope.requests[$scope.type] != null && $rootScope.requests[$scope.type]["get"] != null && $rootScope.requests[$scope.type]["get"][$scope.state] != null)
               $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state]).then(function (data) {
                 $scope.items = data.data;
+
+                $scope.readOnly = $rootScope.requests[$scope.type]["delete"] == undefined || $rootScope.requests[$scope.type]["delete"][$scope.state]== undefined;
+                $scope.navigateTo = function(item) {
+                    $location.url("/" + $routeParams.prefixId + "/" + $routeParams.contentId + "/" + item.id);
+                }
+                Sortable.init()
             });
         }
       })
@@ -114,6 +142,99 @@
                   $scope.footer = data.data;
                   localStorage.setItem("footer", JSON.stringify(data.data));
           });
+      })
+      .controller("detailWindowCtrl", function ($scope, $rootScope, $http, $routeParams) {
+
+
+        $rootScope.setDetailData = function(itemId){
+            $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state] + itemId).then(function (data) {
+                    $scope.detail = {
+                        "label": data.data.id,
+                        "content": data.data
+                    };
+                });
+           };
+
+
+            if($routeParams.instanceId != null) {
+                $rootScope.setDetailData($routeParams.instanceId);
+            }
+      })
+      .controller("experimentsTableCtrl", function ($scope, $rootScope, $http, $routeParams) {
+            function contains(a, obj) {
+                for (var i = 0; i < a.length; i++) {
+                    if (a[i] === obj) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function getExperiments(experimentIds, $scope){
+                $scope.sources = {};
+                for(var i in experimentIds) {
+                    var id = experimentIds[i];
+
+                    $http.get($rootScope.requests.host + $rootScope.requests["experiments"]["get"]["item"] + id).then(function (data) {
+
+                        var exp = data.data;
+
+                        if($scope.sources[exp.dataSourceId]== undefined) {
+                            $scope.sources[exp.dataSourceId] = {"name": exp.dataSourceId, "metrics": [], algorithms: []};
+                        }
+
+
+                        //fetch metrics
+                        for(var n in exp.results) {
+                            var result = exp.results[n];
+
+                            for(var m in result) {
+                                if(!contains($scope.sources[exp.dataSourceId].metrics, m)) {
+                                    $scope.sources[exp.dataSourceId].metrics.push(m);
+                                }
+                            }
+                        }
+
+                        //insert results
+                        for(var n in exp.results) {
+                            var result = exp.results[n];
+
+                            var r = [];
+                            for(var mi in $scope.sources[exp.dataSourceId].metrics) {
+                                var m = $scope.sources[exp.dataSourceId].metrics[mi];
+
+                                if(result[m] != undefined) {
+                                    r.push(result[m]);
+                                } else {
+                                    r.push(" - ");
+                                }
+                            }
+
+                            $scope.sources[exp.dataSourceId].algorithms.push({
+                                "name": n,
+                                "results": r
+                            })
+                        }
+
+                        Sortable.init()
+                    });
+                }
+            }
+
+
+            if($routeParams.experimentIds != null && $routeParams.experimentIds.length > 0) {
+                getExperiments($routeParams.experimentIds.split(","), $scope);
+            } else {
+                $http.get($rootScope.requests.host + $rootScope.requests["experiments"]["get"]["finished"]).then(function (data) {
+                    var ids = [];
+                    for(var i in data.data) {
+                        var exp = data.data[i];
+                        ids.push(exp.id);
+                    }
+
+                    getExperiments(ids, $scope);
+                });
+            }
       })
       .controller("topNavCtrl", function ($rootScope, $http, $routeParams) {
            $rootScope.navigation = {};

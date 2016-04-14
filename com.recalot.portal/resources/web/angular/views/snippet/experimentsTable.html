@@ -1,0 +1,31 @@
+<div>
+    <div class="col-sm-12" data-ng-repeat="source in sources">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ng-binding">{{source.name}}</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-fixed table-striped table-hover" data-sortable>
+                    <thead>
+                        <tr>
+                            <th><span class="ellipsis">Algorithm</span></th>
+                            <th data-ng-repeat="metric in source.metrics">
+                                <span class="ellipsis">{{metric}}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="algorithm in source.algorithms">
+                            <td class="name">
+                                <span class="ellipsis">{{algorithm.name}}</span>
+                            </td>
+                            <td data-ng-repeat="result in algorithm.results">
+                                <span class="ellipsis" ng-attr-title="{{result}}">{{result}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

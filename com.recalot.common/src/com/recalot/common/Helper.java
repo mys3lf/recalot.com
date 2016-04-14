@@ -461,6 +461,8 @@ public class Helper {
      * @param <T>   Type of the array
      * @return the array with an apply paging.
      */
+
+    //TODO add paging model with current page, page-size, items, ...
     public static <T> T[] applyPaging(T[] array, Map<String, String> param) {
         if (param != null && param.containsKey(Helper.Keys.Page)) {
             int page = 1;
@@ -491,7 +493,6 @@ public class Helper {
             } else {
                 return Arrays.copyOfRange(array, 0, 0);
             }
-
         } else {
             return array;
         }

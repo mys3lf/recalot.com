@@ -1,0 +1,12 @@
+<div class="col-sm-6" data-ng-show="detail != null && detail.label != null">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{detail.label}}</h3>
+        </div>
+        <div class="panel-body">
+
+            <span data-ng-repeat="(key, value) in detail.content">{{key}}:{{value}}<br /></span>
+
+        </div>
+    </div>
+</div>

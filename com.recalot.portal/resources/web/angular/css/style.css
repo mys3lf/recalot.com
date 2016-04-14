@@ -46,3 +46,15 @@
 #script {
     display: none;
 }
+
+.table-fixed{
+    table-layout: fixed;
+}
+
+.ellipsis{
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    display:inline-block;
+    width: 100%;
+}

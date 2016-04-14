@@ -1,11 +1,16 @@
 {
-  "host": "http://api.recalot.com/",
+  "host": "http://129.217.155.140:8080/",
 
   "data": {
     "get": {
       "ready": "sources?state=READY",
       "connecting": "sources?state=CONNECTING",
-      "available": "sources?state=AVAILABLE"
+      "available": "sources?state=AVAILABLE",
+      "item": "sources/"
+    },
+    "delete": {
+      "ready": "sources",
+      "connecting": "sources"
     }
   },
   "recommender": {
@@ -19,8 +24,10 @@
     "get":{
       "finished": "experiments?state=FINISHED",
       "running": "experiments?state=RUNNING",
-      "waiting": "experiments?state=WAITING"
+      "waiting": "experiments?state=WAITING",
+      "item": "experiments/"
     }
+
   },
   "onlineexperiments": {
     "get":{
