@@ -153,6 +153,9 @@
                         "content": data.data
                     };
                 });
+
+                $scope.canCreate = $rootScope.requests[$scope.type]["put"] != null &&  $rootScope.requests[$scope.type]["put"][$scope.state] != null;
+                $scope.canDelete = $rootScope.requests[$scope.type]["delete"] != null && $rootScope.requests[$scope.type]["delete"][$scope.state] != null;
            };
 
 

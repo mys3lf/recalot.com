@@ -37,6 +37,15 @@
       "metrics": "experiments/metrics",
       "splitter": "experiments/splitters/",
       "metric": "experiments/metrics/"
+    },
+    "delete":{
+      "finished": "experiments/",
+      "running": "experiments/",
+      "waiting": "experiments/",
+      "item": "experiments/"
+    },
+    "put":{
+      "item": "experiments"
     }
   },
   "onlineexperiments": {

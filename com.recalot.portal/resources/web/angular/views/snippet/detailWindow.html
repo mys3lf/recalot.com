@@ -1,7 +1,13 @@
 <div class="col-sm-6" data-ng-show="detail != null && detail.label != null">
-    <div class="panel panel-info">
+    <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">{{detail.label}}</h3>
+            <h3 class="panel-title">{{detail.label}}
+                <span id="detail-buttons">
+                    <a href="javascript:void(0)" data-ng-show="canDelete == true" onclick="performAction(detail, 'delete')" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    <a href="javascript:void(0)" data-ng-show="canCreate == true" onclick="performAction(detail, 'add')" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                </span>
+
+            </h3>
         </div>
         <div class="panel-body">
 
