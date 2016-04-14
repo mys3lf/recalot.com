@@ -53,6 +53,14 @@
         {
           "label": "Experiments in queue",
           "link": "experiments/queue"
+        },
+        {
+          "label": "Available Metrics",
+          "link": "experiments/metrics"
+        },
+        {
+          "label": "Available Data Splitter",
+          "link": "experiments/datasplitter"
         }
       ]
     },

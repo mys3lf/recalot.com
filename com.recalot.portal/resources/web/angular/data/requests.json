@@ -17,7 +17,14 @@
     "get":{
       "ready": "train?state=READY",
       "training": "train?state=TRAINING",
-      "available": "train?state=AVAILABLE"
+      "available": "train?state=AVAILABLE",
+      "recommender": "train/",
+      "recommend": "rec/"
+    },
+    "delete":{
+      "ready": "train",
+      "training": "train",
+      "recommender": "train"
     }
   },
   "experiments": {
@@ -25,9 +32,12 @@
       "finished": "experiments?state=FINISHED",
       "running": "experiments?state=RUNNING",
       "waiting": "experiments?state=WAITING",
-      "item": "experiments/"
+      "item": "experiments/",
+      "splitters": "experiments/splitters",
+      "metrics": "experiments/metrics",
+      "splitter": "experiments/splitters/",
+      "metric": "experiments/metrics/"
     }
-
   },
   "onlineexperiments": {
     "get":{
