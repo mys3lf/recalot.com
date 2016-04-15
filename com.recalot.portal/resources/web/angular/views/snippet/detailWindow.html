@@ -3,18 +3,19 @@
         <div class="panel-heading">
             <h3 class="panel-title">{{detail.label}}
                 <span id="detail-buttons">
-                    <a href="javascript:void(0)" data-ng-show="canDelete == true" onclick="performAction(detail, 'delete')" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
-                    <a href="javascript:void(0)" data-ng-show="canCreate == true" onclick="performAction(detail, 'add')" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    <a href="javascript:void(0)" data-ng-show="canDelete == true" data-ng-click="performAction(detail, 'delete')" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    <a href="javascript:void(0)" data-ng-show="canCreate == true" data-ng-click="performAction(detail, 'add')" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
                 </span>
 
             </h3>
         </div>
         <div class="panel-body">
-            <ul>
+            <div data-ng-if="showForm" data-ng-include="'views/snippet/form/renderForm.html'" ></div>
+
+            <ul data-ng-if="!showForm" class="tree"  >
                 <li data-ng-repeat="(key, value) in detail.content" data-ng-include="'views/snippet/tree/renderTree.html'" >
                 </li>
             </ul>
-
         </div>
     </div>
 </div>

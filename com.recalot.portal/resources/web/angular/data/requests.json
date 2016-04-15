@@ -8,6 +8,9 @@
       "available": "sources?state=AVAILABLE",
       "item": "sources/"
     },
+    "put": {
+      "available": "sources/"
+    },
     "delete": {
       "ready": "sources",
       "connecting": "sources"

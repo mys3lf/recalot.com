@@ -1,5 +1,6 @@
 <span class="tree">
     <span class="key">{{key}}</span>
     <span class="separator">:</span>
-    <span data-ng-include="'views/snippet/tree/renderTreeContent' + (isArray(value) || isObject(value) ? 'Array' : 'Item') + '.html'"></span>
+    <span data-ng-if="isArray(value) || isObject(value)" data-ng-include="'views/snippet/tree/renderTreeContentArray.html'"></span>
+    <span data-ng-if="!isArray(value) && !isObject(value)"  data-ng-include="'views/snippet/tree/renderTreeContentItem.html'"></span>
 </span>

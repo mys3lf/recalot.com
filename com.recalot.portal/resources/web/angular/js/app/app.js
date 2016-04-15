@@ -115,19 +115,31 @@
           $rootScope.setActiveById($routeParams.prefixId);
 
         })
-      .controller("smallListCtrl", function ($rootScope, $scope, $http, $location, $routeParams) {
+      .controller("smallListCtrl", function ($rootScope, $scope, $http, $location, $routeParams, storageManager, helper) {
 
         $scope.$routeParams = $routeParams;
         if($scope.type != null && $scope.state != null) {
             if($rootScope.requests != null && $rootScope.requests[$scope.type] != null && $rootScope.requests[$scope.type]["get"] != null && $rootScope.requests[$scope.type]["get"][$scope.state] != null)
-              $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state]).then(function (data) {
-                $scope.items = data.data;
-
+                $scope.items = storageManager.get($rootScope.requests.host + $scope.type + "get" + $scope.state);
                 $scope.readOnly = $rootScope.requests[$scope.type]["delete"] == undefined || $rootScope.requests[$scope.type]["delete"][$scope.state]== undefined;
-                $scope.navigateTo = function(item) {
-                    $location.url("/" + $routeParams.prefixId + "/" + $routeParams.contentId + "/" + item.id);
-                }
-                Sortable.init()
+
+              $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state]).then(function (data) {
+
+                    data.data.sort(helper.sortById)
+
+                    if(!storageManager.equal($rootScope.requests.host + $scope.type + "get" + $scope.state, data.data)) {
+                         $scope.items = data.data;
+                         $scope.items.sort(helper.sortById)
+
+                        storageManager.put($rootScope.requests.host + $scope.type + "get" + $scope.state, $scope.items);
+                    }
+
+
+                    $scope.navigateTo = function(item) {
+                        $location.url("/" + $routeParams.prefixId + "/" + $routeParams.contentId + "/" + item.id);
+                    }
+
+                    Sortable.init()
             });
         }
       })
@@ -143,29 +155,37 @@
                   localStorage.setItem("footer", JSON.stringify(data.data));
           });
       })
-      .controller("detailWindowCtrl", function ($scope, $rootScope, $http, $routeParams) {
+      .controller("detailWindowCtrl", function ($scope, $rootScope, $http, $routeParams, storageManager) {
+        $scope.isArray = angular.isArray;
+        $scope.isObject = angular.isObject;
 
+        $scope.performAction = function(item, type) {
+            if(type == 'add') {
+                $scope.showForm = true;
+            }
 
-        function enrichContent(data) {
-
+            console.log(type, item);
         }
 
         $rootScope.setDetailData = function(itemId){
 
-            $scope.isArray = angular.isArray;
-            $scope.isObject = angular.isObject;
+            $scope.detail = storageManager.get($rootScope.requests.host + $scope.type + "get" + $scope.state + itemId);
 
             $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state] + itemId).then(function (data) {
-                    $scope.detail = {
-                        "label": data.data.id,
-                        "content": data.data
+                    var detail = {
+                         "label": data.data.id,
+                         "content": data.data
                     };
 
-                    enrichContent(data.data);
+                    if(!storageManager.equal($rootScope.requests.host + $scope.type + "get" + $scope.state + itemId, detail)) {
+                        $scope.detail = detail;
+                    }
+
+                   storageManager.put($rootScope.requests.host + $scope.type + "get" + $scope.state + itemId, $scope.detail);
                 });
 
-                $scope.canCreate = $rootScope.requests[$scope.type]["put"] != null &&  $rootScope.requests[$scope.type]["put"][$scope.state] != null;
-                $scope.canDelete = $rootScope.requests[$scope.type]["delete"] != null && $rootScope.requests[$scope.type]["delete"][$scope.state] != null;
+                $scope.canCreate = $rootScope.requests[$scope.type]["put"] != null &&  $rootScope.requests[$scope.type]["put"][$routeParams.contentId] != null;
+                $scope.canDelete = $rootScope.requests[$scope.type]["delete"] != null && $rootScope.requests[$scope.type]["delete"][$routeParams.contentId] != null;
            };
 
             if($routeParams.instanceId != null) {
@@ -195,7 +215,6 @@
                         if($scope.sources[exp.dataSourceId]== undefined) {
                             $scope.sources[exp.dataSourceId] = {"name": exp.dataSourceId, "metrics": [], algorithms: []};
                         }
-
 
                         //fetch metrics
                         for(var n in exp.results) {
