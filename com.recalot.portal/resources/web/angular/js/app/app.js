@@ -161,6 +161,15 @@
 
         $scope.performAction = function(item, type) {
             if(type == 'add') {
+                $scope.formData = {};
+
+                if(item != null && item.content != null && item.content.configuration != null) {
+                    for(var i in item.content.configuration) {
+                        var c = item.content.configuration[i];
+                        $scope.formData[c.key] = c.value;
+                    }
+                }
+
                 $scope.showForm = true;
             }
 
@@ -168,7 +177,6 @@
         }
 
         $rootScope.setDetailData = function(itemId){
-
             $scope.detail = storageManager.get($rootScope.requests.host + $scope.type + "get" + $scope.state + itemId);
 
             $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state] + itemId).then(function (data) {
