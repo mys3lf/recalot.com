@@ -276,7 +276,7 @@
                 });
             }
       })
-      .controller("topNavCtrl", function ($rootScope, $http, $routeParams) {
+      .controller("topNavCtrl", function ($rootScope,  $route, $http, $routeParams) {
            $rootScope.navigation = {};
            $rootScope.requests = {};
 
@@ -298,9 +298,49 @@
                 $rootScope.requests =  JSON.parse(localStorage.getItem("requests"));
            }
 
+           $rootScope.setHost = function(host) {
+                $rootScope.hosts.active = host;
+                $rootScope.requests.host = host;
+
+                localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
+
+                $route.reload();
+           };
+
+        $rootScope.addHost = function(host) {
+            if(host != null) {
+                var h = host.trim();
+                $rootScope.hosts.history.push(host);
+                $rootScope.hosts.add = null;
+                localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
+                $route.reload();
+            }
+        };
+
+        $rootScope.removeHost = function(i, host) {
+            if(host != null) {
+                var h = host.trim();
+                $rootScope.hosts.history.splice(i, 1);
+                localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
+
+                $route.reload();
+            }
+        };
+
+
           $http.get("data/requests.json").then(function (data) {
                   $rootScope.requests = data.data;
                   localStorage.setItem("requests", JSON.stringify(data.data));
+
+                  var hosts = localStorage.getItem("hosts");
+
+                  if(hosts !== null) {
+                        $rootScope.hosts = JSON.parse(hosts);
+                        $rootScope.requests.host =  $rootScope.hosts.active;
+                  } else {
+                        $rootScope.hosts = {active: $rootScope.requests.host, history: [] };
+                        localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
+                  }
           });
 
            if(localStorage.getItem("navigation") !== null) {

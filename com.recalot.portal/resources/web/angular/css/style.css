@@ -2,6 +2,10 @@
     top: 40px;
 }
 
+.navbar-fixed-top.navbar-main{
+    z-index: 1031;
+}
+
 #container {
     min-height: 400px;
     margin-top: 100px;

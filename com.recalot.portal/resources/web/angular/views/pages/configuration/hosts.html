@@ -1,0 +1,48 @@
+<div class="col-sm-6" columns="6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title ng-binding">Host</h3>
+        </div>
+        <div class="panel-body">
+            <table  class="table table-fixed table-striped table-hover" data-sortable>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>
+                       Host
+                    </th>
+                    <th class="controls">
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="(key, item) in hosts.history track by $index">
+                        <td>{{key}}</td>
+                        <td>
+                            {{item}}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)"  data-ng-click="removeHost(key, item)" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" data-ng-model="hosts.add" />
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <a href="javascript:void(0)"  data-ng-click="addHost(hosts.add)" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                                </div>
+
+                            </div>
+                         </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

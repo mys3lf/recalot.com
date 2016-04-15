@@ -14,6 +14,18 @@
                     <a data-ng-click="setActive(item)" href="{{item.link.indexOf('http') > -1 ? item.link : '#' + item.link}}">{{item.label}}</a>
                 </li>
             </ul>
+            <ul class="nav navbar-nav  navbar-right">
+                <li class="dropdown"  uib-dropdown>
+                    <a class="dropdown-toggle"  uib-dropdown-toggle data-toggle="dropdown" href="">{{requests.host}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="download">
+                        <li data-ng-repeat="host in hosts.history track by $index" class="{{item.active == true ? 'active': ''}}">
+                            <a href="" data-ng-click="setHost(host)">{{host}}</a>
+                        </li>
+                        <li><a href="#/configuration/hosts"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add host</a></li>
+                    </ul>
+                </li>
+
+            </ul>
         </div>
     </div>
 </div>

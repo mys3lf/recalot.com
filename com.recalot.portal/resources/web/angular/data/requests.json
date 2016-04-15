@@ -1,5 +1,5 @@
 {
-  "host": "http://129.217.155.140:8080/",
+  "host": "http://localhost:8080/",
 
   "data": {
     "get": {
@@ -23,6 +23,9 @@
       "available": "train?state=AVAILABLE",
       "recommender": "train/",
       "recommend": "rec/"
+    },
+    "put":{
+      "available": "train/"
     },
     "delete":{
       "ready": "train",
