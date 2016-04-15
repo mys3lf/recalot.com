@@ -146,22 +146,32 @@
       .controller("detailWindowCtrl", function ($scope, $rootScope, $http, $routeParams) {
 
 
+        function enrichContent(data) {
+
+        }
+
         $rootScope.setDetailData = function(itemId){
+
+            $scope.isArray = angular.isArray;
+            $scope.isObject = angular.isObject;
+
             $http.get($rootScope.requests.host + $rootScope.requests[$scope.type]["get"][$scope.state] + itemId).then(function (data) {
                     $scope.detail = {
                         "label": data.data.id,
                         "content": data.data
                     };
+
+                    enrichContent(data.data);
                 });
 
                 $scope.canCreate = $rootScope.requests[$scope.type]["put"] != null &&  $rootScope.requests[$scope.type]["put"][$scope.state] != null;
                 $scope.canDelete = $rootScope.requests[$scope.type]["delete"] != null && $rootScope.requests[$scope.type]["delete"][$scope.state] != null;
            };
 
-
             if($routeParams.instanceId != null) {
                 $rootScope.setDetailData($routeParams.instanceId);
             }
+
       })
       .controller("experimentsTableCtrl", function ($scope, $rootScope, $http, $routeParams) {
             function contains(a, obj) {

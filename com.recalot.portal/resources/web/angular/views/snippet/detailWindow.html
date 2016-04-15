@@ -10,8 +10,10 @@
             </h3>
         </div>
         <div class="panel-body">
-
-            <span data-ng-repeat="(key, value) in detail.content">{{key}}:{{value}}<br /></span>
+            <ul>
+                <li data-ng-repeat="(key, value) in detail.content" data-ng-include="'views/snippet/tree/renderTree.html'" >
+                </li>
+            </ul>
 
         </div>
     </div>

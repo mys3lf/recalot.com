@@ -58,3 +58,20 @@
     display:inline-block;
     width: 100%;
 }
+
+
+/************************
+ * tree
+ ******************/
+
+.tree .key {
+
+}
+
+.tree .separator {
+    color: #DDD;
+}
+
+.tree .value  {
+    color: #5cb85c;
+}
