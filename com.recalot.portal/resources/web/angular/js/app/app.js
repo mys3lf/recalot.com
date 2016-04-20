@@ -300,7 +300,7 @@
 
            $rootScope.setHost = function(host) {
                 $rootScope.hosts.active = host;
-                $rootScope.requests.host = host;
+                $rootScope.requests.host = host.host;
 
                 localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
 
@@ -309,7 +309,6 @@
 
         $rootScope.addHost = function(host) {
             if(host != null) {
-                var h = host.trim();
                 $rootScope.hosts.history.push(host);
                 $rootScope.hosts.add = null;
                 localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
@@ -336,7 +335,7 @@
 
                   if(hosts !== null) {
                         $rootScope.hosts = JSON.parse(hosts);
-                        $rootScope.requests.host =  $rootScope.hosts.active;
+                        $rootScope.requests.host =  $rootScope.hosts.active.host;
                   } else {
                         $rootScope.hosts = {active: $rootScope.requests.host, history: [] };
                         localStorage.setItem("hosts", JSON.stringify( $rootScope.hosts));
