@@ -38,7 +38,7 @@ import com.recalot.common.context.ContextProvider;
 import com.recalot.common.interfaces.model.experiment.OnlineExperiment;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
-import com.recalot.views.common.GenericControllerListener;
+import com.recalot.common.GenericControllerListener;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;

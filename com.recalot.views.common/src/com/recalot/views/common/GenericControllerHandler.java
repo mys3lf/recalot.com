@@ -18,6 +18,7 @@
 package com.recalot.views.common;
 
 
+import com.recalot.common.GenericControllerListener;
 import com.recalot.common.communication.TemplateResult;
 import com.recalot.common.exceptions.BaseException;
 import com.recalot.common.interfaces.controller.Controller;

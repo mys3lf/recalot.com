@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 
-package com.recalot.views.common;
+package com.recalot.common;
 
 import com.recalot.common.interfaces.controller.Controller;
 import com.recalot.common.interfaces.controller.DataAccessController;
