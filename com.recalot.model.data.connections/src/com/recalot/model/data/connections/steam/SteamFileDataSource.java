@@ -74,7 +74,6 @@ public class SteamFileDataSource extends DataSourceBase {
                 case "users.csv":
                     usersFile = file;
                     break;
-
             }
         }
 
@@ -82,7 +81,7 @@ public class SteamFileDataSource extends DataSourceBase {
             setInfo("Read Users");
             readUsers(usersFile);
             setInfo("Read Games");
-            readGames(usersFile);
+            readGames(gamesFile);
             setInfo("Read Friendship");
             readFriendship(friendshipFile);
             setInfo("Read Interactions");
