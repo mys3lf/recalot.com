@@ -4,6 +4,7 @@
 .idea
 /out
 /com.recalot.model.rec.recommender.librec
+/com.recalot.portal
 /lib
 /libs
 /data
