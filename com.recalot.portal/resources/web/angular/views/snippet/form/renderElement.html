@@ -1,7 +1,0 @@
-<div>
-    <label data-ng-if="entry.requirement != 'Hidden'" class="control-label" data-ng-attr-for="{{entry.key}}">{{entry.key}} <span class="requirement">({{entry.requirement}})</span> </label>
-
-    <div data-ng-if="entry.requirement != 'Hidden'"  data-ng-include="'views/snippet/form/renderElement' + entry.type + '.html'"> </div>
-
-    <input data-ng-model="formData[entry.key]" data-ng-if="entry.requirement == 'Hidden'" required type="hidden" name="{{entry.key}}" ng-value="entry.value" />
-</div>
