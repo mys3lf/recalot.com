@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+
+    <OCD name="Recalot.com Views - Online Experiments" id="com.recalot.views.onlineexperiments">
+
+        <AD name="Path"  id="com.recalot.views.onlineexperiments.path" description="The path of the RESTful API" required="true" type="String" default="/onlineexperiments" />
+    </OCD>
+
+    <Designate pid="com.recalot.views.onlineexperiments">
+        <Object ocdref="com.recalot.views.onlineexperiments"/>
+    </Designate>
+
+</metatype:MetaData>
