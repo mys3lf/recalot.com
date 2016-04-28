@@ -25,6 +25,7 @@ import com.recalot.common.context.Context;
 import com.recalot.common.context.UserContext;
 import com.recalot.common.exceptions.*;
 import com.recalot.common.communication.Message;
+import com.recalot.common.impl.experiment.StorageExperiment;
 import com.recalot.common.interfaces.model.data.DataAccess;
 import com.recalot.common.interfaces.model.data.DataSource;
 import com.recalot.common.interfaces.model.experiment.DataSplitter;
@@ -37,7 +38,7 @@ import com.recalot.common.interfaces.model.rec.RecommenderAccess;
 import com.recalot.common.interfaces.model.rec.RecommenderInformation;
 import org.osgi.framework.BundleContext;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -66,6 +67,33 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
         this.queue = new ConcurrentLinkedQueue<>();
         this.onlineExperiments = new ConcurrentHashMap<>();
         this.random = new Random();
+
+        loadExperimentsFromDisk();
+    }
+
+    private void loadExperimentsFromDisk() {
+        String userHome = System.getProperty("user.home");
+        String separator = System.getProperty("file.separator");
+
+        File recalotFolder = Helper.createOrGetDir(userHome + separator + "recalot");
+        File experimentFolder = Helper.createOrGetDir(recalotFolder.getAbsolutePath() + separator +  "experiment-results");
+
+        for(File file : experimentFolder.listFiles()) {
+            try
+            {
+                Experiment experiment = loadExperiment(file.getAbsolutePath());
+                experiment.setId(file.getName());
+
+                // Lock list and add experiment
+                synchronized (experiments) {
+                    if (!experiments.containsKey(experiment.getId())) {
+                        experiments.put(experiment.getId(), experiment);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -224,6 +252,8 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
 
                     threads.remove(experiment.getId());
 
+                    saveResultToFile(experiment);
+
                     runNext();
                 }
             };
@@ -233,6 +263,44 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
         }
     }
 
+    private void saveResultToFile(Experiment experiment) {
+        String userHome = System.getProperty("user.home");
+        String separator = System.getProperty("file.separator");
+
+        File recalotFolder = Helper.createOrGetDir(userHome + separator + "recalot");
+        File experimentFolder = Helper.createOrGetDir(recalotFolder.getAbsolutePath() + separator + "experiment-results");
+
+        saveExperiment(experimentFolder.getAbsolutePath() + separator + UUID.randomUUID().toString(), experiment);
+    }
+
+
+    private void saveExperiment(String path, Experiment experiment) {
+        try {
+            FileOutputStream fout = new FileOutputStream(path);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(new StorageExperiment(experiment));
+            oos.close();
+            fout.close();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private StorageExperiment loadExperiment(String path) {
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Object obj = ois.readObject();
+            ois.close();
+            fis.close();
+
+            return (StorageExperiment)obj;
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
 
     @Override
     public OnlineExperiment getOnlineExperiment(String id) throws BaseException {

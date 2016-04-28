@@ -551,7 +551,7 @@ public class Helper {
     public static File createOrGetDir(String path) {
         File dir = new File(path);
 
-// if the directory does not exist, create it
+        // if the directory does not exist, create it
         if (!dir.exists()) {
             try {
                 dir.mkdir();
@@ -565,6 +565,7 @@ public class Helper {
 
     /**
      * split a keyid string into a map
+     *
      * @param config
      * @return
      */
@@ -593,6 +594,7 @@ public class Helper {
 
         return result;
     }
+
 
 
     /**

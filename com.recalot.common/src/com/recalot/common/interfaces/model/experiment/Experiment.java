@@ -20,15 +20,17 @@ package com.recalot.common.interfaces.model.experiment;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.log.Loggable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by matthaeus.schmedding on 01.04.2015.
  */
-public abstract class Experiment extends Loggable {
+public abstract class Experiment extends Loggable implements Serializable{
 
     protected HashMap<String, Map<String, Double>> result;
+    protected Map<String, String> params;
     protected String dataSourceId;
     protected String[] recommenderIds;
     protected ExperimentState state;
@@ -67,6 +69,11 @@ public abstract class Experiment extends Loggable {
         return result;
     }
 
+    public Map<String,String> getParams() {
+        return params;
+    }
+
+
     public String getDataSourceId() {
         return dataSourceId;
     }
@@ -88,6 +95,10 @@ public abstract class Experiment extends Loggable {
     }
 
     public abstract void run();
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public enum ExperimentState {
         WAITING,

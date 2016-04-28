@@ -66,6 +66,7 @@ public class Experiment extends com.recalot.common.interfaces.model.experiment.E
         this.splitter = splitter;
         this.metrics = metrics;
         this.result = new HashMap<>();
+        this.params = param;
 
         this.runThroughAllItems = param != null && param.containsKey("runThroughAllItems") && param.get("runThroughAllItems").equals("true");
 

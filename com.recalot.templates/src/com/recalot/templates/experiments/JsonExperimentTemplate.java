@@ -35,7 +35,7 @@ import java.util.List;
 public class JsonExperimentTemplate extends JsonBaseTemplate implements ExperimentTemplate {
     @Override
     public TemplateResult transform(Experiment experiment) throws BaseException {
-        String result = getSerializer().include("id", "state", "percentage", "results", "results.*", "recommenderIds", "dataSourceId", "info").exclude("*").serialize(experiment);
+        String result = getSerializer().include("id", "state", "percentage", "results", "results.*", "recommenderIds", "dataSourceId", "info", "params", "params.*").exclude("*").serialize(experiment);
         return new TemplateResult(200, MimeType, new ByteArrayInputStream(result.getBytes(charset)), charset);
     }
 

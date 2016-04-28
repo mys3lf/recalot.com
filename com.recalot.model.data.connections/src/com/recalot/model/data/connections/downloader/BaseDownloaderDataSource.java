@@ -17,6 +17,7 @@
 
 package com.recalot.model.data.connections.downloader;
 
+import com.recalot.common.Helper;
 import com.recalot.common.UnZip;
 import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.model.data.connections.base.DataSourceBase;
@@ -43,8 +44,8 @@ public abstract class BaseDownloaderDataSource  extends DataSourceBase {
         String userHome = System.getProperty("user.home");
         String separator = System.getProperty("file.separator");
 
-        File recalotFolder = createFolder(userHome, "recalot");
-        File dataFolder = createFolder(recalotFolder.getAbsolutePath(), name);
+        File recalotFolder = Helper.createOrGetDir(userHome + separator + "recalot");
+        File dataFolder = Helper.createOrGetDir(recalotFolder.getAbsolutePath() + separator + name);
 
         if(dataFolder.listFiles().length == 0) {
             URL url = new URL(urlString);
@@ -59,14 +60,6 @@ public abstract class BaseDownloaderDataSource  extends DataSourceBase {
         return dataFolder;
     }
 
-    protected File createFolder(String path, String folder){
-        File tempDir = new File(path, folder);
-        if (!tempDir.exists()) {
-            tempDir.mkdir();
-        }
-
-        return tempDir;
-    }
 
     private void saveUrl(final String filename, final String urlString)
             throws IOException, NotFoundException {
