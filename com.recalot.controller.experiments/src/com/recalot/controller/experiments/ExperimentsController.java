@@ -243,10 +243,10 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
             Map<String, String> keyIds = Helper.splitIdKeyConfig(recommenderId);
 
             for (String key : keyIds.keySet()) {
-                param.put(keyIds.get(key) + "." + Helper.Keys.ID, keyIds.get(key));
-                param.put(keyIds.get(key) + "." + Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
+                param.put(key + "." + Helper.Keys.ID, key);
+                param.put(key + "." + Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
 
-                recommender.add(recommenderAccess.getInstance(key).createInstance(keyIds.get(key), keyIds.get(key), param));
+                recommender.add(recommenderAccess.getInstance(keyIds.get(key)).createInstance(key, key, param));
             }
         }
 
@@ -261,7 +261,7 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
             for (Recommender r : recommender) {
                 ArrayList<Metric> m = new ArrayList<>();
                 for (String key : keyIds.keySet()) {
-                    m.add(metricsListener.getInstance(key).createInstance(keyIds.get(key), keyIds.get(key), param));
+                    m.add(metricsListener.getInstance(keyIds.get(key)).createInstance(key, key, param));
                 }
 
                 metrics.put(r.getId(), m.toArray(new Metric[m.size()]));

@@ -582,7 +582,7 @@ public class Helper {
                 if (s.contains("@")) {
                     String[] idSplit = s.split("@");
                     if (idSplit.length > 1) {
-                        result.put(idSplit[0], idSplit[1]);
+                        result.put(idSplit[1], idSplit[0]);
                     }
                 } else {
                     //if no @ is available the key equals the id

@@ -124,12 +124,12 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
 
         //check if the percentage configuration is available
         for (String key : keyIds.keySet()) {
-            if (!param.containsKey(keyIds.get(key) + "." + Helper.Keys.Percentage))
-                throw new MissingArgumentException("The argument %s is missing. ", keyIds.get(key) + "." + Helper.Keys.Percentage);
+            if (!param.containsKey(key + "." + Helper.Keys.Percentage))
+                throw new MissingArgumentException("The argument %s is missing. ", key + "." + Helper.Keys.Percentage);
 
             boolean nanOrWrongFormat;
             try {
-                Double number = Double.parseDouble(param.get(keyIds.get(key) + "." + Helper.Keys.Percentage));
+                Double number = Double.parseDouble(param.get(key + "." + Helper.Keys.Percentage));
 
                 nanOrWrongFormat = number.isNaN();
 
@@ -157,7 +157,7 @@ public class ExperimentAccess implements com.recalot.common.interfaces.model.exp
                     param.put(recommenderKeyIds.get(recKey) + "." + Helper.Keys.SourceId, param.get(Helper.Keys.SourceId));
 
 
-                    Double number = Double.parseDouble(param.get(keyIds.get(key) + "." + Helper.Keys.Percentage));
+                    Double number = Double.parseDouble(param.get(key + "." + Helper.Keys.Percentage));
 
                     Recommender rec = recommenderAccess.getFirstInstance().createRecommender(dataSource, recommenderKeyIds.get(recKey), param);
                     recommender.put(rec.getId(), number);
