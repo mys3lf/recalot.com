@@ -28,7 +28,7 @@ public class InnerIds {
     private static final Map<Integer,String> revert;
     private static final Map<Integer, Boolean> intValues;
     private static final Map<Integer, Boolean> taken;
-    private static int next = 0;
+    private static int next = 20000000;
 
     static {
         ids = new LinkedHashMap<>();

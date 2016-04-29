@@ -27,6 +27,7 @@ import com.recalot.model.data.connections.downloader.ciao.CiaoDataSource;
 import com.recalot.model.data.connections.downloader.douban.DoubanDataSource;
 import com.recalot.model.data.connections.downloader.filmtrust.FilmTrustDataSource;
 import com.recalot.model.data.connections.downloader.flixster.FlixsterDataSource;
+import com.recalot.model.data.connections.downloader.jester.JesterDataSource;
 import com.recalot.model.data.connections.downloader.movielens.MovieLensDataSource;
 import com.recalot.model.data.connections.mysql.MySQLDataSource;
 import com.recalot.model.data.connections.reddit.RedditDataSource;
@@ -61,6 +62,7 @@ public class Activator implements BundleActivator, Initiator {
         sources.put("filmtrust",  FilmTrustDataSource.class.getName());
        // sources.put("flixster",  FlixsterDataSource.class.getName());
         sources.put("ciao",  CiaoDataSource.class.getName());
+        sources.put("jester",  JesterDataSource.class.getName());
         sources.put("douban",  DoubanDataSource.class.getName());
         sources.put("steam",  SteamFileDataSource.class.getName());
 
