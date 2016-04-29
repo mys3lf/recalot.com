@@ -96,8 +96,6 @@ public class SparseMatrix implements Iterable<MatrixEntry>, Serializable {
 	 * 
 	 * @param mat
 	 *            the original sparse matrix
-	 * @param deap
-	 *            whether to copy the CCS structures
 	 */
 	public SparseMatrix(SparseMatrix mat) {
 		numRows = mat.numRows;

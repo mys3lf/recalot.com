@@ -2,14 +2,16 @@ Manifest-Version: 1
 Bundle-Description:  Contains several recommendation algorithms
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.model.rec.recommender.librec
+Export-Package: com.recalot.model.rec.librec;version="0.0.2",librec.ra
+ nking;version="0.0.2", librec.rating;version="0.0.2",librec.ext;versi
+ on="0.0.2", librec.baseline;version="0.0.2"
 Bundle-Name: Recalot.com Model - LibRec Recommender (Wraps libRec 1.4 
  recommender)
-Bundle-Version: 0.0.1.8
+Bundle-Version: 0.0.2.11
 Bundle-Activator: com.recalot.model.rec.librec.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc
-Export-Package: com.recalot.model.rec.librec,librec.ranking, librec.rating,librec.ext, librec.baseline
 Import-Package: org.osgi.framework,   com.recalot.common.communication
  ,com.recalot.common.log,com.recalot.common.interfaces.model.data,com.
  recalot.common.interfaces.model.rec,com.recalot.common.interfaces.mod

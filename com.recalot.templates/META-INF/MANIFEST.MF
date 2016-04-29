@@ -20,8 +20,8 @@ Import-Package: org.osgi.framework,   com.recalot.common.communication
  es.model.experiment,com.recalot.common.interfaces.template,com.recalo
  t.common,flexjson,flexjson.transformer,flexjson.locators,flexjson.fac
  tories
-Export-Package: com.recalot.templates.base;version="0.1.1"
+Export-Package: com.recalot.templates.base;version="0.1.2"
 Bundle-Name: Recalot.com Templates - Data
-Bundle-Version: 0.1.1.747
+Bundle-Version: 0.1.2.750
 Bundle-Activator: com.recalot.templates.Activator
 

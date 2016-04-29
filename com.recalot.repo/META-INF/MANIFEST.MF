@@ -10,7 +10,7 @@ Import-Package: org.osgi.framework, org.osgi.util.tracker,   org.osgi.
  service.http,   javax.servlet,  javax.servlet.http,   org.apache.feli
  x.http.api
 Bundle-Name: Recalot.com - Repository
-Bundle-Version: 0.1.1.758
+Bundle-Version: 0.1.2.761
 Bundle-ClassPath: resources/, src/
 Bundle-Activator: com.recalot.repo.Activator
 

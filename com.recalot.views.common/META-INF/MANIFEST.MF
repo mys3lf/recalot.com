@@ -3,9 +3,9 @@ Bundle-Description: Contains components for views that access the diff
  erent controller types
 Bundle-License: http://recalot.com/license.txt
 Bundle-SymbolicName: com.recalot.views.common
-Export-Package: com.recalot.views.common;version="0.1.1"
+Export-Package: com.recalot.views.common;version="0.1.2"
 Bundle-Name: Recalot.com Views - Common
-Bundle-Version: 0.1.1.748
+Bundle-Version: 0.1.2.751
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Recalot.com
 Bundle-DocURL: http://recalot.com/doc
