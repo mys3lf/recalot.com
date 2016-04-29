@@ -21,7 +21,8 @@ If you have any comments or suggestions for improvement, feel free to contact us
 
 # Download
 
- - [recalot.com-v0.0.1](https://raw.githubusercontent.com/mys3lf/recalot.com/master/bundles/recalot-0.1.1.zip)
+ - [recalot.com-v0.1.2](https://raw.githubusercontent.com/mys3lf/recalot.com/master/bundles/recalot-0.1.2.zip)
+ - [recalot.com-v0.1.1](https://raw.githubusercontent.com/mys3lf/recalot.com/master/bundles/recalot-0.1.1.zip)
 
 # Reference
 
