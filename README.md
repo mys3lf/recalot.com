@@ -60,5 +60,6 @@ along with recalot.com. If not, see <http://www.gnu.org/licenses/>.
 -   Recommender101
     [Website](http://ls13-www.cs.tu-dortmund.de/homepage/recommender101/index.shtml)
     [License](http://us.codeforge.com/read/239649/license.txt__html)
-
-
+-   LibRec
+    [Website](http://librec.com)
+    [License](https://github.com/guoguibing/librec/blob/master/LICENSE)
