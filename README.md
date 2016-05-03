@@ -2,7 +2,7 @@
 
 ## Generic RESTful Recommender Service
 
-Links: [Home](http://recalot.com) | [Documentation](http://recalot.com/documentation) | [Portal](http://portal.recalot.com) | [Examples](http://recalot.com/examples)
+Links: [Home](http://recalot.com) | [Documentation](http://recalot.com/documentation) | [Portal](http://portal.recalot.com) | [Examples](http://recalot.com/examples) | [Addons](https://github.com/mys3lf/recalot.com-addons)
 
 
 The ideas behind recalot.com are to build a RESTFul recommender system that can be used for all sorts of applications, can easily be extended, can be used for offline as well as online evaluations and can be adjusted for scientific as well as industrial applications. Therefor we decide to build the API with the help of Apache Felix, which is an OSGi Framework. This allows a modular development, modules can easily be replaced in runtime and modules with new functionality can easily be added to the system. Currently the system is in alpha phase and documentation and tutorials are coming soon.
