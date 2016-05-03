@@ -30,6 +30,7 @@ Please cite the following paper if recalot.com is helpful to your research.
 
 	Schmedding, M. et al.: Recalot.com: Towards a Reusable, Modular, and RESTFul Social Recommender System. In (Georgia Kapitsaki Eduardo Santana de Almeida Ed.): Software Reuse: Bridging with Social-Awareness - 15th International Conference, ICSR 2016, Limassol, Cyprus, June 5-7, 2016, Proceedings. Springer, 2016.
 
+Please add a link to our website ([recalot.com](http://recalot.com)) if you use recalot.com in a produtive application.
 
 # License
 
