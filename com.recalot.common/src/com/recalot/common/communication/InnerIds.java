@@ -81,7 +81,7 @@ public class InnerIds {
             return ids.get(rawId);
         }
 
-       // System.out.println(rawId + ":" + rawId.length());
+        // System.out.println(rawId + ":" + rawId.length());
         if(rawId.length() < 10) {
             //take the int if possible
             try {
@@ -91,8 +91,8 @@ public class InnerIds {
                     intValues.put(r, true);
                     taken.put(r, true);
 
-                    return r;
                 }
+                return r;
             } catch (NumberFormatException e) {
 
             }
