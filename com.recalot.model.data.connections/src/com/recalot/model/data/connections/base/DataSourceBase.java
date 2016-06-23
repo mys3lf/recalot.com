@@ -45,11 +45,6 @@ public abstract class DataSourceBase extends DataSource {
         this.interactions = new HashMap<>();
         this.relations = new HashMap<>();
 
-        //this.users = HashIntObjMaps.<User>newUpdatableMap();
-        //this.items = HashIntObjMaps.<Item>newUpdatableMap();
-        //this.interactions = HashIntObjMaps.<Interaction>newUpdatableMap();
-        //this.relations = HashIntObjMaps.<Relation>newUpdatableMap();
-
         this.dataSet = new DataSourceDataSet(this);
     }
 

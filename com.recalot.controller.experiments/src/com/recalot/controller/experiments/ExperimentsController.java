@@ -178,9 +178,6 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
 
     private TemplateResult getOnlineExperiment(ExperimentTemplate template, Map<String, String> param) throws BaseException {
         ExperimentAccess access = experimentsAccess.getFirstInstance();
-        DataAccess dAccess = dataAccess.getFirstInstance();
-        DataSource dataSource = dAccess.getDataSource(param.get(Helper.Keys.SourceId));
-
 
         return template.transform(access.getOnlineExperiment(param.get(Helper.Keys.ExperimentId)));
     }

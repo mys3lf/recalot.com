@@ -146,7 +146,7 @@ public class GenericServiceListener<T extends Service> implements ServiceListene
     private void removeInstance(String key) {
         // Lock list and remove service object.
         synchronized (instances) {
-            if (!instances.containsKey(key)) instances.remove(key);
+            if (instances.containsKey(key)) instances.remove(key);
             logger.log(LogService.LOG_INFO, "Remove " + className + " with key " + key);
         }
     }
