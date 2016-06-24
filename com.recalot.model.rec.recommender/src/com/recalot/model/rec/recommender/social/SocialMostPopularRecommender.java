@@ -32,7 +32,7 @@ import java.util.*;
  *  A simple most popular social recommender.
  *  Recommends the most popular items of the users relations (could be friends or common group members)
  *
- * Created by Matthaeus.schmedding on 02.06.2015.
+ * Created by Matthaeus.schmedding, Daniel Gafert on 02.06.2015.
  */
 @Configuration(key = "DISTANCE", type = ConfigurationItem.ConfigurationItemType.Integer, requirement = ConfigurationItem.ConfigurationItemRequirementType.Required)
 @Configuration(key = "SQUAREMAX", type = ConfigurationItem.ConfigurationItemType.Double, requirement = ConfigurationItem.ConfigurationItemRequirementType.Required)
@@ -46,14 +46,14 @@ public class SocialMostPopularRecommender extends Recommender {
     private double SQUAREMAX = 4;
     private int MAXCOUNTER = 3;
 
-    private int counterMethodeAufgerufen = 0;
+    private int counterMethodCalled= 0;
 
     public SocialMostPopularRecommender(){
         this.setKey("social-mp");
     }
     @Override
     public void train() throws BaseException {
-        // ItemID, Anzahl der Nutzer die das Item besitzen
+        // ItemID, Usercount
         Map<String, Integer> count = new LinkedHashMap<>();
 
         for (Interaction interaction : getDataSet().getInteractions()) {
@@ -61,7 +61,7 @@ public class SocialMostPopularRecommender extends Recommender {
         }
         //List<RecommendedItem> recommendedItems = new ArrayList<>();
 
-        // Absteigend sortieren!
+        // Sort descending
         count = Helper.sortByValueDescending(count);
 
         //double sum = Helper.sum(count);
@@ -99,40 +99,40 @@ public class SocialMostPopularRecommender extends Recommender {
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
         Set<String> usersAlreadyTaken = new HashSet<>();
-        counterMethodeAufgerufen = 0;
+        counterMethodCalled = 0;
 
+        // Add active User to Set
         usersAlreadyTaken.add(userId);
-        // ItemId, Durchschnitt
-        Map<String, CountValue> countTemp = new HashMap<>();
+        // ItemId, CountValue
+        Map<String, CountValue> itemIdCountValue = new HashMap<>();
         try {
             Relation[] relations = getDataSet().getRelationsFor(userId);
             for(Relation relationAct : relations) {
-                getItemsForRelation(relationAct, 1, countTemp, usersAlreadyTaken);
+                getItemsForRelation(relationAct, 1, itemIdCountValue, usersAlreadyTaken);
             }
         } catch (BaseException e) {
             e.printStackTrace();
         }
         //System.out.println("Userstaken:" + usersAlreadyTaken.size());
-        //System.out.println("CountTemp:" + countTemp.size());
+        //System.out.println("CountTemp:" + itemIdCountValue.size());
         //System.out.println("MethodeAufgerufen:" + counterMethodeAufgerufen);
 
-        // ItemId, DurchschnittFreunde
-        Map<String, Double> count = new LinkedHashMap<>();
-
-        for(String aktItemId : countTemp.keySet()) {
-            CountValue actCountValue = countTemp.get(aktItemId);
+        // ItemId, Square Rating Friends
+        Map<String, Double> itemIdSquareRatingFriends = new LinkedHashMap<>();
+        for(String aktItemId : itemIdCountValue.keySet()) {
+            CountValue actCountValue = itemIdCountValue.get(aktItemId);
             double square = actCountValue.getValue() / actCountValue.getCount();
             //System.out.println(square);
             if(square >= SQUAREMAX) {
                 //System.out.println(square +"= " + aktItemId + " = " + actCountValue);
-                count.put(aktItemId, square);
+                itemIdSquareRatingFriends.put(aktItemId, square);
             }
         }
-        //System.out.println("Count:" + count.size());
+        //System.out.println("Count:" + itemIdSquareRatingFriends.size());
+        // Sort Square-Rating descending
+        itemIdSquareRatingFriends = Helper.sortByValueDescending(itemIdSquareRatingFriends);
 
-        count = Helper.sortByValueDescending(count);
-
-        //ArrayList<String> result = new ArrayList<>(count.keySet());
+        //ArrayList<String> result = new ArrayList<>(itemIdSquareRatingFriends.keySet());
 
         HashMap<String, Boolean> omitItems = new HashMap<>();
         try {
@@ -141,10 +141,6 @@ public class SocialMostPopularRecommender extends Recommender {
             for(Interaction i : userInteractions) {
                 omitItems.put(i.getItemId(), true);
             }
-            //do not add item twice
-            //for(String itemId : count.keySet()) {
-            //    omitItems.put(itemId, true);
-            //}
         } catch (BaseException e) {
             e.printStackTrace();
         }
@@ -152,7 +148,7 @@ public class SocialMostPopularRecommender extends Recommender {
         int counter = 0;
         // Add calculated Items to result
         List<RecommendedItem> recommendedItems = new ArrayList<>();
-        for(String aktItemId : count.keySet()) {
+        for(String aktItemId : itemIdSquareRatingFriends.keySet()) {
             if(counter < MAXCOUNTER) {
                 if(!omitItems.containsKey(aktItemId)) {
                     recommendedItems.add(new RecommendedItem(aktItemId, 0.0));
@@ -176,7 +172,7 @@ public class SocialMostPopularRecommender extends Recommender {
     }
 
     private void getItemsForRelation(Relation relationAct, int counter, Map<String, CountValue> countTemp, Set<String> usersAlreadyTaken) {
-        counterMethodeAufgerufen++;
+        counterMethodCalled++;
         String userAct = relationAct.getToId();
         if (counter <= DISTANCE) {
             if (!usersAlreadyTaken.contains(userAct)) {
@@ -191,12 +187,13 @@ public class SocialMostPopularRecommender extends Recommender {
                         if (interactions != null) {
                             for (Interaction i : interactions) {
                                 String itemId = i.getItemId();
+                                Double actRating = Double.parseDouble(i.getValue());
                                 if(countTemp.get(itemId) == null) {
-                                    CountValue actCountValue = new CountValue(Double.parseDouble(i.getValue()), 1);
+                                    CountValue actCountValue = new CountValue(actRating, 1);
                                     countTemp.put(itemId, actCountValue);
                                 } else {
                                     CountValue actCountValue = countTemp.get(itemId);
-                                    CountValue actCountValueHigh = new CountValue(actCountValue.getValue() + Double.parseDouble(i.getValue()), actCountValue.getCount()+1);
+                                    CountValue actCountValueHigh = new CountValue(actCountValue.getValue() + actRating, actCountValue.getCount()+1);
                                     countTemp.put(itemId, actCountValueHigh);
                                 }
                                 //Helper.incrementMapValue(count, i.getItemId());
