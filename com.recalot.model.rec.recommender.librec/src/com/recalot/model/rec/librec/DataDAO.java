@@ -124,7 +124,7 @@ public class DataDAO {
                         userIds.put(InnerIds.getId(relation.getToId()), userIds.size());
                     }
 
-                    int row = userIds.get(InnerIds.getId(relation.getToId()));
+                    int row = userIds.get(InnerIds.getId(relation.getFromId()));
                     int col = userIds.get(InnerIds.getId(relation.getToId()));
 
                     relationshipTable.put(row, col, 1.0);
