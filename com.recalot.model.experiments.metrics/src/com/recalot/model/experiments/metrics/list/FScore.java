@@ -42,7 +42,7 @@ public class FScore extends ListMetric {
     }
 
     public void setTopN(int topN){
-     //   this.recall.setTopN(topN);
+        this.recall.setTopN(topN);
         this.precision.setTopN(topN);
     }
 
@@ -68,6 +68,6 @@ public class FScore extends ListMetric {
 
     @Override
     public String getDescription() {
-        return null;
+        return "F-Score";
     }
 }
