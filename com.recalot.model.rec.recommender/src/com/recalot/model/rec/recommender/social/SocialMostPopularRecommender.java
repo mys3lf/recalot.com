@@ -41,43 +41,14 @@ public class SocialMostPopularRecommender extends Recommender {
     //protected RecommendationResult result;
 
     private List<String> mostPopular = new LinkedList<>();
-    //private Map<String, Integer> mostPopular;   // ItemId,Anzahl
+    // UserId  / SET FRIENDSITEMS
+    private Map<String, Set<String>> userIdFriendsItems = new HashMap<>();
     private int DISTANCE = 6;
     private double SQUAREMAX = 4;
     private int MAXCOUNTER = 3;
 
     private int counterMethodCalled= 0;
 
-    public SocialMostPopularRecommender(){
-        this.setKey("social-mp");
-    }
-    @Override
-    public void train() throws BaseException {
-        // ItemID, Usercount
-        Map<String, Integer> count = new LinkedHashMap<>();
-
-        for (Interaction interaction : getDataSet().getInteractions()) {
-            Helper.incrementMapValue(count, interaction.getItemId());
-        }
-        //List<RecommendedItem> recommendedItems = new ArrayList<>();
-
-        // Sort descending
-        count = Helper.sortByValueDescending(count);
-
-        //double sum = Helper.sum(count);
-
-        for (String key : count.keySet()) {
-            mostPopular.add(key);
-            //recommendedItems.add(new RecommendedItem(key, 1.0 * count.get(key) / sum));
-        }
-
-        //this.result = new RecommendationResult(getId(), recommendedItems);
-    }
-
-    @Override
-    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
-        return 0.0;
-    }
     static class CountValue {
         private int count;
         private double value;
@@ -96,43 +67,78 @@ public class SocialMostPopularRecommender extends Recommender {
         }
     }
 
+    public SocialMostPopularRecommender(){
+        this.setKey("social-mp");
+    }
+
+    @Override
+    public void train() throws BaseException {
+        // Begin MostPopular
+        // ItemID, Usercount
+        Map<String, Integer> count = new LinkedHashMap<>();
+
+        for (Interaction interaction : getDataSet().getInteractions()) {
+            Helper.incrementMapValue(count, interaction.getItemId());
+        }
+
+        // Sort by count descending
+        count = Helper.sortByValueDescending(count);
+
+        for (String key : count.keySet()) {
+            mostPopular.add(key);
+        }
+        // End MostPopular
+
+        // Begin SocialMostPopular
+        for(User userAkt : getDataSet().getUsers()) {
+            String userId =userAkt.getId();
+            Set<String> usersAlreadyTaken = new HashSet<>();
+            counterMethodCalled = 0;
+
+            // Add active User to Set
+            usersAlreadyTaken.add(userId);
+            // ItemId, CountValue
+            Map<String, CountValue> itemIdCountValue = new HashMap<>();
+            try {
+                Relation[] relations = getDataSet().getRelationsFor(userId);
+                for(Relation relationAct : relations) {
+                    getItemsForRelation(relationAct, 1, itemIdCountValue, usersAlreadyTaken);
+                }
+            } catch (BaseException e) {
+                e.printStackTrace();
+            }
+
+            // ItemId, Square Rating Friends
+            Map<String, Double> itemIdSquareRatingFriends = new LinkedHashMap<>();
+            for(String aktItemId : itemIdCountValue.keySet()) {
+                CountValue actCountValue = itemIdCountValue.get(aktItemId);
+                double square = actCountValue.getValue() / actCountValue.getCount();
+                //System.out.println(square);
+                if(square >= SQUAREMAX) {
+                    //System.out.println(square +"= " + aktItemId + " = " + actCountValue);
+                    itemIdSquareRatingFriends.put(aktItemId, square);
+                }
+            }
+            // Sort Square-Rating descending
+            itemIdSquareRatingFriends = Helper.sortByValueDescending(itemIdSquareRatingFriends);
+            Set<String> itemIds = new HashSet<>();
+            for(String aktItem : itemIdSquareRatingFriends.keySet()) {
+                itemIds.add(aktItem);
+            }
+            if(itemIds.size() > 0) {
+                userIdFriendsItems.put(userId, itemIds);
+            }
+        }
+    }
+
+    @Override
+    public Double predict(String userId, String itemId, ContextProvider context, Map<String, String> param) {
+        return 0.0;
+    }
+
+
     @Override
     public RecommendationResult recommend(String userId, ContextProvider context, Map<String, String> param) {
-        Set<String> usersAlreadyTaken = new HashSet<>();
-        counterMethodCalled = 0;
-
-        // Add active User to Set
-        usersAlreadyTaken.add(userId);
-        // ItemId, CountValue
-        Map<String, CountValue> itemIdCountValue = new HashMap<>();
-        try {
-            Relation[] relations = getDataSet().getRelationsFor(userId);
-            for(Relation relationAct : relations) {
-                getItemsForRelation(relationAct, 1, itemIdCountValue, usersAlreadyTaken);
-            }
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-        //System.out.println("Userstaken:" + usersAlreadyTaken.size());
-        //System.out.println("CountTemp:" + itemIdCountValue.size());
-        //System.out.println("MethodeAufgerufen:" + counterMethodeAufgerufen);
-
-        // ItemId, Square Rating Friends
-        Map<String, Double> itemIdSquareRatingFriends = new LinkedHashMap<>();
-        for(String aktItemId : itemIdCountValue.keySet()) {
-            CountValue actCountValue = itemIdCountValue.get(aktItemId);
-            double square = actCountValue.getValue() / actCountValue.getCount();
-            //System.out.println(square);
-            if(square >= SQUAREMAX) {
-                //System.out.println(square +"= " + aktItemId + " = " + actCountValue);
-                itemIdSquareRatingFriends.put(aktItemId, square);
-            }
-        }
-        //System.out.println("Count:" + itemIdSquareRatingFriends.size());
-        // Sort Square-Rating descending
-        itemIdSquareRatingFriends = Helper.sortByValueDescending(itemIdSquareRatingFriends);
-
-        //ArrayList<String> result = new ArrayList<>(itemIdSquareRatingFriends.keySet());
 
         HashMap<String, Boolean> omitItems = new HashMap<>();
         try {
@@ -148,18 +154,20 @@ public class SocialMostPopularRecommender extends Recommender {
         int counter = 0;
         // Add calculated Items to result
         List<RecommendedItem> recommendedItems = new ArrayList<>();
-        for(String aktItemId : itemIdSquareRatingFriends.keySet()) {
-            if(counter < MAXCOUNTER) {
-                if(!omitItems.containsKey(aktItemId)) {
-                    recommendedItems.add(new RecommendedItem(aktItemId, 0.0));
-                    omitItems.put(aktItemId, true);
-                    counter++;
+        if(userIdFriendsItems.get(userId) != null) {
+            Set<String> items = userIdFriendsItems.get(userId);
+            for(String aktItemId : items) {
+                if(counter < MAXCOUNTER) {
+                    if(!omitItems.containsKey(aktItemId)) {
+                        recommendedItems.add(new RecommendedItem(aktItemId, 0.0));
+                        omitItems.put(aktItemId, true);
+                        counter++;
+                    }
+                } else {
+                    break;
                 }
-            } else {
-                break;
             }
         }
-        //System.out.println("recommendedItems.size()" + recommendedItems.size());
 
         // Add most popular Items
         for(String aktItemId : mostPopular) {
@@ -179,29 +187,28 @@ public class SocialMostPopularRecommender extends Recommender {
                 // User not processed
                 usersAlreadyTaken.add(userAct);
 
-                    //get interaction of the friend and count occurrence
-                    Interaction[] interactions = new Interaction[0];
-                    try {
-                        interactions = getDataSet().getInteractions(userAct);
+                //get interaction of the friend and count occurrence
+                Interaction[] interactions = new Interaction[0];
+                try {
+                    interactions = getDataSet().getInteractions(userAct);
 
-                        if (interactions != null) {
-                            for (Interaction i : interactions) {
-                                String itemId = i.getItemId();
-                                Double actRating = Double.parseDouble(i.getValue());
-                                if(countTemp.get(itemId) == null) {
-                                    CountValue actCountValue = new CountValue(actRating, 1);
-                                    countTemp.put(itemId, actCountValue);
-                                } else {
-                                    CountValue actCountValue = countTemp.get(itemId);
-                                    CountValue actCountValueHigh = new CountValue(actCountValue.getValue() + actRating, actCountValue.getCount()+1);
-                                    countTemp.put(itemId, actCountValueHigh);
-                                }
-                                //Helper.incrementMapValue(count, i.getItemId());
+                    if (interactions != null) {
+                        for (Interaction i : interactions) {
+                            String itemId = i.getItemId();
+                            Double actRating = Double.parseDouble(i.getValue());
+                            if(countTemp.get(itemId) == null) {
+                                CountValue actCountValue = new CountValue(actRating, 1);
+                                countTemp.put(itemId, actCountValue);
+                            } else {
+                                CountValue actCountValue = countTemp.get(itemId);
+                                CountValue actCountValueHigh = new CountValue(actCountValue.getValue() + actRating, actCountValue.getCount()+1);
+                                countTemp.put(itemId, actCountValueHigh);
                             }
                         }
-                    } catch (BaseException e) {
-                        e.printStackTrace();
                     }
+                } catch (BaseException e) {
+                    e.printStackTrace();
+                }
 
             }
             counter++;
