@@ -39,8 +39,11 @@ import com.recalot.common.interfaces.model.experiment.OnlineExperiment;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import com.recalot.common.GenericControllerListener;
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;
@@ -58,37 +61,15 @@ import java.util.Map;
 @Service(ExperimentsController.class)
 public class ExperimentsController implements com.recalot.common.interfaces.controller.ExperimentsController, Closeable {
 
-    private final BundleContext context;
-    private final GenericServiceListener<RecommenderBuilder> recommenderAccess;
-    private final GenericServiceListener<ExperimentTemplate> templates;
-    private final GenericServiceListener<DataAccess> dataAccess;
-    private final GenericServiceListener<ExperimentAccess> experimentsAccess;
-    private final GenericServiceListener<DataSplitterBuilder> dataSplitterAccess;
-    private final GenericServiceListener<MetricBuilder> metricsListener;
-    private final ContextProvider contextProvider;
-    private final GenericControllerListener recommenderController;
-
-
-    public ExperimentsController(BundleContext context) {
-        this.context = context;
-        this.recommenderAccess = new GenericServiceListener(context, RecommenderBuilder.class.getName());
-        this.recommenderController = new GenericControllerListener(context, RecommenderController.class.getName());
-        this.dataAccess = new GenericServiceListener(context, DataAccess.class.getName());
-        this.experimentsAccess = new GenericServiceListener(context, ExperimentAccess.class.getName());
-        this.dataSplitterAccess = new GenericServiceListener(context, DataSplitterBuilder.class.getName());
-        this.templates = new GenericServiceListener(context, ExperimentTemplate.class.getName());
-        this.metricsListener = new GenericServiceListener(context, MetricBuilder.class.getName());
-        this.contextProvider = new ContextProvider(context);
-
-        this.context.addServiceListener(recommenderAccess);
-        this.context.addServiceListener(recommenderController);
-        this.context.addServiceListener(dataAccess);
-        this.context.addServiceListener(experimentsAccess);
-        this.context.addServiceListener(dataSplitterAccess);
-        this.context.addServiceListener(templates);
-        this.context.addServiceListener(metricsListener);
-        this.context.addServiceListener(contextProvider);
-    }
+    private BundleContext context;
+    private GenericServiceListener<RecommenderBuilder> recommenderAccess;
+    private GenericServiceListener<ExperimentTemplate> templates;
+    private GenericServiceListener<DataAccess> dataAccess;
+    private GenericServiceListener<ExperimentAccess> experimentsAccess;
+    private GenericServiceListener<DataSplitterBuilder> dataSplitterAccess;
+    private GenericServiceListener<MetricBuilder> metricsListener;
+    private ContextProvider contextProvider;
+    private GenericControllerListener recommenderController;
 
     @Override
     public TemplateResult process(RequestAction action, String templateKey, Map<String, String> param) throws BaseException {
@@ -337,4 +318,37 @@ public class ExperimentsController implements com.recalot.common.interfaces.cont
             this.context.removeServiceListener(metricsListener);
         }
     }
+
+    @Activate
+    private void activate(final BundleContext context) {
+        this.context = context;
+        this.recommenderAccess = new GenericServiceListener(context, RecommenderBuilder.class.getName());
+        this.recommenderController = new GenericControllerListener(context, RecommenderController.class.getName());
+        this.dataAccess = new GenericServiceListener(context, DataAccess.class.getName());
+        this.experimentsAccess = new GenericServiceListener(context, ExperimentAccess.class.getName());
+        this.dataSplitterAccess = new GenericServiceListener(context, DataSplitterBuilder.class.getName());
+        this.templates = new GenericServiceListener(context, ExperimentTemplate.class.getName());
+        this.metricsListener = new GenericServiceListener(context, MetricBuilder.class.getName());
+        this.contextProvider = new ContextProvider(context);
+
+        context.addServiceListener(recommenderAccess);
+        context.addServiceListener(recommenderController);
+        context.addServiceListener(dataAccess);
+        context.addServiceListener(experimentsAccess);
+        context.addServiceListener(dataSplitterAccess);
+        context.addServiceListener(templates);
+        context.addServiceListener(metricsListener);
+        context.addServiceListener(contextProvider);
+    }
+
+    @Deactivate
+    private void deactivate(final BundleContext context) {
+        try {
+            this.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+
 }
