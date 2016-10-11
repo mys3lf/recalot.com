@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.recalot</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Recalot Parent</name>
+
+    <organization>
+        <name>Recalot.com</name>
+        <url>http://recalot.com/doc</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <url>
+                http://recalot.com/license.txt
+            </url>
+        </license>
+    </licenses>
+
+    <properties>
+        <java.source>1.8</java.source>
+        <java.target>1.8</java.target>
+
+        <felix.url>http://localhost:8080</felix.url>
+        <felix.webconsole.url>${felix.url}/system/console</felix.webconsole.url>
+        <felix.user>admin</felix.user>
+        <felix.password>admin</felix.password>
+
+        <org.osgi.service.http.port>8080</org.osgi.service.http.port>
+        <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>6.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.cm</artifactId>
+                <version>1.5.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.log</artifactId>
+                <version>1.3.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr.annotations</artifactId>
+                <version>1.11.0</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5.1</version>
+                    <configuration>
+                        <source>${java.source}</source>
+                        <target>${java.target}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-scr-plugin</artifactId>
+                    <version>1.22.0</version>
+                    <executions>
+                        <execution>
+                            <id>generate-scr-scrdescriptor</id>
+                            <goals>
+                                <goal>scr</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.sling</groupId>
+                    <artifactId>maven-sling-plugin</artifactId>
+                    <version>2.1.8</version>
+                    <configuration>
+                        <slingUrl>${felix.webconsole.url}</slingUrl>
+                        <user>${felix.user}</user>
+                        <password>${felix.password}</password>
+                        <bundleStart>true</bundleStart>
+                        <bundleStartLevel>1</bundleStartLevel>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>install-bundle</id>
+                            <goals>
+                                <goal>install</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
