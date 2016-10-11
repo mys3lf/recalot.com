@@ -9,3 +9,10 @@
 /data
 /flexjson
 /docs
+.iml
+Würde .classpath löschen
+Würde .project löschen
+Würde .settings/ löschen
+Würde parent.iml löschen
+
+*.iml
