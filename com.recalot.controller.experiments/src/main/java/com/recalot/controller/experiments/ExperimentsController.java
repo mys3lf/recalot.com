@@ -39,6 +39,8 @@ import com.recalot.common.interfaces.model.experiment.OnlineExperiment;
 import com.recalot.common.interfaces.model.rec.Recommender;
 import com.recalot.common.interfaces.template.ExperimentTemplate;
 import com.recalot.common.GenericControllerListener;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;
@@ -52,6 +54,8 @@ import java.util.Map;
 /**
  * @author matthaeus.schmedding
  */
+@Component
+@Service(ExperimentsController.class)
 public class ExperimentsController implements com.recalot.common.interfaces.controller.ExperimentsController, Closeable {
 
     private final BundleContext context;
