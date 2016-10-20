@@ -15,7 +15,7 @@
     <version>0.2.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Recalot.com Controller - Data</name>
+    <name>Recalot Controller Data</name>
     <description>Controller which delegates the data handling</description>
 
     <dependencies>
@@ -63,11 +63,22 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.sling</groupId>
-                <artifactId>maven-sling-plugin</artifactId>
-            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>Install Bundle</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

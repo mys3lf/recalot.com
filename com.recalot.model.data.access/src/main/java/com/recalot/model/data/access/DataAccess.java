@@ -28,6 +28,9 @@ import com.recalot.common.exceptions.NotFoundException;
 import com.recalot.common.communication.Message;
 import com.recalot.common.interfaces.model.data.DataInformation;
 import com.recalot.common.interfaces.model.data.DataSource;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 
 import java.io.Closeable;
@@ -38,21 +41,14 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author matthaeus.schmedding
  */
+@Component
+@Service(DataAccess.class)
 public class DataAccess implements com.recalot.common.interfaces.model.data.DataAccess, Closeable {
 
-    private final BundleContext context;
-    private final GenericServiceListener<DataSourceBuilder> dataSourceBuilderListener;
-    private final ConcurrentHashMap<String, DataSource> dataSources;
-    private final ConcurrentHashMap<String, Thread> threads;
-
-
-    public DataAccess(BundleContext context) {
-        this.context = context;
-        this.dataSourceBuilderListener = new GenericServiceListener<>(context, DataSourceBuilder.class.getName());
-        this.dataSources = new ConcurrentHashMap<>();
-        this.threads = new ConcurrentHashMap<>();
-        this.context.addServiceListener(dataSourceBuilderListener);
-    }
+    private BundleContext context;
+    private GenericServiceListener<DataSourceBuilder> dataSourceBuilderListener;
+    private ConcurrentHashMap<String, DataSource> dataSources;
+    private ConcurrentHashMap<String, Thread> threads;
 
 
     @Override
@@ -196,7 +192,7 @@ public class DataAccess implements com.recalot.common.interfaces.model.data.Data
         synchronized (dataSources) {
             dataSources.put(id, dataSource);
 
-          //  System.out.println("Add data source with id " + id);
+            //  System.out.println("Add data source with id " + id);
         }
     }
 
@@ -217,5 +213,14 @@ public class DataAccess implements com.recalot.common.interfaces.model.data.Data
     @Override
     public String getDescription() {
         return null;
+    }
+
+    @Activate
+    private void activate(final BundleContext bundleContext) {
+        this.context = bundleContext;
+        this.dataSourceBuilderListener = new GenericServiceListener<>(bundleContext, DataSourceBuilder.class.getName());
+        this.dataSources = new ConcurrentHashMap<>();
+        this.threads = new ConcurrentHashMap<>();
+        this.context.addServiceListener(dataSourceBuilderListener);
     }
 }

@@ -7,15 +7,16 @@
 
     <parent>
         <groupId>com.recalot</groupId>
-        <artifactId>controller.parent</artifactId>
+        <artifactId>model.data.parent</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>controller.experiments</artifactId>
+    <artifactId>model.data.connections</artifactId>
     <version>0.2.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>Recalot Controller Experiments</name>
+    <name>Recalot Model Data Connections</name>
+    <description>Contains data connectors. e.g. MovieLensFileConnection, DefaultMySQLConnection</description>
 
     <dependencies>
         <dependency>
@@ -34,10 +35,18 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.recalot</groupId>
             <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.flexjson</groupId>
+            <artifactId>flexjson</artifactId>
         </dependency>
     </dependencies>
 
@@ -57,11 +66,12 @@
                 <configuration>
                     <instructions>
                         <Export-Service>
-                            com.recalot.controller.experiments.ExperimentsController
+                            com.recalot.model.data.connections.movielens.MovieLensFileConnection
                         </Export-Service>
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
