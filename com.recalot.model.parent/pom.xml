@@ -8,6 +8,7 @@
         <groupId>com.recalot</groupId>
         <artifactId>parent</artifactId>
         <version>0.2.0-SNAPSHOT</version>
+        <relativePath>../com.recalot.parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>model.parent</artifactId>
@@ -42,6 +43,8 @@
                 <module>../com.recalot.model.data.parent</module>
                 <module>../com.recalot.model.data.access</module>
                 <module>../com.recalot.model.data.connections</module>
+                <module>../com.recalot.model.experiments.common</module>
+                <module>../com.recalot.model.experiments.metrics</module>
             </modules>
         </profile>
     </profiles>

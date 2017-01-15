@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.recalot</groupId>
-        <artifactId>model.data.parent</artifactId>
+        <artifactId>controller.parent</artifactId>
         <version>0.2.0-SNAPSHOT</version>
-        <relativePath>../com.recalot.model.data.parent/pom.xml</relativePath>
+        <relativePath>../com.recalot.controller.parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>model.data.connections</artifactId>
+    <artifactId>controller.recommendations</artifactId>
     <version>0.2.0-SNAPSHOT</version>
-    <packaging>bundle</packaging>
-
-    <name>Recalot Model Data Connections</name>
-    <description>Contains data connectors. e.g. MovieLensFileConnection, DefaultMySQLConnection</description>
+    <name>Recalot Controller Recommendations</name>
 
     <dependencies>
         <dependency>
@@ -36,18 +32,10 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.recalot</groupId>
             <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.flexjson</groupId>
-            <artifactId>flexjson</artifactId>
         </dependency>
     </dependencies>
 
@@ -66,28 +54,12 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Export-Service>
-                            com.recalot.model.data.connections.movielens.MovieLensFileConnection
-                        </Export-Service>
+                        <Export-Package>
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>Install Bundle</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.sling</groupId>
-                        <artifactId>maven-sling-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
